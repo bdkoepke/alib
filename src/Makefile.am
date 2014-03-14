@@ -1,0 +1,40 @@
+AM_CFLAGS = $(ALIB_CFLAGS)\
+  -Wall\
+  -Werror\
+  -Wextra\
+  -Wunused-function\
+  -std=c11\
+  -pedantic-errors\
+  -g
+
+bin_PROGRAMS = alib
+
+alib_SOURCES =\
+  main.c\
+  test.c\
+  contract.c\
+  chapter_2/chapter_2.c\
+  chapter_2/math.c\
+  chapter_2/sort.c\
+  chapter_2/string.c\
+  chapter_3/array.c\
+  chapter_3/array_container.c\
+  chapter_3/binary_node.c\
+  chapter_3/binary_tree.c\
+  chapter_3/chapter_3.c\
+  chapter_3/container.c\
+  chapter_3/dictionary.c\
+  chapter_3/hashtable.c\
+  chapter_3/list.c\
+  chapter_3/node.c\
+  chapter_3/object.c\
+  chapter_3/priority_queue.c\
+  chapter_3/queue.c\
+  chapter_3/stack.c\
+  chapter_3/tree.c
+
+alib_CFLAGS = $(ALIB_CFLAGS)
+
+alib_LDFLAGS = $(ALIB_LDFLAGS)
+
+alib_LDADD = $(ALIB_LIBS)

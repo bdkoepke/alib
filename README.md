@@ -1,0 +1,4 @@
+alib
+====
+
+Algorithm Design Manual
