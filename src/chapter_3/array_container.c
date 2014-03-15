@@ -45,10 +45,9 @@ static bool array_container_empty(const Container *c) {
 
 Container *array_container_new(size_t length) {
   static container_vtable vtable = {
-    {.free = array_container_free }, .insert = array_container_insert,
-                                         .search = array_container_search,
-                                         .delete = array_container_delete,
-		.empty = array_container_empty
+    {.free = array_container_free },
+        .insert = array_container_insert, .search = array_container_search,
+        .delete = array_container_delete, .empty = array_container_empty
   };
 
   ArrayContainer *array = malloc(sizeof(ArrayContainer));

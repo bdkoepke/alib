@@ -4,45 +4,46 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-static void binary_tree_free(Object *o) {
-	contract_requires(false);
-}
+static void binary_tree_free(Object *o) { contract_requires(false); }
 
-static void *_binary_tree_search(const BinaryNode *n, Compare c, const void *x) {
-	if (n == NULL)
-		return NULL;
-	int r = c(n->x, x);
-	if (r == 0)
-		return n->x;
-	return r < 0 ? _binary_tree_search(n->left, c, x) : _binary_tree_search(n->right, c, x);
+static void *_binary_tree_search(const BinaryNode *n, Compare c,
+                                 const void *x) {
+  if (n == NULL)
+    return NULL;
+  int r = c(n->x, x);
+  if (r == 0)
+    return n->x;
+  return r < 0 ? _binary_tree_search(n->left, c, x)
+               : _binary_tree_search(n->right, c, x);
 }
 
 static void *binary_tree_search(const Container *c, const void *x) {
-	const BinaryTree *t = (BinaryTree *)c;
-	return _binary_tree_search(t->root, t->c, x);
+  const BinaryTree *t = (BinaryTree *)c;
+  return _binary_tree_search(t->root, t->c, x);
 }
 
-static void _binary_tree_insert(BinaryNode *n, BinaryNode **p, Compare c, void *x) {
-	if (n == NULL)
-		*p = binary_node_new_leaf(x);
-	else {
-		int r = c(n->x, x);
-		BinaryNode **_p = r < 0 ? &(n->left) : &(n->right);
-		_binary_tree_insert(*p, p, c, x);
-	}
+static void _binary_tree_insert(BinaryNode *n, BinaryNode **p, Compare c,
+                                void *x) {
+  if (n == NULL)
+    *p = binary_node_new_leaf(x);
+  else {
+    int r = c(n->x, x);
+    BinaryNode **_p = r < 0 ? &(n->left) : &(n->right);
+    _binary_tree_insert(*p, p, c, x);
+  }
 }
 
 static void binary_tree_insert(Container *c, void *x) {
-	BinaryTree *t = (BinaryTree *)c;
-	_binary_tree_insert(t->root, &(t->root), t->c, x);
+  BinaryTree *t = (BinaryTree *)c;
+  _binary_tree_insert(t->root, &(t->root), t->c, x);
 }
 
-static void _binary_tree_delete(BinaryNode *n, BinaryNode **p, Compare c, const void *x) {
-}
+static void _binary_tree_delete(BinaryNode *n, BinaryNode **p, Compare c,
+                                const void *x) {}
 
 static void binary_tree_delete(Container *c, const void *x) {
-	BinaryTree *t = (BinaryTree *)c;
-	_binary_tree_delete(t->root, &(t->root), t->c, x);
+  BinaryTree *t = (BinaryTree *)c;
+  _binary_tree_delete(t->root, &(t->root), t->c, x);
 }
 
 static bool binary_tree_empty(const Container *c) {
@@ -76,7 +77,7 @@ static void *binary_tree_predecessor(const Dictionary *d, const void *x) {
 }
 
 static void *binary_tree_successor(const Dictionary *d, const void *x) {
-	return NULL;
+  return NULL;
 }
 
 void binary_tree_pre_order(Tree *t, Visitor v, void *user_data) {}
@@ -100,11 +101,11 @@ BinaryTree *binary_tree_new(Compare c) {
                                                   binary_tree_level_order
   };
 
-	contract_requires(c != NULL);
+  contract_requires(c != NULL);
 
   BinaryTree *b = malloc(sizeof(BinaryTree));
   b->vtable = &vtable;
   b->root = NULL;
-	b->c = c;
+  b->c = c;
   return b;
 }

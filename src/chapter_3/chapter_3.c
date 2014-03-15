@@ -58,7 +58,7 @@ void question_3_2(void) {
   for (i = 0; i < 100; i++)
     assert_equals(POINTER_TO_INT(list_cadr(list)), i);
 
-	object_free((Object *)list);
+  object_free((Object *)list);
 }
 
 void question_3_3(void) {
@@ -77,7 +77,7 @@ void question_3_3(void) {
         0);
   }
 
-	object_free((Object *)array);
+  object_free((Object *)array);
 }
 
 void question_3_4(void) {
@@ -88,7 +88,6 @@ void question_3_4(void) {
     container_insert(c, INT_TO_POINTER(i));
     assert_equals(POINTER_TO_INT(container_search(c, INT_TO_POINTER(i))), i);
   }
-
   for (i = 100; i > 1; i--) {
     container_delete(c, INT_TO_POINTER(i));
     assert_equals(POINTER_TO_INT(container_search(c, INT_TO_POINTER(i))), 0);
@@ -98,16 +97,24 @@ void question_3_4(void) {
 }
 
 void question_3_7(void) {
-	puts("test_question_3_7");
-	int random[] = {42, 93, 84, 50, 23, 71, 17, 86, 73, 87, 29, 15, 45, 67, 76, 27, 78, 38, 51, 57, 26, 89, 12, 19, 10, 7, 94, 75, 21, 55, 53, 44, 65, 99, 72, 95, 4, 3, 63, 77, 52, 37, 100, 79, 36, 88, 49, 66, 5, 56, 46, 11, 41, 47, 0, 96, 34, 9, 14, 2, 24, 58, 74, 64, 33, 28, 35, 60, 82, 1, 25, 39, 48, 6, 90, 20, 43, 31, 59, 91, 54, 81, 32, 62, 22, 97, 68, 30, 16, 40, 92, 8, 69, 13, 61, 18, 98, 80, 85, 83};
+  puts("test_question_3_7");
+  int random[] = { 42, 93, 84, 50, 23, 71, 17, 86, 73, 87, 29, 15, 45, 67, 76,
+                   27, 78, 38, 51, 57, 26, 89, 12, 19, 10, 7, 94, 75, 21, 55,
+                   53, 44, 65, 99, 72, 95, 4, 3, 63, 77, 52, 37, 100, 79, 36,
+                   88, 49, 66, 5, 56, 46, 11, 41, 47, 0, 96, 34, 9, 14, 2, 24,
+                   58, 74, 64, 33, 28, 35, 60, 82, 1, 25, 39, 48, 6, 90, 20, 43,
+                   31, 59, 91, 54, 81, 32, 62, 22, 97, 68, 30, 16, 40, 92, 8,
+                   69, 13, 61, 18, 98, 80, 85, 83 };
 
-	BinaryTree *binary_tree = binary_tree_new(compare_int);
-	Tree *tree = (Tree *)binary_tree;
-	size_t i;
-	for (i = 0; i < 100; i++) {
-		container_insert((Container *)tree, INT_TO_POINTER(random[i]));
-    assert_equals(POINTER_TO_INT(container_search((Container *)tree, INT_TO_POINTER(random[i]))), random[i]);
-	}
+  BinaryTree *binary_tree = binary_tree_new(compare_int);
+  Tree *tree = (Tree *)binary_tree;
+  size_t i;
+  for (i = 0; i < 100; i++) {
+    container_insert((Container *)tree, INT_TO_POINTER(random[i]));
+    assert_equals(POINTER_TO_INT(container_search((Container *)tree,
+                                                  INT_TO_POINTER(random[i]))),
+                  random[i]);
+  }
 }
 
 void chapter_3(void) {
