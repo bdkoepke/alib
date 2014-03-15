@@ -23,6 +23,7 @@ alib_SOURCES =\
   chapter_3/binary_tree.c\
   chapter_3/chapter_3.c\
   chapter_3/container.c\
+  chapter_3/compare.c\
   chapter_3/dictionary.c\
   chapter_3/hashtable.c\
   chapter_3/list.c\

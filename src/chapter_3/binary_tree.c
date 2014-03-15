@@ -1,15 +1,8 @@
 #include "../contract.h"
-#include "binary_node.h"
 #include "binary_tree.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
-
-typedef struct {
-  tree_vtable *vtable;
-  BinaryNode *root;
-	Compare c;
-} BinaryTree;
 
 static void binary_tree_free(Object *o) {
 	contract_requires(false);
@@ -94,7 +87,7 @@ void binary_tree_post_order(Tree *t, Visitor v, void *user_data) {}
 
 void binary_tree_level_order(Tree *t, Visitor v, void *user_data) {}
 
-Tree *binary_tree_new(Compare c) {
+BinaryTree *binary_tree_new(Compare c) {
   static tree_vtable vtable = {
     { { {.free = binary_tree_free },
             .search = binary_tree_search, .insert = binary_tree_insert,
@@ -113,5 +106,5 @@ Tree *binary_tree_new(Compare c) {
   b->vtable = &vtable;
   b->root = NULL;
 	b->c = c;
-  return (Tree *)b;
+  return b;
 }
