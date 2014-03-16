@@ -23,10 +23,11 @@ alib_SOURCES =\
   chapter_3/binary_tree.c\
   chapter_3/chapter_3.c\
   chapter_3/container.c\
+  chapter_3/container_test.c\
   chapter_3/compare.c\
   chapter_3/dictionary.c\
   chapter_3/hashtable.c\
-  chapter_3/list.c\
+  chapter_3/iterator.c\
   chapter_3/node.c\
   chapter_3/object.c\
   chapter_3/priority_queue.c\

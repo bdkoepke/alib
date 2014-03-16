@@ -81,94 +81,50 @@
         </makeTool>
       </makefileType>
       <item path="src/chapter_2/chapter_2.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_2/math.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_2/sort.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_2/string.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/array.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="src/chapter_3/array_container.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/binary_node.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/binary_tree.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/chapter_3.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/compare.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/container.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/dictionary.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/hashtable.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/list.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/node.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/object.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/priority_queue.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/queue.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/stack.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/chapter_3/tree.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/contract.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/main.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/test.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
     </conf>
   </confs>

@@ -2,8 +2,8 @@
 #define TREE_H
 
 #include "dictionary.h"
+#include "visitor.h"
 
-typedef bool (*Visitor)(void *, void *x);
 typedef struct _tree_vtable tree_vtable;
 typedef struct Tree {
   tree_vtable *vtable;
