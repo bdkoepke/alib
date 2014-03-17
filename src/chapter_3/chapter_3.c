@@ -1,4 +1,5 @@
 #include "../test.h"
+#include "algorithm.h"
 #include "array.h"
 #include "array_container.h"
 #include "binary_tree.h"
@@ -108,17 +109,6 @@ void question_3_3(void) {
   test_container((Container *)a, test_values_extended,
                  test_values_extended_length);
   object_free((Object *)a);
-}
-
-static int max(int a, int b) { return a > b ? a : b; }
-
-static int reduce(const int *a, size_t length, int (*f)(int a, int b),
-                  int _default) {
-  int reduce = _default;
-  size_t i;
-  for (i = 0; i < length; i++)
-    reduce = f(reduce, a[i]);
-  return reduce;
 }
 
 void question_3_4(void) {

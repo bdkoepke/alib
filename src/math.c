@@ -1,9 +1,9 @@
 #include "math.h"
 #include <stdbool.h>
 
-static bool even(int x) { return x % 2 == 0; }
+bool even(int x) { return x % 2 == 0; }
 
-static int square(int x) { return x * x; }
+int square(int x) { return x * x; }
 
 int power(int a, int n) {
   if (n == 0)

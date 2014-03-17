@@ -1,3 +1,4 @@
+#include "algorithm.h"
 #include "container_test.h"
 #include "test.h"
 #include "type.h"
@@ -22,13 +23,19 @@ void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
 }
 
-void test_dictionary(Dictionary *d, const int *values, size_t length) {}
+void test_dictionary(Dictionary *d, const int *values, size_t length) {
+	test_container((Container *)d, values, length);
+	int min = reduce(values, length, min, 0);
+	int max = reduce(values, length, max, 0);
+}
 
 void test_graph(Graph *g, const int *values, size_t length) {}
 
 void test_priority_queue(PriorityQueue *p, const int *values, size_t length) {}
 
-void test_queue(Queue *q, const int *values, size_t length) {}
+void test_queue(Queue *q, const int *values, size_t length) {
+	test_container((Container *)q, values, length);
+}
 
 void test_stack(Stack *s, const int *values, size_t length) {
   Container *c = (Container *)s;

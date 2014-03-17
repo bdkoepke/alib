@@ -11,12 +11,13 @@ bin_PROGRAMS = alib
 
 alib_SOURCES =\
   main.c\
+  math.c\
   test.c\
   contract.c\
   chapter_2/chapter_2.c\
-  chapter_2/math.c\
   chapter_2/sort.c\
   chapter_2/string.c\
+  chapter_3/algorithm.c\
   chapter_3/array.c\
   chapter_3/array_container.c\
   chapter_3/binary_node.c\
