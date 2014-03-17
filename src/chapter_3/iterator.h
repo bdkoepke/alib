@@ -11,8 +11,8 @@ typedef struct Iterator {
 } Iterator;
 struct _iterator_vtable {
   object_vtable object;
-	void *(*current)(Iterator *);
-	bool (*move_next)(Iterator *);
+  void *(*current)(Iterator *);
+  bool (*move_next)(Iterator *);
 };
 
 void *iterator_current(Iterator *);

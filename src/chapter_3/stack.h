@@ -10,11 +10,11 @@ typedef struct Stack {
   stack_vtable *vtable;
 } Stack;
 struct _stack_vtable {
-	container_vtable container;
+  container_vtable container;
   void (*push)(Stack *, void *);
   void *(*pop)(Stack *);
-	const void *(*peek)(const Stack *);
-	void (*reverse)(Stack *);
+  const void *(*peek)(const Stack *);
+  void (*reverse)(Stack *);
 };
 
 Stack *stack_new();

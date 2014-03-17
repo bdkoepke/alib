@@ -4,6 +4,8 @@
 void question_3_1(void);
 void question_3_2(void);
 void question_3_3(void);
+void question_3_4(void);
+void question_3_7(void);
 
 void chapter_3(void);
 

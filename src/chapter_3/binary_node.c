@@ -17,23 +17,22 @@ BinaryNode *binary_node_new_leaf(void *x) {
 }
 
 bool binary_node_is_leaf(const BinaryNode *n) {
-	return n->left == NULL && n->right == NULL;
+  return n->left == NULL && n->right == NULL;
 }
 
 bool binary_node_is_branch(const BinaryNode *n) {
-	return n->left != NULL && n->right != NULL;
+  return n->left != NULL && n->right != NULL;
 }
 
 void binary_node_free_r(BinaryNode *n) {
-	if (n != NULL) {
+  if (n != NULL) {
     binary_node_free_r(n->left);
     binary_node_free_r(n->right);
     free(n);
   }
 }
 
-void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c,
-                                void *x) {
+void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, void *x) {
   if (n == NULL)
     *p = binary_node_new_leaf(x);
   else {
@@ -43,8 +42,7 @@ void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c,
   }
 }
 
-void *binary_node_search(const BinaryNode *n, Compare c,
-                                 const void *x) {
+void *binary_node_search(const BinaryNode *n, Compare c, const void *x) {
   if (n == NULL)
     return NULL;
   int r = c(n->x, x);
@@ -55,7 +53,7 @@ void *binary_node_search(const BinaryNode *n, Compare c,
 }
 
 void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
-                                const void *x) {
+                        const void *x) {
   int r = c(n->x, x);
   if (r < 0)
     binary_node_delete(n->left, &(n->left), c, x);
@@ -63,24 +61,22 @@ void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
     binary_node_delete(n->right, &(n->right), c, x);
   else {
     if (binary_node_is_branch(n)) {
-			void *min = binary_node_min(n->right);
-			n->x = min;
-			binary_node_delete(n->right, &(n->right), c, min);
-		} else {
-			if (n->left != NULL)
-				*p = n->left;
-			else if (n->right != NULL)
-				*p = n->right;
-			else
-				*p = NULL;
-			free(n);
-		}
+      void *min = binary_node_min(n->right);
+      n->x = min;
+      binary_node_delete(n->right, &(n->right), c, min);
+    } else {
+      if (n->left != NULL)
+        *p = n->left;
+      else if (n->right != NULL)
+        *p = n->right;
+      else
+        *p = NULL;
+      free(n);
+    }
   }
 }
 
-bool binary_node_empty(const BinaryNode *n) {
-	return n == NULL;
-}
+bool binary_node_empty(const BinaryNode *n) { return n == NULL; }
 
 void *binary_node_min(BinaryNode *root) {
   BinaryNode *n;
@@ -156,7 +152,7 @@ static void queue_enqueue_non_null(Queue *q, void *x) {
 void binary_node_level_order(BinaryNode *root, Visitor v, void *user_data) {
   Queue *q = queue_new();
   queue_enqueue(q, root);
-  while (! queue_empty(q)) {
+  while (!queue_empty(q)) {
     BinaryNode *n = queue_dequeue(q);
     v(user_data, n);
     queue_enqueue_non_null(q, n->left);
