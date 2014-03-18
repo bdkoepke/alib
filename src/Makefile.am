@@ -23,17 +23,20 @@ alib_SOURCES =\
   chapter_3/binary_node.c\
   chapter_3/binary_tree.c\
   chapter_3/chapter_3.c\
-  chapter_3/container.c\
-  chapter_3/container_test.c\
   chapter_3/compare.c\
+  chapter_3/container.c\
   chapter_3/dictionary.c\
   chapter_3/hashtable.c\
   chapter_3/iterator.c\
   chapter_3/node.c\
   chapter_3/object.c\
+  chapter_3/partial_sum.c\
   chapter_3/priority_queue.c\
   chapter_3/queue.c\
+  chapter_3/range_container.c\
+  chapter_3/sorted_set.c\
   chapter_3/stack.c\
+  chapter_3/test_container.c\
   chapter_3/tree.c
 
 alib_CFLAGS = $(ALIB_CFLAGS)

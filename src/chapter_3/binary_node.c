@@ -36,7 +36,7 @@ void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, void *x) {
   if (n == NULL)
     *p = binary_node_new_leaf(x);
   else {
-    int r = c(n->x, x);
+    int r = c(x, n->x);
     BinaryNode **_p = r < 0 ? &(n->left) : &(n->right);
     binary_node_insert(*_p, _p, c, x);
   }
@@ -45,7 +45,7 @@ void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, void *x) {
 void *binary_node_search(const BinaryNode *n, Compare c, const void *x) {
   if (n == NULL)
     return NULL;
-  int r = c(n->x, x);
+  int r = c(x, n->x);
   if (r == 0)
     return n->x;
   return r < 0 ? binary_node_search(n->left, c, x)
@@ -54,7 +54,7 @@ void *binary_node_search(const BinaryNode *n, Compare c, const void *x) {
 
 void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
                         const void *x) {
-  int r = c(n->x, x);
+  int r = c(x, n->x);
   if (r < 0)
     binary_node_delete(n->left, &(n->left), c, x);
   else if (r > 0)
@@ -96,7 +96,7 @@ void *binary_node_predecessor(const BinaryNode *n, Compare c, const void *x) {
   if (n == NULL)
     return NULL;
 
-  int r = c(n->x, x);
+  int r = c(x, n->x);
   if (r < 0) {
     void *predecessor = binary_node_predecessor(n->left, x, c);
     return predecessor == NULL ? NULL : predecessor;
@@ -110,7 +110,7 @@ void *binary_node_successor(const BinaryNode *n, Compare c, const void *x) {
   if (n == NULL)
     return NULL;
 
-  int r = c(n->x, x);
+  int r = c(x, n->x);
   if (r > 0) {
     void *successor = binary_node_successor(n->left, x, c);
     return successor == NULL ? NULL : successor;

@@ -1,5 +1,5 @@
-#ifndef CONTAINER_TEST_H
-#define CONTAINER_TEST_H
+#ifndef TEST_CONTAINER_H
+#define TEST_CONTAINER_H
 
 #include "array.h"
 #include "container.h"
@@ -19,4 +19,4 @@ void test_queue(Queue *, const int *, size_t);
 void test_stack(Stack *, const int *, size_t);
 void test_tree(Tree *, const int *, size_t);
 
-#endif /* CONTAINER_TEST_H */
+#endif /* TEST_CONTAINER_H */

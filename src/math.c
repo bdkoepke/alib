@@ -11,3 +11,11 @@ int power(int a, int n) {
   const int x = power(a, n / 2);
   return even(x) ? square(x) : a * square(x);
 }
+
+int min(int a, int b) {
+	return a < b ? a : b;
+}
+
+int max(int a, int b) {
+	return a > b ? a : b;
+}
