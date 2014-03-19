@@ -1,5 +1,5 @@
 #include "object.h"
-#include "../contract.h"
+#include "contract.h"
 
 #include <stdlib.h>
 
