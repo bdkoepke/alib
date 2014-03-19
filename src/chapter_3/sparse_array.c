@@ -7,6 +7,9 @@
 typedef struct {
   container_vtable *vtable;
 	size_t n;
+	size_t m;
+	void **A;
+	void **B;
 } SparseArray;
 
 static void sparse_array_free(Object *o) {

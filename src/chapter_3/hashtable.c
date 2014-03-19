@@ -106,7 +106,7 @@ static bool hashtable_empty(const Container *c) {
   return ((Hashtable *)c)->size == 0;
 }
 
-Container *hashtable_new(Hash h) {
+Container *hashtable_new(Hash hash) {
   static container_vtable vtable = {
     {.free = hashtable_free },
         .search = hashtable_search, .insert = hashtable_insert,
@@ -116,12 +116,12 @@ Container *hashtable_new(Hash h) {
   static const float DEFAULT_FACTOR = 0.75;
   static const size_t DEFAULT_CAPACITY = 11;
 
-  Hashtable *hashtable = malloc(sizeof(Hashtable));
-  hashtable->vtable = &vtable;
-  hashtable->h = h;
-  hashtable->capacity = DEFAULT_CAPACITY;
-  hashtable->array = calloc(DEFAULT_CAPACITY, sizeof(void *));
-  hashtable->size = 0;
-  hashtable->factor = DEFAULT_FACTOR;
-  return (Container *)hashtable;
+  Hashtable *h = malloc(sizeof(Hashtable));
+  h->vtable = &vtable;
+  h->h = hash;
+  h->capacity = DEFAULT_CAPACITY;
+  h->array = calloc(h->capacity, sizeof(void *));
+  h->size = 0;
+  h->factor = DEFAULT_FACTOR;
+  return (Container *)h;
 }
