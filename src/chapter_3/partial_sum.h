@@ -2,7 +2,7 @@
 #define PARTIAL_SUM_H
 
 #include "compare.h"
-#include "object.h"
+#include "../object.h"
 
 typedef struct _partial_sum_vtable partial_sum_vtable;
 typedef struct PartialSum {

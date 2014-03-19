@@ -1,7 +1,7 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#include "object.h"
+#include "../object.h"
 
 #include <stdbool.h>
 

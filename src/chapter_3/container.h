@@ -1,7 +1,7 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
-#include "object.h"
+#include "../object.h"
 
 #include <stdbool.h>
 

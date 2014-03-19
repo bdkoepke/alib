@@ -1,7 +1,7 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "object.h"
+#include "../object.h"
 
 #include <stdbool.h>
 

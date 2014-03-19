@@ -1,8 +1,7 @@
 #ifndef PRIORITY_QUEUE_H
 #define PRIORITY_QUEUE_H
 
-#include "dictionary.h"
-#include "object.h"
+#include "../object.h"
 
 #include <stdbool.h>
 

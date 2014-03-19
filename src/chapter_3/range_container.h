@@ -1,7 +1,7 @@
 #ifndef RANGE_CONTAINER_H
 #define RANGE_CONTAINER_H
 
-#include "object.h"
+#include "../object.h"
 
 #include <stddef.h>
 
