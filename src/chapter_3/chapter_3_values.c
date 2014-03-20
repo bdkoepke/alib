@@ -1,6 +1,14 @@
 #include "chapter_3_values.h"
 const int test_values[] = { 15, 5, 3, 12, 13, 10, 6, 7, 16, 20, 18, 23 };
 const size_t test_values_length = sizeof(test_values) / sizeof(int);
+const int test_values_pre_order[] = { 15, 5, 3, 12, 10, 6, 7, 13, 16, 20, 18,
+                                      23 };
+const int test_values_in_order[] = { 3, 5, 6, 7, 10, 12, 13, 15, 16, 18, 20,
+                                     23 };
+const int test_values_post_order[] = { 3, 7, 6, 10, 13, 12, 5, 18, 23, 20, 16,
+                                       15 };
+const int test_values_level_order[] = { 15, 5, 16, 3, 12, 20, 10, 13, 18, 23, 6,
+                                        7 };
 
 const int test_values_extended[] = {
   -670653443, 447976203, 118781771, -199772367, 241648993, 34218826, 603521812,

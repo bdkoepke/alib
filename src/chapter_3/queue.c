@@ -29,16 +29,11 @@ static void *_queue_dequeue(Queue *_q) {
 void _queue_insert(Container *c, void *x) { queue_enqueue((Queue *)c, x); }
 
 static bool queue_empty(const Container *c) {
-  return ((_Queue *)c)->head == NULL;
+  return node_empty(((_Queue *)c)->head);
 }
 
 static void *queue_search(const Container *c, const void *x) {
-  const _Queue *q = (const _Queue *)c;
-  Node *node;
-  for (node = q->head; node != NULL; node = node->n)
-    if (node->x == x)
-      return node->x;
-  return NULL;
+  return node_search(((const _Queue *)c)->head, x);
 }
 
 static void queue_delete(Container *c, const void *x) {
@@ -50,7 +45,9 @@ static void queue_delete(Container *c, const void *x) {
       next = node->n;
       if (next->x == x) {
         node->n = next->n;
-        break;
+        if (node->n == NULL)
+          q->tail = node;
+        return;
       }
     }
   } else {

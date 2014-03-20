@@ -107,12 +107,10 @@ static void min_max_binary_tree_insert(Container *c, void *x) {
     m->min = x;
     m->max = x;
   } else {
-
-    int r = m->super.c(x, m->min);
-    if (r < 0)
+    Compare _c = m->super.c;
+    if (_c(x, m->min) < 0)
       m->min = x;
-    r = m->super.c(x, m->min);
-    if (r > 0)
+    if (_c(x, m->max) > 0)
       m->max = x;
   }
   binary_tree_insert(c, x);
@@ -121,12 +119,15 @@ static void min_max_binary_tree_insert(Container *c, void *x) {
 static void min_max_binary_tree_delete(Container *c, const void *x) {
   binary_tree_delete(c, x);
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)c;
-  if (!container_empty(c)) {
-    m->min = dictionary_min((Dictionary *)m);
-    m->max = dictionary_max((Dictionary *)m);
-  } else {
+  if (container_empty(c)) {
     m->min = NULL;
     m->max = NULL;
+  } else {
+    Compare _c = m->super.c;
+    if (_c(x, m->min) == 0)
+      m->min = binary_tree_min((Dictionary *)m);
+    if (_c(x, m->max) == 0)
+      m->max = binary_tree_max((Dictionary *)m);
   }
 }
 

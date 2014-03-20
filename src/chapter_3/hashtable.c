@@ -1,5 +1,6 @@
 #include "../contract.h"
 #include "hashtable.h"
+#include "node.h"
 
 #include <assert.h>
 #include <stdint.h>
@@ -8,7 +9,7 @@
 typedef struct {
   container_vtable *vtable;
   Hash h;
-  void **array;
+  Node **array;
   size_t capacity;
   size_t size;
   float factor;
@@ -22,18 +23,7 @@ static inline size_t checked_product(size_t multiplicand, size_t multiplier,
 
 static inline void _hashtable_insert(Hashtable *h, void *x) {
   size_t hash = h->h(x) % h->capacity;
-  size_t i;
-  for (i = hash; i < h->capacity; i++)
-    if (h->array[i] == NULL) {
-      h->array[i] = x;
-      return;
-    }
-  for (i = 0; i < hash; i++)
-    if (h->array[i] == NULL) {
-      h->array[i] = x;
-      return;
-    }
-  assert(false);
+  node_insert(&h->array[hash], x);
 }
 
 static inline void hashtable_resize(Hashtable *h, size_t capacity) {
@@ -41,11 +31,15 @@ static inline void hashtable_resize(Hashtable *h, size_t capacity) {
   void **array = h->array;
   size_t _capacity = h->capacity;
   h->capacity = capacity;
-  h->array = calloc(capacity, sizeof(void *));
+  h->array = calloc(capacity, sizeof(Node *));
   size_t i;
   for (i = 0; i < _capacity; i++)
-    if (array[i] != NULL)
-      _hashtable_insert(h, array[i]);
+    if (array[i] != NULL) {
+      Node *n;
+      for (n = array[i]; n != NULL; n = n->n)
+        _hashtable_insert(h, n->x);
+      node_free_r(n);
+    }
   free(array);
 }
 
@@ -59,55 +53,31 @@ static void *hashtable_search(const Container *c, const void *x) {
 
   Hashtable *h = (Hashtable *)c;
   size_t hash = h->h(x) % h->capacity;
-  size_t i;
-  for (i = hash; i < h->capacity; i++)
-    if (h->array[i] == NULL)
-      return NULL;
-    else if (h->array[i] == x)
-      return h->array[i];
-  for (i = 0; i < hash; i++)
-    if (h->array[i] == NULL)
-      return NULL;
-    else if (h->array[i] == x)
-      return h->array[i];
-
-  return NULL;
+  return (h->array[hash] == NULL) ? NULL : node_search(h->array[hash], x);
 }
 
 static void hashtable_insert(Container *c, void *x) {
   Hashtable *h = (Hashtable *)c;
   contract_requires(x != NULL && h->size < SIZE_MAX);
 
-  h->size++;
   if (h->size >= h->capacity) {
     size_t capacity = checked_product(h->capacity, 2, SIZE_MAX);
     hashtable_resize(h, capacity);
     h->capacity = capacity;
   }
+  h->size++;
   _hashtable_insert(h, x);
 }
 
 static void hashtable_delete(Container *c, const void *x) {
-  contract_requires(x != NULL);
   Hashtable *h = (Hashtable *)c;
   h->size--;
   size_t hash = h->h(x) % h->capacity;
-  size_t i;
-  for (i = hash; i < h->capacity; i++)
-    if (h->array[i] == x) {
-      h->array[i] = NULL;
-      return;
-    }
-  for (i = 0; i < hash; i++)
-    if (h->array[i] == x) {
-      h->array[i] = NULL;
-      return;
-    }
-  assert(false);
+  assert(h->array[hash]);
+  node_delete(&(h->array[hash]), x);
 }
 
 static bool hashtable_empty(const Container *c) {
-  printf("size: %d\n", ((Hashtable *)c)->size);
   return ((Hashtable *)c)->size == 0;
 }
 
@@ -125,7 +95,7 @@ Container *hashtable_new(Hash hash) {
   h->vtable = &vtable;
   h->h = hash;
   h->capacity = DEFAULT_CAPACITY;
-  h->array = calloc(h->capacity, sizeof(void *));
+  h->array = calloc(h->capacity, sizeof(Node *));
   h->size = 0;
   h->factor = DEFAULT_FACTOR;
   return (Container *)h;

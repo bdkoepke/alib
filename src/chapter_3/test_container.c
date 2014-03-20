@@ -35,7 +35,6 @@ void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
   size_t i;
   for (i = 0; i < length; i++) {
-    printf("%i\n", i);
     container_insert(c, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))),

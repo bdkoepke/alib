@@ -10,9 +10,7 @@ typedef struct {
 } _Stack;
 
 static void _stack_push(Stack *s, void *x) {
-  ((_Stack *)s)->head =
-      container_empty((Container *)s) ? node_new_leaf(x)
-                                      : node_new(x, ((_Stack *)s)->head);
+  node_insert(&((_Stack *)s)->head, x);
 }
 
 static void *_stack_pop(Stack *_s) {
@@ -47,35 +45,15 @@ static void _stack_reverse(Stack *_s) {
 void _stack_insert(Container *c, void *x) { stack_push((Stack *)c, x); }
 
 static void *stack_search(const Container *c, const void *x) {
-  const _Stack *s = (const _Stack *)c;
-  Node *node;
-  for (node = s->head; node != NULL; node = node->n)
-    if (node->x == x)
-      return node->x;
-  return NULL;
+  return node_search(((const _Stack *)c)->head, x);
 }
 
 static void stack_delete(Container *c, const void *x) {
-  _Stack *s = (_Stack *)c;
-  if (s->head->x != x) {
-    Node *node;
-    Node *next = s->head->n;
-    for (node = s->head; next != NULL; node = next) {
-      next = node->n;
-      if (next->x == x) {
-        node->n = next->n;
-        break;
-      }
-    }
-  } else {
-    Node *head = s->head;
-    s->head = head->n;
-    free(head);
-  }
+  node_delete(&((_Stack *)c)->head, x);
 }
 
 static bool stack_empty(const Container *c) {
-  return ((_Stack *)c)->head == NULL;
+  return node_empty(((const _Stack *)c)->head);
 }
 
 Stack *stack_new() {
