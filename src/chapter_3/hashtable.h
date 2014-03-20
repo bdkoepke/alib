@@ -2,10 +2,7 @@
 #define HASHTABLE_H
 
 #include "container.h"
-
-#include <stddef.h>
-
-typedef size_t (*Hash)(const void *);
+#include "hash.h"
 
 Container *hashtable_new(Hash);
 

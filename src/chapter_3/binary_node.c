@@ -65,12 +65,7 @@ void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
       n->x = min;
       binary_node_delete(n->right, &(n->right), c, min);
     } else {
-      if (n->left != NULL)
-        *p = n->left;
-      else if (n->right != NULL)
-        *p = n->right;
-      else
-        *p = NULL;
+			*p = (n->left != NULL) ? n->left : n->right;
       free(n);
     }
   }
@@ -152,9 +147,9 @@ static void queue_enqueue_non_null(Queue *q, void *x) {
 void binary_node_level_order(BinaryNode *root, Visitor v, void *user_data) {
   Queue *q = queue_new();
   queue_enqueue(q, root);
-  while (!queue_empty(q)) {
+  while (!container_empty((Container *)q)) {
     BinaryNode *n = queue_dequeue(q);
-    v(user_data, n);
+    v(user_data, n->x);
     queue_enqueue_non_null(q, n->left);
     queue_enqueue_non_null(q, n->right);
   }

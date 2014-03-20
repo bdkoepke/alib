@@ -16,7 +16,7 @@ struct _sorted_set_vtable {
   bool (*member)(const SortedSet *, const void *);
   void (*insert)(SortedSet *, void *);
   void *(*delete)(SortedSet *, size_t);
-  bool (*empty)(const SortedSet *);
+	size_t (*size)(const SortedSet *);
 };
 
 SortedSet *sorted_set_new(Compare);
@@ -25,5 +25,6 @@ bool sorted_set_member(const SortedSet *, const void *);
 void sorted_set_insert(SortedSet *, void *);
 void *sorted_set_delete(SortedSet *, size_t);
 bool sorted_set_empty(const SortedSet *);
+size_t sorted_set_size(const SortedSet *);
 
 #endif /* SORTED_SET_H */

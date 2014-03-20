@@ -26,13 +26,11 @@ static inline void _hashtable_insert(Hashtable *h, void *x) {
   for (i = hash; i < h->capacity; i++)
     if (h->array[i] == NULL) {
       h->array[i] = x;
-      h->size++;
       return;
     }
   for (i = 0; i < hash; i++)
     if (h->array[i] == NULL) {
       h->array[i] = x;
-      h->size++;
       return;
     }
   assert(false);
@@ -80,7 +78,8 @@ static void hashtable_insert(Container *c, void *x) {
   Hashtable *h = (Hashtable *)c;
   contract_requires(x != NULL && h->size < SIZE_MAX);
 
-  if (h->size > h->capacity) {
+	h->size++;
+  if (h->size >= h->capacity) {
     size_t capacity = checked_product(h->capacity, 2, SIZE_MAX);
     hashtable_resize(h, capacity);
     h->capacity = capacity;
@@ -91,18 +90,24 @@ static void hashtable_insert(Container *c, void *x) {
 static void hashtable_delete(Container *c, const void *x) {
   contract_requires(x != NULL);
   Hashtable *h = (Hashtable *)c;
+	h->size--;
   size_t hash = h->h(x) % h->capacity;
   size_t i;
   for (i = hash; i < h->capacity; i++)
-    if (h->array[i] == x)
+    if (h->array[i] == x) {
       h->array[i] = NULL;
+			return;
+		}
   for (i = 0; i < hash; i++)
-    if (h->array[i] == x)
+    if (h->array[i] == x) {
       h->array[i] = NULL;
+			return;
+		}
   assert(false);
 }
 
 static bool hashtable_empty(const Container *c) {
+	printf("size: %d\n", ((Hashtable *)c)->size);
   return ((Hashtable *)c)->size == 0;
 }
 
