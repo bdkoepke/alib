@@ -34,6 +34,7 @@ alib_SOURCES =\
   chapter_3/priority_queue.c\
   chapter_3/queue.c\
   chapter_3/range_container.c\
+  chapter_3/sort_int.c\
   chapter_3/sorted_set.c\
   chapter_3/sparse_array.c\
   chapter_3/stack.c\

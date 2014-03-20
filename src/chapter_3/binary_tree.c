@@ -168,7 +168,7 @@ static void swap(void **a, void **b) {
   *b = temp;
 }
 
-BinaryTree *binary_tree_concatenate(BinaryTree *_a, BinaryTree *_b) {
+BinaryTree *binary_tree_concat(BinaryTree *_a, BinaryTree *_b) {
   _BinaryTree *a = (_BinaryTree *)_a;
   _BinaryTree *b = (_BinaryTree *)_b;
   contract_requires(
@@ -187,5 +187,6 @@ BinaryTree *binary_tree_concatenate(BinaryTree *_a, BinaryTree *_b) {
   for (n = a->root; n->left != NULL; n = n->left)
     continue;
   n->left = b->root;
+  free(b);
   return (BinaryTree *)a;
 }

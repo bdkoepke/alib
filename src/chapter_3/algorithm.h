@@ -5,7 +5,7 @@
 
 #include <stddef.h>
 
-int bsearch_indexof_int(int, const int *, size_t, Compare);
+int binary_search(const int, const int *, size_t, Compare);
 int reduce_int(const int *, size_t, int(*)(int, int), int);
 
 #endif /* ALGORITHM_H */

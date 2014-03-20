@@ -11,8 +11,8 @@ typedef struct Heap {
 } Heap;
 struct _heap_vtable {
   object_vtable object;
-	void (*insert)(Heap *, void *);
-	void *(*extract_min)(Heap *);
+  void (*insert)(Heap *, void *);
+  void *(*extract_min)(Heap *);
   bool (*empty)(const Heap *);
 };
 
@@ -22,6 +22,6 @@ void heap_insert(Heap *, void *);
 void *heap_extract_min(Heap *);
 bool heap_empty(const Heap *);
 
-void _heap_free(Heap *);
+void _heap_free(Object *);
 
 #endif /* HEAP_H */

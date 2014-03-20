@@ -46,7 +46,8 @@ static void __sorted_set_insert(BinaryNode *n, BinaryNode **p, Compare c,
   if (n == NULL)
     *p = binary_node_new_leaf(key_value_new(1, x));
   else {
-    int r = c(x, INT_TO_POINTER(((KeyValue *)(n->x))->k));
+    KeyValue *t = (KeyValue *)n->x;
+    int r = c(x, t->x);
     BinaryNode **_p;
     if (r > 0) {
       _p = &(n->right);
@@ -63,7 +64,7 @@ static void _sorted_set_insert(SortedSet *_s, void *x) {
   __sorted_set_insert(s->root, &(s->root), s->c, x);
 }
 
-void __sorted_set_delete(BinaryNode *n, BinaryNode **p, int k) {
+void *__sorted_set_delete(BinaryNode *n, BinaryNode **p, size_t k) {
   assert(false);
   /*
  	KeyValue *t = (KeyValue *)n;
@@ -91,9 +92,9 @@ void __sorted_set_delete(BinaryNode *n, BinaryNode **p, int k) {
  	*/
 }
 
-static void _sorted_set_delete(SortedSet *s, int k) {
+static void *_sorted_set_delete(SortedSet *s, size_t k) {
   BinaryNode *root = (((_SortedSet *)s)->root);
-  __sorted_set_delete(root, &(root), k);
+  return __sorted_set_delete(root, &(root), k);
 }
 
 static bool _sorted_set_empty(const SortedSet *s) {
@@ -126,20 +127,21 @@ SortedSet *sorted_set_new(Compare c) {
 }
 
 bool sorted_set_member(const SortedSet *s, const void *x) {
-  contract_requires(s != NULL);
+  contract_requires(s != NULL && x != NULL);
   s->vtable->member(s, x);
 }
 
 void sorted_set_insert(SortedSet *s, void *x) {
-  contract_requires(s != NULL && !sorted_set_member(s, x));
+  contract_requires(s != NULL && x != NULL && !sorted_set_member(s, x));
   s->vtable->insert(s, x);
+  _SortedSet *_s = (_SortedSet *)s;
   contract_ensures(sorted_set_member(s, x));
 }
 
-void sorted_set_delete(SortedSet *s, int k) {
+void *sorted_set_delete(SortedSet *s, size_t k) {
   contract_requires(s != NULL && !sorted_set_empty(s) &&
                     k < sorted_set_size(s));
-  s->vtable->delete (s, k);
+  return s->vtable->delete (s, k);
 }
 
 bool sorted_set_empty(const SortedSet *s) {

@@ -3,8 +3,6 @@
 
 #include "container.h"
 
-#include <stddef.h>
-
-Container *sparse_array_new(size_t);
+Container *sparse_array_new(unsigned int n, unsigned int m);
 
 #endif /* SPARSE_ARRAY_H */

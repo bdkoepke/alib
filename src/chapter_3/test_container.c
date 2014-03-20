@@ -1,9 +1,11 @@
 #include "compare.h"
 #include "test_container.h"
+#include "sort_int.h"
 #include "string.h"
 #include "test.h"
 #include "type.h"
 
+#include <assert.h>
 #include <stdlib.h>
 
 void test_array(Array *a, const int *values, size_t length) {}
@@ -26,20 +28,9 @@ void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
 }
 
-static int _compare_int(const void *a, const void *b) {
-  int _a = *((const int *)a);
-  int _b = *((const int *)b);
-  return _a - _b;
-}
-
 void test_dictionary(Dictionary *d, const int *values, size_t length) {
   test_container((Container *)d, values, length);
-  int *sorted;
-  {
-    sorted = malloc(sizeof(int) * length);
-    memcpy(sorted, values, sizeof(int) * length);
-    qsort(sorted, length, sizeof(int), _compare_int);
-  }
+  int *sorted = sort_int(values, length);
 
   size_t i;
   for (i = 0; i < length; i++)
@@ -48,23 +39,21 @@ void test_dictionary(Dictionary *d, const int *values, size_t length) {
   assert_equals(POINTER_TO_INT(dictionary_min(d)), sorted[0]);
   assert_equals(POINTER_TO_INT(dictionary_max(d)), sorted[length - 1]);
 
-  /*
- 	for (i = 1; i < length; i++) {
- 		int j = bsearch_indexof_int(values[i], sorted, length, sizeof(int),
- compare_int);
- 		int predecessor = sorted[j - 1];
- 		printf("%d\n", predecessor);
- 		assert_equals(POINTER_TO_INT(dictionary_predecessor(d,
- INT_TO_POINTER(values[i]))), predecessor);
- 	}
- 	for (i = 0; i < (length - 1); i++) {
- 		int j = bsearch_indexof_int(values[i], sorted, length, sizeof(int),
- compare_int);
- 		int successor = sorted[j + 1];
- 		assert_equals(POINTER_TO_INT(dictionary_successor(d,
- INT_TO_POINTER(values[i]))), successor);
- 	}
- 	*/
+  for (i = 0; i < length; i++) {
+    int j = binary_search(values[i], sorted, length, compare_int);
+    int predecessor = (j == 0 ? 0 : sorted[j - 1]);
+    assert_equals(
+        POINTER_TO_INT(dictionary_predecessor(d, INT_TO_POINTER(values[i]))),
+        predecessor);
+  }
+  for (i = 0; i < (length - 1); i++) {
+    int j = binary_search(INT_TO_POINTER(values[i]), (void **)sorted, length,
+                          sizeof(int), compare_int);
+    int successor = sorted[j + 1];
+    assert_equals(
+        POINTER_TO_INT(dictionary_successor(d, INT_TO_POINTER(values[i]))),
+        successor);
+  }
 
   free(sorted);
 }
@@ -75,6 +64,25 @@ void test_priority_queue(PriorityQueue *p, const int *values, size_t length) {}
 
 void test_queue(Queue *q, const int *values, size_t length) {
   test_container((Container *)q, values, length);
+}
+
+void test_sorted_set(SortedSet *s, const int *values, size_t length) {
+  assert_true(sorted_set_empty(s));
+  size_t i;
+  for (i = 0; i < length; i++) {
+    sorted_set_insert(s, INT_TO_POINTER(values[i]));
+    assert_true(sorted_set_member(s, INT_TO_POINTER(values[i])));
+  }
+  assert_false(sorted_set_empty(s));
+  int *sorted = sort_int(values, length);
+  for (i = 0; i < length; i++) {
+    assert_true(sorted_set_member(s, INT_TO_POINTER(sorted[i])));
+    assert_equals(POINTER_TO_INT(sorted_set_delete(s, 0)), sorted[i]);
+    assert_false(sorted_set_member(s, INT_TO_POINTER(sorted[i])));
+  }
+  assert_true(sorted_set_empty(s));
+  object_free((Object *)s);
+  free(sorted);
 }
 
 void test_stack(Stack *s, const int *values, size_t length) {

@@ -4,16 +4,20 @@
 #include "array.h"
 #include "array_container.h"
 #include "binary_tree.h"
+#include "sparse_array.h"
 #include "stack.h"
 #include "test_container.h"
 #include "type.h"
+#include "sort_int.h"
 
+#include <assert.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
-const int test_values[] = { 15, 5, 3, 12, 13, 10, 6, 7, 16, 20, 18, 23 };
-const size_t test_values_length = sizeof(test_values) / sizeof(int);
-const int test_values_extended[] = {
+static const int test_values[] = { 15, 5, 3, 12, 13, 10, 6, 7, 16, 20, 18, 23 };
+static const size_t test_values_length = sizeof(test_values) / sizeof(int);
+static const int test_values_extended[] = {
   -670653443, 447976203, 118781771, -199772367, 241648993, 34218826, 603521812,
   372336484, 131490347, 319613229, -471804073, -285454123, 134022543, 656175464,
   -772712535, -587968559, 641680973, -1038659451, 69721356, 177411384,
@@ -56,7 +60,7 @@ const int test_values_extended[] = {
   -819805816, -603542142, -710893018, 686213743, 961973106, -686687298,
   350244799, -392530031, -642542311
 };
-const size_t test_values_extended_length =
+static const size_t test_values_extended_length =
     sizeof(test_values_extended) / sizeof(int);
 
 static bool nested_parenthesis(const char *s, int *count) {
@@ -126,13 +130,25 @@ void question_3_7(void) {
   BinaryTree *b = binary_tree_new_fast_min_max(compare_int);
   test_dictionary((Dictionary *)b, test_values, test_values_length);
   object_free((Object *)b);
+
   b = binary_tree_new(compare_int);
   test_dictionary((Dictionary *)b, test_values_extended,
                   test_values_extended_length);
   object_free((Object *)b);
 }
 
-void question_3_8(void) { puts("test_question_3_8: not implemented"); }
+void question_3_8(void) {
+  puts("test_question_3_8: partial implementation");
+  /*
+   SortedSet *s = sorted_set_new(compare_int);
+   test_sorted_set(s, test_values, test_values_length);
+   object_free((Object *)s);
+ 
+   s = sorted_set_new(compare_int);
+   test_sorted_set(s, test_values_extended, test_values_extended_length);
+   object_free((Object *)s);
+ 	*/
+}
 
 void question_3_9(void) {
   puts("test_question_3_9");
@@ -143,26 +159,62 @@ void question_3_9(void) {
     container_insert((Container *)a, INT_TO_POINTER(i));
   for (i; i < 20; i++)
     container_insert((Container *)b, INT_TO_POINTER(i));
-  BinaryTree *concat = binary_tree_concatenate(a, b);
+  BinaryTree *concat = binary_tree_concat(a, b);
   for (i = 0; i < 20; i++)
     assert_equals(POINTER_TO_INT(
                       container_search((Container *)concat, INT_TO_POINTER(i))),
                   i);
-  object_free((Object *)a);
-  object_free((Object *)b);
+  object_free((Object *)concat);
 }
 
-static size_t bin_packing_best_fit(float **w, size_t n) {
-  size_t bins = 0;
-  BinaryTree *b = binary_tree_new(compare_float);
+static size_t bin_packing_best_fit(double *w, size_t n) {
+  BinaryTree *b = binary_tree_new(compare_double);
   size_t i;
   for (i = 0; i < n; i++)
-    container_insert((Container *)b, (void *)(w[i]));
+    container_insert((Container *)b, INT_TO_POINTER(w[i]));
+
+  size_t bins = 0;
+  double bin = 0;
+  while (!container_empty((Container *)b)) {
+    void *predecessor =
+        dictionary_predecessor((Dictionary *)b, INT_TO_POINTER(1 - bin));
+    if (predecessor == NULL) {
+      bins++;
+      bin = 0;
+    } else {
+      container_delete((Container *)b, predecessor);
+      bin -= (double)(long)(predecessor);
+    }
+  }
+  object_free((Object *)b);
+  return bins;
+}
+
+static size_t bin_packing_worst_fit(double *w, size_t n) {
+  BinaryTree *b = binary_tree_new(compare_double);
+  size_t i;
+  for (i = 0; i < n; i++)
+    container_insert((Container *)b, INT_TO_POINTER(w[i]));
+
+  size_t bins = 0;
+  double bin = 0;
+  while (!container_empty((Container *)b)) {
+    double min = (double)(long) dictionary_min((Dictionary *)b);
+    if ((1 - bin) < min) {
+      bins++;
+      bin = 0;
+    } else {
+      bin += min;
+      container_delete((Container *)b, INT_TO_POINTER(min));
+    }
+  }
+  object_free((Object *)b);
+  return bins;
 }
 
 void question_3_10(void) {
   puts("test_question_3_10: not implemented");
-  static float objects[] = {
+  static double objects[] = {
     0.3362347542, 0.3178301298, 0.6860678412, 0.7340748264, 0.1900018821,
     0.984185261, 0.0281661723, 0.6661597076, 0.6800948414, 0.7188397606,
     0.0860246283, 0.4094339397, 0.2783007051, 0.6902901942, 0.2631758486,
@@ -185,15 +237,60 @@ void question_3_10(void) {
     0.3669732618, 0.564151499, 0.5531538269, 0.8426301903, 0.6035581056
   };
   static const size_t objects_length = 100;
+  assert(sizeof(double) == sizeof(void *));
 
-  //printf("%d\n", bin_packing_best_fit((float**)&objects, objects_length));
+  //printf("%d\n", bin_packing_worst_fit(objects, objects_length));
 }
 
 void question_3_11(void) { puts("test_question_3_11: not implemented"); }
 
 void question_3_14(void) { puts("test_question_3_14: not implemented"); }
 
-void question_3_15(void) { puts("test_question_3_15: not implemented"); }
+void question_3_15(void) {
+  puts("test_question_3_15");
+  int *sorted = sort_int(test_values, test_values_length);
+  Container *c =
+      sparse_array_new(sorted[test_values_length - 1] + 1, test_values_length);
+  test_container(c, test_values, test_values_length);
+  object_free((Object *)c);
+  free(sorted);
+
+  static const int test_sparse_array_values[] = {
+    24216, 36783, 17344, 40323, 35826, 253, 46365, 6847, 40026, 7920, 47088,
+    34916, 46700, 34675, 40506, 26890, 48707, 54263, 39694, 51446, 46696, 34873,
+    64182, 43780, 7589, 20473, 38250, 61898, 40068, 25505, 24680, 16955, 58701,
+    59784, 35459, 64343, 9062, 12276, 32841, 61012, 62648, 49210, 14193, 34750,
+    39420, 16549, 51958, 5859, 12487, 52354, 7327, 57681, 40374, 32738, 61555,
+    59942, 23388, 2060, 57915, 31161, 3705, 33647, 34164, 21307, 23675, 25042,
+    57528, 52651, 37312, 37292, 8281, 3421, 43540, 41498, 16078, 51135, 44991,
+    22993, 10270, 12681, 46417, 14053, 10941, 50337, 24556, 13576, 46691, 4630,
+    20574, 49292, 53050, 50168, 34719, 11129, 49581, 15654, 33340, 15402, 62455,
+    42524, 15152, 51169, 6046, 56604, 63752, 16593, 17971, 50899, 49659, 5720,
+    35457, 59019, 19429, 10116, 49201, 26137, 36264, 61729, 5909, 26132, 46585,
+    3010, 53986, 34163, 25883, 37994, 41459, 33620, 32518, 17424, 4353, 30682,
+    59152, 32778, 22338, 32290, 3951, 27601, 24174, 10927, 132, 41793, 56216,
+    1350, 14242, 17776, 47842, 60381, 19425, 16236, 16527, 55277, 49260, 31344,
+    37880, 31734, 14327, 55887, 57391, 41406, 9828, 41030, 19497, 46084, 37903,
+    54839, 44228, 60373, 52578, 13274, 29323, 57219, 50196, 42893, 19831, 10721,
+    54602, 15973, 4908, 34048, 51719, 27790, 26414, 29795, 371, 56703, 24571,
+    53132, 54961, 23519, 3075, 28308, 1318, 40171, 65448, 51106, 45492, 16780,
+    35495, 31850, 49945, 13142, 62054, 6717, 642, 31718, 2125, 11545, 53861,
+    21491, 59762, 41709, 25859, 18956, 3834, 60513, 24152, 43053, 63278, 56120,
+    46075, 56084, 42728, 51689, 59931, 15205, 64022, 45862, 64410, 36048, 8821,
+    45041, 14384, 65051, 19614, 53605, 41284, 64030, 12308, 25076, 28330, 10372,
+    36274, 26685, 21388, 58744, 21446, 25902, 42417, 51002, 30778, 16252, 2595,
+    30004, 32506
+  };
+  static const size_t test_sparse_array_values_length =
+      sizeof(test_sparse_array_values) / sizeof(int);
+
+  sorted = sort_int(test_sparse_array_values, test_sparse_array_values_length);
+  c = sparse_array_new(sorted[test_sparse_array_values_length - 1] + 1,
+                       test_sparse_array_values_length);
+  test_container(c, test_sparse_array_values, test_sparse_array_values_length);
+  object_free((Object *)c);
+  free(sorted);
+}
 
 void chapter_3(void) {
   question_3_1();

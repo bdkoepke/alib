@@ -95,29 +95,29 @@ void *binary_node_max(BinaryNode *root) {
 void *binary_node_predecessor(const BinaryNode *n, Compare c, const void *x) {
   if (n == NULL)
     return NULL;
-
   int r = c(x, n->x);
-  if (r < 0) {
-    void *predecessor = binary_node_predecessor(n->left, x, c);
-    return predecessor == NULL ? NULL : predecessor;
+  if (r == 0)
+    return n->left == NULL ? NULL : binary_node_max(n->left);
+  if (r < 0)
+    return binary_node_predecessor(n->left, c, x);
+  else {
+    void *predecessor = binary_node_predecessor(n->right, c, x);
+    return predecessor == NULL ? n->x : predecessor;
   }
-  if (r > 0)
-    return binary_node_predecessor(n->right, x, c);
-  return n->right == NULL ? n->x : binary_node_min(n->right);
 }
 
 void *binary_node_successor(const BinaryNode *n, Compare c, const void *x) {
   if (n == NULL)
     return NULL;
-
   int r = c(x, n->x);
-  if (r > 0) {
-    void *successor = binary_node_successor(n->left, x, c);
-    return successor == NULL ? NULL : successor;
+  if (r == 0)
+    return n->right == NULL ? NULL : binary_node_min(n->right);
+  if (r > 0)
+    return binary_node_successor(n->right, c, x);
+  else {
+    void *successor = binary_node_successor(n->left, c, x);
+    return successor == NULL ? n->x : successor;
   }
-  if (r < 0)
-    return binary_node_predecessor(n->left, x, c);
-  return n->right == NULL ? n->x : binary_node_min(n->right);
 }
 
 void binary_node_pre_order(BinaryNode *n, Visitor v, void *user_data) {

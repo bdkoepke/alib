@@ -7,6 +7,7 @@
 #include "graph.h"
 #include "priority_queue.h"
 #include "queue.h"
+#include "sorted_set.h"
 #include "stack.h"
 #include "tree.h"
 
@@ -16,6 +17,7 @@ void test_dictionary(Dictionary *, const int *, size_t);
 void test_graph(Graph *, const int *, size_t);
 void test_priority_queue(PriorityQueue *, const int *, size_t);
 void test_queue(Queue *, const int *, size_t);
+void test_sorted_set(SortedSet *, const int *, size_t);
 void test_stack(Stack *, const int *, size_t);
 void test_tree(Tree *, const int *, size_t);
 
