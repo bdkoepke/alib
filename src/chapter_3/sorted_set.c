@@ -72,13 +72,12 @@ static KeyValue *sorted_set_min(BinaryNode *root) {
 }
 
 static void *__sorted_set_delete(BinaryNode *n, BinaryNode **p, size_t k) {
- 	KeyValue *t = (KeyValue *)n->x;
- 	int r = k - t->k;
+  KeyValue *t = (KeyValue *)n->x;
+  int r = k - t->k;
   if (r < 0) {
-		t->k--;
+    t->k--;
     return __sorted_set_delete(n->left, &(n->left), k);
-	}
-  else if (r > 0)
+  } else if (r > 0)
     return __sorted_set_delete(n->right, &(n->right), k);
   else {
     if (binary_node_is_branch(n)) {
@@ -86,11 +85,11 @@ static void *__sorted_set_delete(BinaryNode *n, BinaryNode **p, size_t k) {
       n->x = min;
       return __sorted_set_delete(n->right, &(n->right), min->k);
     } else {
-			*p = (n->left != NULL) ? n->left : n->right;
-			void *x = ((KeyValue *)n->x)->x;
-			free(n->x);
+      *p = (n->left != NULL) ? n->left : n->right;
+      void *x = ((KeyValue *)n->x)->x;
+      free(n->x);
       free(n);
-			return x;
+      return x;
     }
   }
 }
@@ -105,14 +104,14 @@ static bool _sorted_set_empty(const SortedSet *s) {
 }
 
 static size_t _sorted_set_size(const SortedSet *s) {
-	size_t size = 0;
-	BinaryNode *root = ((const _SortedSet *)s)->root;
-	if (root == NULL)
-		return size;
+  size_t size = 0;
+  BinaryNode *root = ((const _SortedSet *)s)->root;
+  if (root == NULL)
+    return size;
   BinaryNode *n;
   for (n = root; n != NULL; n = n->right)
-		size += ((KeyValue *)n->x)->k;
-	return size;
+    size += ((KeyValue *)n->x)->k;
+  return size;
 }
 
 static void sorted_set_free(Object *o) { assert(false); }
@@ -143,16 +142,17 @@ void sorted_set_insert(SortedSet *s, void *x) {
 }
 
 void *sorted_set_delete(SortedSet *s, size_t k) {
-  contract_requires(s != NULL && !sorted_set_empty(s) && k <= sorted_set_size(s));
+  contract_requires(s != NULL && !sorted_set_empty(s) &&
+                    k <= sorted_set_size(s));
   return s->vtable->delete (s, k);
 }
 
 bool sorted_set_empty(const SortedSet *s) {
   contract_requires(s != NULL);
-	return sorted_set_size(s) == 0;
+  return sorted_set_size(s) == 0;
 }
 
 size_t sorted_set_size(const SortedSet *s) {
-	contract_requires(s != NULL);
-	return s->vtable->size(s);
+  contract_requires(s != NULL);
+  return s->vtable->size(s);
 }

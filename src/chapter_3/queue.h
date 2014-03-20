@@ -8,7 +8,7 @@ typedef struct Queue {
   queue_vtable *vtable;
 } Queue;
 struct _queue_vtable {
-	container_vtable container;
+  container_vtable container;
   void (*enqueue)(Queue *, void *);
   void *(*dequeue)(Queue *);
 };

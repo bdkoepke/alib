@@ -10,22 +10,22 @@
 #include <stdlib.h>
 
 void test_array(Array *a, const int *values, size_t length) {
-	test_container((Container *)a, values, length);
+  test_container((Container *)a, values, length);
   assert_true(container_empty((Container *)a));
   size_t i;
   for (i = 0; i < length; i++) {
-		assert_equals(array_size(a), i);
+    assert_equals(array_size(a), i);
     container_insert((Container *)a, INT_TO_POINTER(values[i]));
-    assert_equals(
-        POINTER_TO_INT(container_search((Container *)a, INT_TO_POINTER(values[i]))),
-        values[i]);
-  	assert_false(container_empty((Container *)a));
+    assert_equals(POINTER_TO_INT(container_search((Container *)a,
+                                                  INT_TO_POINTER(values[i]))),
+                  values[i]);
+    assert_false(container_empty((Container *)a));
   }
-	assert_equals(array_size(a), length);
+  assert_equals(array_size(a), length);
   for (i = 0; i < length; i++)
-		array_set(a, i, NULL);
+    array_set(a, i, NULL);
   for (i = 0; i < length; i++)
-		assert_equals(POINTER_TO_INT(array_get(a, i)), POINTER_TO_INT(NULL));
+    assert_equals(POINTER_TO_INT(array_get(a, i)), POINTER_TO_INT(NULL));
   for (i = 0; i < length; i++)
     container_delete((Container *)a, NULL);
   assert_true(container_empty((Container *)a));
@@ -35,7 +35,7 @@ void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
   size_t i;
   for (i = 0; i < length; i++) {
-		printf("%i\n", i);
+    printf("%i\n", i);
     container_insert(c, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))),
@@ -76,8 +76,8 @@ void test_dictionary(Dictionary *d, const int *values, size_t length) {
         successor);
   }
 
-	while (! container_empty((Container *)d))
-		container_delete((Container *)d, dictionary_min(d));
+  while (!container_empty((Container *)d))
+    container_delete((Container *)d, dictionary_min(d));
 
   free(sorted);
 }
@@ -94,17 +94,17 @@ void test_sorted_set(SortedSet *s, const int *values, size_t length) {
   for (i = 0; i < length; i++) {
     sorted_set_insert(s, INT_TO_POINTER(values[i]));
     assert_true(sorted_set_member(s, INT_TO_POINTER(values[i])));
-		assert_true(sorted_set_size(s) == (i + 1));
+    assert_true(sorted_set_size(s) == (i + 1));
   }
   assert_false(sorted_set_empty(s));
   int *sorted = sort_int(values, length);
-	size_t size = length;
+  size_t size = length;
   for (i = 0; i < length; i++) {
     assert_true(sorted_set_member(s, INT_TO_POINTER(sorted[i])));
     assert_equals(POINTER_TO_INT(sorted_set_delete(s, 1)), sorted[i]);
     assert_false(sorted_set_member(s, INT_TO_POINTER(sorted[i])));
-		size--;
-		assert_true(sorted_set_size(s) == size);
+    size--;
+    assert_true(sorted_set_size(s) == size);
   }
   assert_true(sorted_set_empty(s));
   free(sorted);
@@ -127,61 +127,56 @@ void test_stack(Stack *s, const int *values, size_t length) {
 }
 
 typedef struct {
-	object_vtable *vtable;
-	const int *order;
-	size_t i;
+  object_vtable *vtable;
+  const int *order;
+  size_t i;
 } OrderVisitor;
 
-static void order_visitor_free(Object *o) {
-	free(o);
-}
+static void order_visitor_free(Object *o) { free(o); }
 
 static OrderVisitor *order_visitor_new(const int *order) {
-	static object_vtable vtable = {
-		.free = order_visitor_free
-	};
+  static object_vtable vtable = {.free = order_visitor_free };
 
-	OrderVisitor *o = malloc(sizeof(OrderVisitor));
-	o->vtable = &vtable;
-	o->order = order;
-	o->i = 0;
-	return o;
+  OrderVisitor *o = malloc(sizeof(OrderVisitor));
+  o->vtable = &vtable;
+  o->order = order;
+  o->i = 0;
+  return o;
 }
 
 static void order_visitor_visit(void *p, void *x) {
-	OrderVisitor *o = (OrderVisitor *)p;
-	assert_equals(POINTER_TO_INT(x), o->order[o->i++]);
+  OrderVisitor *o = (OrderVisitor *)p;
+  assert_equals(POINTER_TO_INT(x), o->order[o->i++]);
 }
 
-void test_tree(Tree *t, const int *values, size_t length,
-                      const int *pre_order, const int *in_order,
-                      const int *post_order, const int *level_order) {
-	test_dictionary((Dictionary *)t, values, length);
-	assert_true(container_empty((Container *)t));
+void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
+               const int *in_order, const int *post_order,
+               const int *level_order) {
+  test_dictionary((Dictionary *)t, values, length);
+  assert_true(container_empty((Container *)t));
 
   size_t i;
   for (i = 0; i < length; i++)
     container_insert((Container *)t, INT_TO_POINTER(values[i]));
 
-	OrderVisitor *o = order_visitor_new(pre_order);
-	tree_pre_order(t, order_visitor_visit, o);
-	object_free((Object *)o);
+  OrderVisitor *o = order_visitor_new(pre_order);
+  tree_pre_order(t, order_visitor_visit, o);
+  object_free((Object *)o);
 
-	o = order_visitor_new(in_order);
-	tree_in_order(t, order_visitor_visit, o);
-	object_free((Object *)o);
+  o = order_visitor_new(in_order);
+  tree_in_order(t, order_visitor_visit, o);
+  object_free((Object *)o);
 
-	o = order_visitor_new(post_order);
-	tree_post_order(t, order_visitor_visit, o);
-	object_free((Object *)o);
+  o = order_visitor_new(post_order);
+  tree_post_order(t, order_visitor_visit, o);
+  object_free((Object *)o);
 
-	o = order_visitor_new(level_order);
-	tree_level_order(t, order_visitor_visit, o);
-	object_free((Object *)o);
+  o = order_visitor_new(level_order);
+  tree_level_order(t, order_visitor_visit, o);
+  object_free((Object *)o);
 }
 
-void test_partial_sum(PartialSum *p, const int *values, const size_t length) {
-}
+void test_partial_sum(PartialSum *p, const int *values, const size_t length) {}
 
-void test_range_container(RangeContainer *r, const int *values, const size_t length) {
-}
+void test_range_container(RangeContainer *r, const int *values,
+                          const size_t length) {}

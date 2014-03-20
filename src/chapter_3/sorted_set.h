@@ -16,7 +16,7 @@ struct _sorted_set_vtable {
   bool (*member)(const SortedSet *, const void *);
   void (*insert)(SortedSet *, void *);
   void *(*delete)(SortedSet *, size_t);
-	size_t (*size)(const SortedSet *);
+  size_t (*size)(const SortedSet *);
 };
 
 SortedSet *sorted_set_new(Compare);

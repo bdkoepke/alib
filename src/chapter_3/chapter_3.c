@@ -43,63 +43,67 @@ static bool nested_parenthesis(const char *s, int *count) {
 }
 
 void _test_array(void) {
-	puts("test_array");
-	Array *a = array_new();
-	test_array(a, test_values, test_values_length);
-	object_free((Object *)a);
+  puts("test_array");
+  Array *a = array_new();
+  test_array(a, test_values, test_values_length);
+  object_free((Object *)a);
 
-	a = array_new();
-	test_array(a, test_values_extended, test_values_extended_length);
-	object_free((Object *)a);
+  a = array_new();
+  test_array(a, test_values_extended, test_values_extended_length);
+  object_free((Object *)a);
 }
 
 void _test_stack(void) {
-	puts("test_stack");
-	Stack *s = stack_new();
-	test_stack(s, test_values, test_values_length);
-	object_free((Object *)s);
+  puts("test_stack");
+  Stack *s = stack_new();
+  test_stack(s, test_values, test_values_length);
+  object_free((Object *)s);
 
-	s = stack_new();
-	test_stack(s, test_values_extended, test_values_extended_length);
-	object_free((Object *)s);
+  s = stack_new();
+  test_stack(s, test_values_extended, test_values_extended_length);
+  object_free((Object *)s);
 }
 
 void _test_queue(void) {
-	puts("test_queue");
-	Queue *q = queue_new();
-	test_queue(q, test_values, test_values_length);
-	object_free((Object *)q);
+  puts("test_queue");
+  Queue *q = queue_new();
+  test_queue(q, test_values, test_values_length);
+  object_free((Object *)q);
 
-	q = queue_new();
-	test_queue(q, test_values_extended, test_values_extended_length);
-	object_free((Object *)q);
+  q = queue_new();
+  test_queue(q, test_values_extended, test_values_extended_length);
+  object_free((Object *)q);
 }
 
 void test_binary_tree(void) {
-	puts("test_binary_tree");
+  puts("test_binary_tree");
   static const int pre_order[] = { 15, 5, 3, 12, 10, 6, 7, 13, 16, 20, 18, 23 };
   static const int in_order[] = { 3, 5, 6, 7, 10, 12, 13, 15, 16, 18, 20, 23 };
-  static const int post_order[] = { 3, 7, 6, 10, 13, 12, 5, 18, 23, 20, 16, 15 };
-  static const int level_order[] = { 15, 5, 16, 3, 12, 20, 10, 13, 18, 23, 6, 7 };
+  static const int post_order[] = { 3, 7, 6, 10, 13, 12, 5, 18, 23, 20, 16,
+                                    15 };
+  static const int level_order[] = { 15, 5, 16, 3, 12, 20, 10, 13, 18, 23, 6,
+                                     7 };
 
-	BinaryTree *b = binary_tree_new(compare_int_pointer);
-	test_tree((Tree *)b, test_values, test_values_length, pre_order, in_order, post_order, level_order);
-	object_free((Object *)b);
+  BinaryTree *b = binary_tree_new(compare_int_pointer);
+  test_tree((Tree *)b, test_values, test_values_length, pre_order, in_order,
+            post_order, level_order);
+  object_free((Object *)b);
 
-	b = binary_tree_new(compare_int_pointer);
-	test_dictionary((Dictionary *)b, test_values_extended, test_values_extended_length);
-	object_free((Object *)b);
+  b = binary_tree_new(compare_int_pointer);
+  test_dictionary((Dictionary *)b, test_values_extended,
+                  test_values_extended_length);
+  object_free((Object *)b);
 }
 
 void test_hashtable(void) {
-	puts("test_hashtable");
-	Container *c = hashtable_new(hash_int_pointer);
-	test_container(c, test_values, test_values_length);
-	object_free((Object *)c);
+  puts("test_hashtable");
+  Container *c = hashtable_new(hash_int_pointer);
+  test_container(c, test_values, test_values_length);
+  object_free((Object *)c);
 
-	c = hashtable_new(hash_int_pointer);
-	test_container(c, test_values_extended, test_values_extended_length);
-	object_free((Object *)c);
+  c = hashtable_new(hash_int_pointer);
+  test_container(c, test_values_extended, test_values_extended_length);
+  object_free((Object *)c);
 }
 
 void question_3_1(void) {
@@ -267,24 +271,26 @@ void question_3_14(void) { puts("test_question_3_14: not implemented"); }
 void question_3_15(void) {
   puts("test_question_3_15");
   Array *a =
-      sparse_array_new(reduce_int(test_values, test_values_length, max, 0) + 1, test_values_length);
+      sparse_array_new(reduce_int(test_values, test_values_length, max, 0) + 1,
+                       test_values_length);
   test_array(a, test_values, test_values_length);
   object_free((Object *)a);
 
-
-  a = sparse_array_new(reduce_int(test_values_extended_positive, test_values_extended_positive_length, max, 0) + 1,
-                       test_values_extended_positive_length);
+  a = sparse_array_new(
+      reduce_int(test_values_extended_positive,
+                 test_values_extended_positive_length, max, 0) + 1,
+      test_values_extended_positive_length);
   test_array(a, test_values_extended_positive,
-                 test_values_extended_positive_length);
+             test_values_extended_positive_length);
   object_free((Object *)a);
 }
 
 void chapter_3(void) {
-	_test_array();
-	_test_stack();
-	_test_queue();
-	test_binary_tree();
-	test_hashtable();
+  _test_array();
+  _test_stack();
+  _test_queue();
+  test_binary_tree();
+  test_hashtable();
   question_3_1();
   question_3_2();
   question_3_3();

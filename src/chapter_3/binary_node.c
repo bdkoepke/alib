@@ -65,7 +65,7 @@ void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
       n->x = min;
       binary_node_delete(n->right, &(n->right), c, min);
     } else {
-			*p = (n->left != NULL) ? n->left : n->right;
+      *p = (n->left != NULL) ? n->left : n->right;
       free(n);
     }
   }

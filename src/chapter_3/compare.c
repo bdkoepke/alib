@@ -6,8 +6,8 @@ int compare_int_pointer(const void *a, const void *b) {
 }
 
 int compare_double_pointer(const void *a, const void *b) {
-  double _a = (double)(long)a;
-  double _b = (double)(long)b;
+  double _a = (double)(long) a;
+  double _b = (double)(long) b;
   if (((_a < 1 && _a > 0) || (_a > -1 && _a < 0)) &&
       ((_b < 1 && _b > 0) || (_b > -1 && _b < 0))) {
     double d = _a - _b;

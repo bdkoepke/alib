@@ -13,7 +13,8 @@ typedef struct {
 static void _queue_enqueue(Queue *_q, void *x) {
   _Queue *q = (_Queue *)_q;
   Node *tail = node_new_leaf(x);
-  q->tail = container_empty((Container *)_q) ? (q->head = tail) : (q->tail->n = tail);
+  q->tail =
+      container_empty((Container *)_q) ? (q->head = tail) : (q->tail->n = tail);
 }
 
 static void *_queue_dequeue(Queue *_q) {
@@ -25,11 +26,11 @@ static void *_queue_dequeue(Queue *_q) {
   return x;
 }
 
-void _queue_insert(Container *c, void *x) {
-	queue_enqueue((Queue *)c, x);
-}
+void _queue_insert(Container *c, void *x) { queue_enqueue((Queue *)c, x); }
 
-static bool queue_empty(const Container *c) { return ((_Queue *)c)->head == NULL; }
+static bool queue_empty(const Container *c) {
+  return ((_Queue *)c)->head == NULL;
+}
 
 static void *queue_search(const Container *c, const void *x) {
   const _Queue *q = (const _Queue *)c;
@@ -61,8 +62,10 @@ static void queue_delete(Container *c, const void *x) {
 
 Queue *queue_new() {
   static queue_vtable vtable = {
-    { {.free = _queue_free }, .insert = _queue_insert, .search = queue_search, .empty = queue_empty, .delete = queue_delete}, .enqueue = _queue_enqueue,
-                                .dequeue = _queue_dequeue,
+    { {.free = _queue_free }, .insert = _queue_insert,
+                                  .search = queue_search, .empty = queue_empty,
+                                  .delete = queue_delete },
+        .enqueue = _queue_enqueue, .dequeue = _queue_dequeue,
   };
 
   _Queue *q = malloc(sizeof(_Queue));

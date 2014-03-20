@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 typedef struct {
-	array_vtable *vtable;
+  array_vtable *vtable;
   unsigned int n;
   unsigned int m;
   unsigned int size;
@@ -46,8 +46,9 @@ static void sparse_array_set(Array *a, size_t i, void *x) {
 
 static void *sparse_array_get(const Array *a, size_t i) {
   SparseArray *s = (SparseArray *)a;
-  return (i != POINTER_TO_INT(NULL) && i < s->n && s->A[i] != POINTER_TO_INT(NULL) &&
-          (s->A[i] - 1) < s->m && s->B[s->A[i] - 1] == i)
+  return (i != POINTER_TO_INT(NULL) && i < s->n &&
+          s->A[i] != POINTER_TO_INT(NULL) && (s->A[i] - 1) < s->m &&
+          s->B[s->A[i] - 1] == i)
              ? INT_TO_POINTER(i)
              : NULL;
 }
@@ -62,16 +63,17 @@ static void sparse_array_delete(Container *c, const void *x) {
 }
 
 static size_t sparse_array_size(const Array *a) {
-	SparseArray *s = (SparseArray *)a;
-	return s->size;
+  SparseArray *s = (SparseArray *)a;
+  return s->size;
 }
 
 Array *sparse_array_new(unsigned int n, unsigned int m) {
   static array_vtable vtable = {
-    {{.free = sparse_array_free },
-        .insert = sparse_array_insert, .search = sparse_array_search,
-        .delete = sparse_array_delete, .empty = _array_empty},
-		.set = sparse_array_set, .get = sparse_array_get, .size = sparse_array_size
+    { {.free = sparse_array_free },
+          .insert = sparse_array_insert, .search = sparse_array_search,
+          .delete = sparse_array_delete, .empty = _array_empty },
+        .set = sparse_array_set, .get = sparse_array_get, .size =
+                                                              sparse_array_size
   };
 
   SparseArray *s = malloc(sizeof(SparseArray));

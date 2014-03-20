@@ -23,8 +23,8 @@ void test_queue(Queue *, const int *, size_t);
 void test_range_container(RangeContainer *, const int *, size_t);
 void test_sorted_set(SortedSet *, const int *, size_t);
 void test_stack(Stack *, const int *, size_t);
-void test_tree(Tree *, const int *, size_t,
-                      const int *pre_order, const int *in_order,
-                      const int *post_order, const int *level_order);
+void test_tree(Tree *, const int *, size_t, const int *pre_order,
+               const int *in_order, const int *post_order,
+               const int *level_order);
 
 #endif /* TEST_CONTAINER_H */
