@@ -1,3 +1,4 @@
+#include "algorithm.h"
 #include "compare.h"
 #include "test_container.h"
 #include "sort_int.h"
@@ -9,6 +10,10 @@
 #include <stdlib.h>
 
 void test_array(Array *a, const int *values, size_t length) {}
+
+static int _compare_int(const void *a, const void *b) {
+	return *((int*)a) - *((int*)b);
+}
 
 void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
@@ -40,16 +45,15 @@ void test_dictionary(Dictionary *d, const int *values, size_t length) {
   assert_equals(POINTER_TO_INT(dictionary_max(d)), sorted[length - 1]);
 
   for (i = 0; i < length; i++) {
-    int j = binary_search(values[i], sorted, length, compare_int);
+    int j = binary_search(&values[i], sorted, length, sizeof(int), _compare_int);
     int predecessor = (j == 0 ? 0 : sorted[j - 1]);
     assert_equals(
         POINTER_TO_INT(dictionary_predecessor(d, INT_TO_POINTER(values[i]))),
         predecessor);
   }
-  for (i = 0; i < (length - 1); i++) {
-    int j = binary_search(INT_TO_POINTER(values[i]), (void **)sorted, length,
-                          sizeof(int), compare_int);
-    int successor = sorted[j + 1];
+  for (i = 0; i < length; i++) {
+    int j = binary_search(&values[i], sorted, length, sizeof(int), _compare_int);
+    int successor = (j == (length - 1) ? 0 : sorted[j + 1]);
     assert_equals(
         POINTER_TO_INT(dictionary_successor(d, INT_TO_POINTER(values[i]))),
         successor);
