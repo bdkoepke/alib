@@ -6,34 +6,35 @@
 #include <stdlib.h>
 
 typedef enum Color {
-	Red,
-	Black
+  Red,
+  Black
 } Color;
 
 typedef struct RedBlackNode {
-	void *x;
-	struct RedBlackNode *left;
-	struct RedBlackNode *right;
-	Color c;
+  void *x;
+  struct RedBlackNode *left;
+  struct RedBlackNode *right;
+  Color c;
 } RedBlackNode;
 
-RedBlackNode *red_black_node_new(void *x, Color c, RedBlackNode *left, RedBlackNode *right) {
-	RedBlackNode *r = malloc(sizeof(RedBlackNode));
-	r->x = x;
-	r->c = c;
-	r->left = left;
-	r->right = right;
-	return r;
+RedBlackNode *red_black_node_new(void *x, Color c, RedBlackNode *left,
+                                 RedBlackNode *right) {
+  RedBlackNode *r = malloc(sizeof(RedBlackNode));
+  r->x = x;
+  r->c = c;
+  r->left = left;
+  r->right = right;
+  return r;
 }
 
 RedBlackNode *red_black_node_new_leaf(void *x, Color c) {
-	return red_black_node_new(x, c, NULL, NULL);
+  return red_black_node_new(x, c, NULL, NULL);
 }
 
 typedef struct {
-	tree_vtable *vtable;
-	RedBlackNode *root;
-	Compare c;
+  tree_vtable *vtable;
+  RedBlackNode *root;
+  Compare c;
 } RedBlackTree;
 
 Tree *red_black_tree_new(Compare c) {
@@ -49,11 +50,11 @@ Tree *red_black_tree_new(Compare c) {
                                                   binary_tree_level_order
   }; */
 
-	contract_requires(c != NULL);
+  contract_requires(c != NULL);
 
-	RedBlackTree *r = malloc(sizeof(RedBlackTree));
-	//r->vtable = &vtable;
-	r->root = NULL;
-	r->c = c;
-	return (Tree *)r;
+  RedBlackTree *r = malloc(sizeof(RedBlackTree));
+  //r->vtable = &vtable;
+  r->root = NULL;
+  r->c = c;
+  return (Tree *)r;
 }

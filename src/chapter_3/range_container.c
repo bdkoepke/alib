@@ -1,5 +1,4 @@
 #include "array.h"
-#include "compare.h"
 #include "contract.h"
 #include "range_container.h"
 #include "../math_extended.h"
@@ -35,16 +34,16 @@ static void array_range_container_insert(RangeContainer *r, void *x) {
   void **m = a->m;
   size_t size = a->size;
 
-	/*
- 	a->size++;
- 	for (i = 0; i < size; i++) {
- 		void *min = m[0][size];
- 		for (j = 1; j < size; j++)
- 			if (a->c(min, m[i][j]) < 0)
- 				min = m[i][j];
- 		m[i][size] = min;
- 	}
-	*/
+  /*
+  	a->size++;
+  	for (i = 0; i < size; i++) {
+  		void *min = m[0][size];
+  		for (j = 1; j < size; j++)
+  			if (a->c(min, m[i][j]) < 0)
+  				min = m[i][j];
+  		m[i][size] = min;
+  	}
+ 	*/
 }
 
 static void *array_range_container_query(const RangeContainer *r, size_t i,

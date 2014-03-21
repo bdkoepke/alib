@@ -51,12 +51,33 @@ void node_free_r(Node *n) {
 }
 
 size_t node_middle(const Node *n) {
-	Node *slow = (Node *)n;
-	Node *fast;
-	size_t i = 0;
-	for (fast = (Node *)n; fast->n != NULL && fast->n->n != NULL; fast = fast->n->n) {
-		slow = slow->n;
-		i++;
-	}
-	return i + 1;
+  Node *slow = (Node *)n;
+  Node *fast;
+  size_t i = 0;
+  for (fast = (Node *)n; fast->n != NULL && fast->n->n != NULL;
+       fast = fast->n->n) {
+    slow = slow->n;
+    i++;
+  }
+  return i + 1;
+}
+
+int node_loop(const Node *n) {
+  if (n == NULL || n->n == NULL)
+    return -1;
+  if (n == n->n || n == n->n->n)
+    return 0;
+  if (n->n == n->n->n)
+    return 1;
+  Node *slow = (Node *)n;
+  Node *fast;
+  int i = 0;
+  for (fast = (Node *)n->n->n; fast->n != NULL && fast->n->n != NULL;
+       fast = fast->n->n) {
+    if (slow == fast)
+      return i;
+    slow = slow->n;
+    i++;
+  }
+  return -1;
 }

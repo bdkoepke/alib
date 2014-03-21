@@ -17,6 +17,7 @@ void *node_search(const Node *, const void *);
 void node_delete(Node **, const void *);
 void node_insert(Node **, void *);
 size_t node_middle(const Node *);
+int node_loop(const Node *);
 
 void node_free_r(Node *);
 

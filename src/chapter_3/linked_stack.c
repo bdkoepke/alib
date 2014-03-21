@@ -56,8 +56,8 @@ void linked_stack_reverse(LinkedStack *l) {
 }
 
 size_t linked_stack_middle(const LinkedStack *l) {
-	contract_requires(l != NULL && ! container_empty((Container *)l));
-	return node_middle(l->head);
+  contract_requires(l != NULL && !container_empty((Container *)l));
+  return node_middle(l->head);
 }
 
 LinkedStack *linked_stack_new() {
@@ -65,10 +65,12 @@ LinkedStack *linked_stack_new() {
     { {.free = _stack_free },
           .insert = _stack_insert, .search = linked_stack_search,
           .delete = linked_stack_delete, .empty = linked_stack_empty },
-        .push = linked_stack_push, .pop = linked_stack_pop, .peek = linked_stack_peek};
+        .push = linked_stack_push, .pop = linked_stack_pop,
+        .peek = linked_stack_peek
+  };
 
   LinkedStack *l = malloc(sizeof(LinkedStack));
   l->head = NULL;
   l->vtable = &vtable;
-	return l;
+  return l;
 }

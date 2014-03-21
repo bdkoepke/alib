@@ -1,5 +1,4 @@
 #include "binary_node.h"
-#include "compare.h"
 #include "sorted_set.h"
 #include "../contract.h"
 #include "type.h"
@@ -73,28 +72,28 @@ static KeyValue *sorted_set_min(BinaryNode *root) {
 
 static void *__sorted_set_delete(BinaryNode *n, BinaryNode **p, size_t k) {
   KeyValue *t = (KeyValue *)n->x;
-	/*
-	printf("k: %d, t->k: %d\n", k, t->k);
-  int r = k - t->k;
-  if (r < 0) {
-    t->k--;
-    return __sorted_set_delete(n->left, &(n->left), k);
-  } else if (r > 0)
-    return __sorted_set_delete(n->right, &(n->right), k);
-  else {
-    if (binary_node_is_branch(n)) {
-      KeyValue *min = sorted_set_min(n->right);
-      n->x = min;
-      return __sorted_set_delete(n->right, &(n->right), min->k);
-    } else {
-      *p = (n->left != NULL) ? n->left : n->right;
-      void *x = ((KeyValue *)n->x)->x;
-      free(n->x);
-      free(n);
-      return x;
-    }
-  }
-	*/
+  /*
+ 	printf("k: %d, t->k: %d\n", k, t->k);
+   int r = k - t->k;
+   if (r < 0) {
+     t->k--;
+     return __sorted_set_delete(n->left, &(n->left), k);
+   } else if (r > 0)
+     return __sorted_set_delete(n->right, &(n->right), k);
+   else {
+     if (binary_node_is_branch(n)) {
+       KeyValue *min = sorted_set_min(n->right);
+       n->x = min;
+       return __sorted_set_delete(n->right, &(n->right), min->k);
+     } else {
+       *p = (n->left != NULL) ? n->left : n->right;
+       void *x = ((KeyValue *)n->x)->x;
+       free(n->x);
+       free(n);
+       return x;
+     }
+   }
+ 	*/
 }
 
 static void *_sorted_set_delete(SortedSet *s, size_t k) {
@@ -118,11 +117,11 @@ static size_t _sorted_set_size(const SortedSet *s) {
 }
 
 static void sorted_set_free(Object *o) {
-	SortedSet *s = (SortedSet *)o;
-	puts("sorted_set_free implementation slow");
-	while (! sorted_set_empty(s))
-		sorted_set_delete(s, 0);
-	free(s);
+  SortedSet *s = (SortedSet *)o;
+  puts("sorted_set_free implementation slow");
+  while (!sorted_set_empty(s))
+    sorted_set_delete(s, 0);
+  free(s);
 }
 
 SortedSet *sorted_set_new(Compare c) {

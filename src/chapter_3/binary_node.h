@@ -1,7 +1,7 @@
 #ifndef BINARY_NODE_H
 #define BINARY_NODE_H
 
-#include "compare.h"
+#include "../compare.h"
 #include "visitor.h"
 
 #include <stdbool.h>

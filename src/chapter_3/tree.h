@@ -1,6 +1,7 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include "linked_stack.h"
 #include "dictionary.h"
 #include "visitor.h"
 
@@ -20,5 +21,7 @@ void tree_pre_order(Tree *, Visitor, void *);
 void tree_in_order(Tree *, Visitor, void *);
 void tree_post_order(Tree *, Visitor, void *);
 void tree_level_order(Tree *, Visitor, void *);
+
+LinkedStack *tree_to_linked_stack(Tree *);
 
 #endif /* TREE_H */

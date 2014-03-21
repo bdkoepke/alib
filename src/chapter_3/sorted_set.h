@@ -1,7 +1,7 @@
 #ifndef SORTED_SET_H
 #define SORTED_SET_H
 
-#include "compare.h"
+#include "../compare.h"
 #include "../object.h"
 
 #include <stdbool.h>

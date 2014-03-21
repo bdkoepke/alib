@@ -2,6 +2,7 @@
 #define HEAP_H
 
 #include "../object.h"
+#include "compare.h"
 
 #include <stdbool.h>
 
@@ -16,12 +17,10 @@ struct _heap_vtable {
   bool (*empty)(const Heap *);
 };
 
-Heap *heap_new();
+Heap *heap_new(Compare);
 
 void heap_insert(Heap *, void *);
 void *heap_extract_min(Heap *);
 bool heap_empty(const Heap *);
-
-void _heap_free(Object *);
 
 #endif /* HEAP_H */

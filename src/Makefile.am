@@ -5,13 +5,13 @@ AM_CFLAGS = $(ALIB_CFLAGS)\
   -Wunused-function\
   -std=c11\
   -pedantic-errors\
-	-lm\
   -g
 
 bin_PROGRAMS = alib
 
 alib_SOURCES =\
 	object.c\
+	compare.c\
   contract.c\
   main.c\
 	math_extended.c\
@@ -26,7 +26,6 @@ alib_SOURCES =\
   chapter_3/binary_tree.c\
   chapter_3/chapter_3.c\
   chapter_3/chapter_3_values.c\
-  chapter_3/compare.c\
   chapter_3/container.c\
   chapter_3/dictionary.c\
   chapter_3/hash.c\
@@ -49,6 +48,6 @@ alib_SOURCES =\
 
 alib_CFLAGS = $(ALIB_CFLAGS)
 
-alib_LDFLAGS = $(ALIB_LDFLAGS)
+alib_LDFLAGS = -lm
 
 alib_LDADD = $(ALIB_LIBS)

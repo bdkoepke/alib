@@ -1,5 +1,5 @@
 #include "algorithm.h"
-#include "compare.h"
+#include "../compare.h"
 #include "test_container.h"
 #include "sort_int.h"
 #include "string.h"
@@ -112,7 +112,7 @@ void test_sorted_set(SortedSet *s, const int *values, size_t length) {
 void test_stack(Stack *s, const int *values, size_t length) {
   Container *c = (Container *)s;
   assert_true(container_empty(c));
-	size_t i;
+  size_t i;
   for (i = 0; i < length; i++) {
     container_insert(c, INT_TO_POINTER(values[i]));
     assert_equals(
@@ -121,14 +121,14 @@ void test_stack(Stack *s, const int *values, size_t length) {
   }
 
   assert_false(container_empty(c));
-	int j;
+  int j;
   for (j = (length - 1); j >= 0; j--)
     assert_equals(POINTER_TO_INT(stack_pop(s)), values[j]);
-	assert_true(container_empty(c));
+  assert_true(container_empty(c));
 }
 
 void test_linked_stack(LinkedStack *l, const int *values, size_t length) {
-	test_stack((Stack *)l, values, length);
+  test_stack((Stack *)l, values, length);
   Container *c = (Container *)l;
   assert_true(container_empty(c));
   size_t i;
@@ -139,11 +139,12 @@ void test_linked_stack(LinkedStack *l, const int *values, size_t length) {
         values[i]);
   }
   assert_false(container_empty(c));
-	assert_equals(linked_stack_middle(l), even(length) ? length / 2 : length / 2 + 1);
+  assert_equals(linked_stack_middle(l),
+                even(length) ? length / 2 : length / 2 + 1);
   linked_stack_reverse(l);
   for (i = 0; i < length; i++)
     assert_equals(POINTER_TO_INT(stack_pop((Stack *)l)), values[i]);
-	assert_true(container_empty(c));
+  assert_true(container_empty(c));
 }
 
 typedef struct {
@@ -200,7 +201,7 @@ void test_partial_sum(PartialSum *p, const int *values, const size_t length) {}
 
 void test_range_container(RangeContainer *r, const int *values,
                           const size_t length) {
-	size_t i;
-	for (i = 0; i < length; i++)
-		range_container_insert(r, INT_TO_POINTER(values[i]));
+  size_t i;
+  for (i = 0; i < length; i++)
+    range_container_insert(r, INT_TO_POINTER(values[i]));
 }

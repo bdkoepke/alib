@@ -1,6 +1,7 @@
 #ifndef RANGE_CONTAINER_H
 #define RANGE_CONTAINER_H
 
+#include "../compare.h"
 #include "../object.h"
 
 #include <stddef.h>
@@ -15,7 +16,7 @@ struct _range_container_vtable {
   void *(*query)(const RangeContainer *, size_t i, size_t j);
 };
 
-RangeContainer *array_range_container_new();
+RangeContainer *array_range_container_new(Compare);
 
 void range_container_insert(RangeContainer *, void *);
 void *range_container_query(const RangeContainer *, size_t i, size_t j);

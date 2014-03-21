@@ -12,15 +12,15 @@ int compare_int(const void *a, const void *b) {
 }
 
 int compare_float(const void *a, const void *b) {
-	float d = *(float *)a - *(float *)b;
-	if ((d < 1 && d > 0) || (d > -1 && d < 0))
-		return d == 0 ? 0 : (d < 0 ? -1 : 1);
-	return d;
+  float d = *(float *)a - *(float *)b;
+  if ((d < 1 && d > 0) || (d > -1 && d < 0))
+    return d == 0 ? 0 : (d < 0 ? -1 : 1);
+  return d;
 }
 
 int compare_double(const void *a, const void *b) {
-	double d = *(double *)a - *(double *)b;
-	if ((d < 1 && d > 0) || (d > -1 && d < 0))
-		return d == 0 ? 0 : (d < 0 ? -1 : 1);
-	return d;
+  double d = *(double *)a - *(double *)b;
+  if ((d < 1 && d > 0) || (d > -1 && d < 0))
+    return d == 0 ? 0 : (d < 0 ? -1 : 1);
+  return d;
 }

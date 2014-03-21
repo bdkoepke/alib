@@ -6,72 +6,72 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct {
+struct _BinaryTree {
   tree_vtable *vtable;
   BinaryNode *root;
   Compare c;
-} _BinaryTree;
+};
 
 static void binary_tree_free(Object *o) {
-  binary_node_free_r(((_BinaryTree *)o)->root);
+  binary_node_free_r(((BinaryTree *)o)->root);
   free(o);
 }
 
 static void *binary_tree_search(const Container *c, const void *x) {
-  const _BinaryTree *t = (_BinaryTree *)c;
+  const BinaryTree *t = (BinaryTree *)c;
   return binary_node_search(t->root, t->c, x);
 }
 
 static void binary_tree_insert(Container *c, void *x) {
-  _BinaryTree *t = (_BinaryTree *)c;
+  BinaryTree *t = (BinaryTree *)c;
   binary_node_insert(t->root, &(t->root), t->c, x);
 }
 
 static void binary_tree_delete(Container *c, const void *x) {
-  _BinaryTree *t = (_BinaryTree *)c;
+  BinaryTree *t = (BinaryTree *)c;
   binary_node_delete(t->root, &(t->root), t->c, x);
 }
 
 static bool binary_tree_empty(const Container *c) {
-  return binary_node_empty(((_BinaryTree *)c)->root);
+  return binary_node_empty(((BinaryTree *)c)->root);
 }
 
 static void *binary_tree_max(const Dictionary *d) {
   return container_empty((const Container *)d)
              ? NULL
-             : binary_node_max(((const _BinaryTree *)d)->root);
+             : binary_node_max(((const BinaryTree *)d)->root);
 }
 
 static void *binary_tree_min(const Dictionary *d) {
   return container_empty((const Container *)d)
              ? NULL
-             : binary_node_min(((const _BinaryTree *)d)->root);
+             : binary_node_min(((const BinaryTree *)d)->root);
 }
 
 static void *binary_tree_predecessor(const Dictionary *d, const void *x) {
-  const _BinaryTree *t = (const _BinaryTree *)d;
+  const BinaryTree *t = (const BinaryTree *)d;
   return binary_node_predecessor(t->root, t->c, x);
 }
 
 static void *binary_tree_successor(const Dictionary *d, const void *x) {
-  const _BinaryTree *t = (const _BinaryTree *)d;
+  const BinaryTree *t = (const BinaryTree *)d;
   return binary_node_successor(t->root, t->c, x);
 }
 
 static void binary_tree_pre_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_pre_order(((_BinaryTree *)t)->root, v, user_data);
+  return binary_node_pre_order(((BinaryTree *)t)->root, v, user_data);
 }
 
 static void binary_tree_in_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_in_order(((_BinaryTree *)t)->root, v, user_data);
+  return binary_node_in_order(((BinaryTree *)t)->root, v, user_data);
 }
 
 static void binary_tree_post_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_post_order(((_BinaryTree *)t)->root, v, user_data);
+  return binary_node_post_order(((BinaryTree *)t)->root, v, user_data);
 }
 
 static void binary_tree_level_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_level_order(((_BinaryTree *)t)->root, v, user_data);
+  return binary_node_level_order(((BinaryTree *)t)->root, v, user_data);
 }
 
 BinaryTree *binary_tree_new(Compare c) {
@@ -89,7 +89,7 @@ BinaryTree *binary_tree_new(Compare c) {
 
   contract_requires(c != NULL);
 
-  _BinaryTree *b = malloc(sizeof(_BinaryTree));
+  BinaryTree *b = malloc(sizeof(BinaryTree));
   b->vtable = &vtable;
   b->root = NULL;
   b->c = c;
@@ -97,7 +97,7 @@ BinaryTree *binary_tree_new(Compare c) {
 }
 
 typedef struct {
-  _BinaryTree super;
+  BinaryTree super;
   void *min;
   void *max;
 } MinMaxBinaryTree;
@@ -170,18 +170,16 @@ static void swap(void **a, void **b) {
   *b = temp;
 }
 
-BinaryTree *binary_tree_concat(BinaryTree *_a, BinaryTree *_b) {
-  _BinaryTree *a = (_BinaryTree *)_a;
-  _BinaryTree *b = (_BinaryTree *)_b;
+BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
   contract_requires(
       a != NULL && b != NULL && a->c == b->c &&
       (binary_tree_min((Dictionary *)a) > binary_tree_max((Dictionary *)b) ||
        binary_tree_max((Dictionary *)a) < binary_tree_min((Dictionary *)b)));
 
   if (container_empty((Container *)a))
-    return container_empty((Container *)b) ? _a : _b;
+    return container_empty((Container *)b) ? a : b;
   else if (container_empty((Container *)b))
-    return _a;
+    return a;
 
   if (a->c(a->root->x, b->root->x) < 0)
     swap((void **)&a, (void **)&b);
@@ -190,5 +188,17 @@ BinaryTree *binary_tree_concat(BinaryTree *_a, BinaryTree *_b) {
     continue;
   n->left = b->root;
   free(b);
-  return (BinaryTree *)a;
+  return a;
+}
+
+static bool binary_node_compare(const BinaryNode *a, const BinaryNode *b, Compare c) {
+  if (a == NULL)
+    return b == NULL;
+  return b == NULL ? false : c(a->x, b->x) == 0 &&
+                                 binary_node_compare(a->left, b->left, c) &&
+                                 binary_node_compare(a->right, b->right, c);
+}
+
+bool binary_tree_compare(const BinaryTree *a, const BinaryTree *b) {
+  return a->c != b->c ? false : binary_node_compare(a->root, b->root, a->c);
 }
