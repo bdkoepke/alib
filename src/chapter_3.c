@@ -177,15 +177,15 @@ void question_3_7(void) {
 
 void question_3_8(void) {
   puts("test_question_3_8: partial implementation");
-	/*
-  SortedSet *s = sorted_set_new(compare_int_pointer);
-  test_sorted_set(s, test_values, test_values_length);
-  object_free((Object *)s);
-
-  s = sorted_set_new(compare_int_pointer);
-  test_sorted_set(s, test_values_extended, test_values_extended_length);
-  object_free((Object *)s);
-	*/
+  /*
+   SortedSet *s = sorted_set_new(compare_int_pointer);
+   test_sorted_set(s, test_values, test_values_length);
+   object_free((Object *)s);
+ 
+   s = sorted_set_new(compare_int_pointer);
+   test_sorted_set(s, test_values_extended, test_values_extended_length);
+   object_free((Object *)s);
+ 	*/
 }
 
 void question_3_9(void) {
@@ -262,15 +262,15 @@ void question_3_10(void) {
 
 void question_3_11(void) {
   puts("test_question_3_11: partial implementation");
-	/*
-  RangeContainer *r = array_range_container_new(compare_int_pointer);
-  test_range_container(r, test_values, test_values_length);
-  object_free((Object *)r);
-
-  r = array_range_container_new(compare_int_pointer);
-  test_range_container(r, test_values_extended, test_values_extended_length);
-  object_free((Object *)r);
-	*/
+  /*
+   RangeContainer *r = array_range_container_new(compare_int_pointer);
+   test_range_container(r, test_values, test_values_length);
+   object_free((Object *)r);
+ 
+   r = array_range_container_new(compare_int_pointer);
+   test_range_container(r, test_values_extended, test_values_extended_length);
+   object_free((Object *)r);
+ 	*/
 }
 
 void question_3_14(void) {
@@ -307,21 +307,21 @@ void question_3_20(void) {
 }
 
 void question_3_21(void) {
-	puts("test_question_3_21");
+  puts("test_question_3_21");
   BinaryTree *a = binary_tree_new(compare_int_pointer);
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < test_values_length - 1; i++) {
     container_insert((Container *)a, INT_TO_POINTER(test_values[i]));
     container_insert((Container *)b, INT_TO_POINTER(test_values[i]));
-	}
-	assert_true(binary_tree_compare(a, b));
+  }
+  assert_true(binary_tree_compare(a, b));
 
-	container_insert((Container *)a, INT_TO_POINTER(test_values[i]));
-	assert_false(binary_tree_compare(a, b));
+  container_insert((Container *)a, INT_TO_POINTER(test_values[i]));
+  assert_false(binary_tree_compare(a, b));
 
-	object_free((Object *)a);
-	object_free((Object *)b);
+  object_free((Object *)a);
+  object_free((Object *)b);
 }
 
 static void linked_stack_visitor(void *p, void *x) {
@@ -329,18 +329,19 @@ static void linked_stack_visitor(void *p, void *x) {
 }
 
 void question_3_22(void) {
-	puts("test_question_3_22");
+  puts("test_question_3_22");
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < test_values_length; i++)
     container_insert((Container *)b, INT_TO_POINTER(test_values[i]));
 
-	LinkedStack *l = tree_to_linked_stack((Tree *)b);
+  LinkedStack *l = tree_to_linked_stack((Tree *)b);
 
   assert_false(container_empty((Container *)l));
   int j;
   for (j = (test_values_length - 1); j >= 0; j--)
-    assert_equals(POINTER_TO_INT(stack_pop((Stack *)l)), test_values_in_order[j]);
+    assert_equals(POINTER_TO_INT(stack_pop((Stack *)l)),
+                  test_values_in_order[j]);
   assert_true(container_empty((Container *)l));
 }
 

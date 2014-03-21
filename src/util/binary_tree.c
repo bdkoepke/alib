@@ -191,7 +191,8 @@ BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
   return a;
 }
 
-static bool binary_node_compare(const BinaryNode *a, const BinaryNode *b, Compare c) {
+static bool binary_node_compare(const BinaryNode *a, const BinaryNode *b,
+                                Compare c) {
   if (a == NULL)
     return b == NULL;
   return b == NULL ? false : c(a->x, b->x) == 0 &&
