@@ -28,7 +28,7 @@ static inline void _hashtable_insert(Hashtable *h, void *x) {
 
 static inline void hashtable_resize(Hashtable *h, size_t capacity) {
   contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
-  void **array = h->array;
+  Node **array = h->array;
   size_t _capacity = h->capacity;
   h->capacity = capacity;
   h->array = calloc(capacity, sizeof(Node *));

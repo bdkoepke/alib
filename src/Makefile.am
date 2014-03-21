@@ -31,11 +31,13 @@ alib_SOURCES =\
   chapter_3/hash.c\
   chapter_3/hashtable.c\
   chapter_3/iterator.c\
+	chapter_3/linked_stack.c\
   chapter_3/node.c\
   chapter_3/partial_sum.c\
   chapter_3/priority_queue.c\
   chapter_3/queue.c\
   chapter_3/range_container.c\
+  chapter_3/red_black_tree.c\
   chapter_3/sort_int.c\
   chapter_3/sorted_set.c\
   chapter_3/sparse_array.c\

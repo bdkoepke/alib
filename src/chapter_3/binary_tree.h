@@ -1,7 +1,6 @@
 #ifndef BINARY_TREE_H
 #define BINARY_TREE_H
 
-#include "binary_node.h"
 #include "compare.h"
 #include "tree.h"
 

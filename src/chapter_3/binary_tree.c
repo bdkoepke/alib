@@ -1,4 +1,5 @@
 #include "../contract.h"
+#include "binary_node.h"
 #include "binary_tree.h"
 
 #include <stdbool.h>

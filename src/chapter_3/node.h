@@ -2,6 +2,7 @@
 #define NODE_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct Node {
   void *x;
@@ -15,6 +16,7 @@ bool node_empty(const Node *);
 void *node_search(const Node *, const void *);
 void node_delete(Node **, const void *);
 void node_insert(Node **, void *);
+size_t node_middle(const Node *);
 
 void node_free_r(Node *);
 

@@ -31,11 +31,11 @@ static void array_range_container_insert(RangeContainer *r, void *x) {
     a->m = realloc(a->m, _capacity);
     a->capacity = _capacity / sizeof(void *);
   }
-  size_t i, j, capacity, size;
+  size_t i, j, capacity;
   void **m = a->m;
-  size = a->size;
+  size_t size = a->size;
 
-  /*
+	/*
  	a->size++;
  	for (i = 0; i < size; i++) {
  		void *min = m[0][size];
@@ -44,7 +44,7 @@ static void array_range_container_insert(RangeContainer *r, void *x) {
  				min = m[i][j];
  		m[i][size] = min;
  	}
- 	*/
+	*/
 }
 
 static void *array_range_container_query(const RangeContainer *r, size_t i,

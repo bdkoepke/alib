@@ -49,3 +49,14 @@ void node_free_r(Node *n) {
   for (; n != NULL; n = n->n)
     free(n);
 }
+
+size_t node_middle(const Node *n) {
+	Node *slow = (Node *)n;
+	Node *fast;
+	size_t i = 0;
+	for (fast = (Node *)n; fast->n != NULL && fast->n->n != NULL; fast = fast->n->n) {
+		slow = slow->n;
+		i++;
+	}
+	return i + 1;
+}

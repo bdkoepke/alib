@@ -1,75 +1,7 @@
 #include "../contract.h"
-#include "node.h"
 #include "stack.h"
 
 #include <stdlib.h>
-
-typedef struct {
-  stack_vtable *vtable;
-  Node *head;
-} _Stack;
-
-static void _stack_push(Stack *s, void *x) {
-  node_insert(&((_Stack *)s)->head, x);
-}
-
-static void *_stack_pop(Stack *_s) {
-  _Stack *s = (_Stack *)_s;
-  Node *head = s->head;
-  s->head = head->n;
-  void *x = head->x;
-  free(head);
-  return x;
-}
-
-static const void *_stack_peek(const Stack *s) {
-  return ((_Stack *)s)->head->x;
-}
-
-static void _stack_reverse(Stack *_s) {
-  _Stack *s = (_Stack *)_s;
-  if (container_empty((Container *)s))
-    return;
-
-  Node *node = s->head;
-  Node *next = node->n;
-  Node *_next;
-  for (node->n = NULL; next != NULL; next = _next) {
-    _next = next->n;
-    next->n = node;
-    node = next;
-  }
-  s->head = node;
-}
-
-void _stack_insert(Container *c, void *x) { stack_push((Stack *)c, x); }
-
-static void *stack_search(const Container *c, const void *x) {
-  return node_search(((const _Stack *)c)->head, x);
-}
-
-static void stack_delete(Container *c, const void *x) {
-  node_delete(&((_Stack *)c)->head, x);
-}
-
-static bool stack_empty(const Container *c) {
-  return node_empty(((const _Stack *)c)->head);
-}
-
-Stack *stack_new() {
-  static stack_vtable vtable = {
-    { {.free = _stack_free },
-          .insert = _stack_insert, .search = stack_search,
-          .delete = stack_delete, .empty = stack_empty },
-        .push = _stack_push, .pop = _stack_pop, .peek = _stack_peek,
-        .reverse = _stack_reverse
-  };
-
-  _Stack *s = malloc(sizeof(_Stack));
-  s->head = NULL;
-  s->vtable = &vtable;
-  return (Stack *)s;
-}
 
 void stack_push(Stack *s, void *x) {
   contract_requires(s != NULL);
@@ -87,10 +19,7 @@ const void *stack_peek(const Stack *s) {
   return s->vtable->peek(s);
 }
 
-void stack_reverse(Stack *s) {
-  contract_requires(s != NULL);
-  return s->vtable->reverse(s);
-}
+void _stack_insert(Container *c, void *x) { stack_push((Stack *)c, x); }
 
 void _stack_free(Object *o) {
   Stack *s = (Stack *)o;

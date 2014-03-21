@@ -5,7 +5,7 @@
 
 void *container_search(const Container *c, const void *x) {
   contract_requires(c != NULL);
-  c->vtable->search(c, x);
+  return c->vtable->search(c, x);
 }
 
 void container_insert(Container *c, void *x) {

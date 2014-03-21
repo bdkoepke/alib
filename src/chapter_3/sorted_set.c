@@ -73,6 +73,8 @@ static KeyValue *sorted_set_min(BinaryNode *root) {
 
 static void *__sorted_set_delete(BinaryNode *n, BinaryNode **p, size_t k) {
   KeyValue *t = (KeyValue *)n->x;
+	/*
+	printf("k: %d, t->k: %d\n", k, t->k);
   int r = k - t->k;
   if (r < 0) {
     t->k--;
@@ -92,6 +94,7 @@ static void *__sorted_set_delete(BinaryNode *n, BinaryNode **p, size_t k) {
       return x;
     }
   }
+	*/
 }
 
 static void *_sorted_set_delete(SortedSet *s, size_t k) {
@@ -110,11 +113,17 @@ static size_t _sorted_set_size(const SortedSet *s) {
     return size;
   BinaryNode *n;
   for (n = root; n != NULL; n = n->right)
-    size += ((KeyValue *)n->x)->k;
+    size += ((KeyValue *)n->x)->k + 1;
   return size;
 }
 
-static void sorted_set_free(Object *o) { assert(false); }
+static void sorted_set_free(Object *o) {
+	SortedSet *s = (SortedSet *)o;
+	puts("sorted_set_free implementation slow");
+	while (! sorted_set_empty(s))
+		sorted_set_delete(s, 0);
+	free(s);
+}
 
 SortedSet *sorted_set_new(Compare c) {
   static sorted_set_vtable vtable = {

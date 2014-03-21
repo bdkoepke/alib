@@ -14,15 +14,11 @@ struct _stack_vtable {
   void (*push)(Stack *, void *);
   void *(*pop)(Stack *);
   const void *(*peek)(const Stack *);
-  void (*reverse)(Stack *);
 };
-
-Stack *stack_new();
 
 void stack_push(Stack *, void *);
 void *stack_pop(Stack *);
 const void *stack_peek(const Stack *);
-void stack_reverse(Stack *);
 
 void _stack_insert(Container *, void *);
 
