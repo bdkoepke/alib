@@ -32,7 +32,7 @@ alib_SOURCES =\
   util/container.c\
   util/dictionary.c\
   util/hashtable.c\
-  util/heap.c
+  util/heap.c\
   util/iterator.c\
   util/linked_stack.c\
   util/node.c\
@@ -44,7 +44,7 @@ alib_SOURCES =\
   util/sorted_set.c\
   util/sparse_array.c\
   util/stack.c\
-  util/tree.c\
+  util/tree.c
 
 alib_CFLAGS = $(ALIB_CFLAGS)
 
