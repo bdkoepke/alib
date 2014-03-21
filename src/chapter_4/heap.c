@@ -1,4 +1,4 @@
-#include "contract.h"
+#include "../contract.h"
 #include "heap.h"
 
 #include <stdint.h>
@@ -14,24 +14,39 @@ typedef struct {
 
 static const size_t DEFAULT_CAPACITY = 11;
 
+static inline void *heap_get(_Heap *h, size_t n) {
+	return n < h->size ? h->p[n] : NULL;
+}
+
 static inline size_t heap_parent(size_t n) {
+	contract_requires(n != 0);
 	return n / 2;
 }
 
 static inline size_t heap_left_child(size_t n) {
-	contract_requires(n < ((SIZE_MAX / 2) - 1));
+	contract_requires(n < SIZE_MAX / 2 - 1);
 	return n * 2;
 }
 
 static inline size_t heap_right_child(size_t n) {
-	contract_requires(n < (SIZE_MAX / 2));
-	return (n * 2) + 1;
+	contract_requires(n < SIZE_MAX / 2);
+	return n * 2 + 1;
 }
 
 static inline size_t checked_product(size_t multiplicand, size_t multiplier,
                                      size_t _default) {
   size_t product = multiplicand * multiplier;
   return product < multiplicand ? _default : product;
+}
+
+static inline size_t heap_min(_Heap *h, size_t a, size_t b) {
+	void *left = heap_get(h, a);
+	void *right = heap_get(h, b);
+	if (left == NULL)
+		return b;
+	if (right == NULL)
+		return a;
+	return h->c(left, right) < 0 ? a : b;
 }
 
 static inline void swap(void **p, size_t n, size_t parent) {
@@ -51,9 +66,15 @@ static inline void heap_bubble_up(void **p, size_t n, Compare c) {
 	}
 }
 
-static inline void heap_bubble_down(void **p, size_t n, Compare c) {
-	size_t left = heap_left_child(n);
-	size_t right = heap_right_child(n);
+static inline void heap_bubble_down(_Heap *h, size_t n) {
+	if (n == 0)
+		return;
+
+	size_t min_index = heap_min(h, n, heap_min(h, heap_left_child(n), heap_right_child(n)));
+	if (min_index != n) {
+		swap(h->p, n, min_index);
+		heap_bubble_down(h, min_index);
+	}
 }
 
 static void _heap_insert(Heap *_h, void *x) {
@@ -74,7 +95,7 @@ static void *_heap_extract_min(Heap *_h) {
 	void *min = h->p[0];
 	h->size--;
 	h->p[0] = h->p[h->size];
-	heap_bubble_down(h->p, 0, h->c);
+	heap_bubble_down(h, 0);
 	return min;
 }
 
