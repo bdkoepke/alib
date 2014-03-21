@@ -32,33 +32,26 @@ static void show_array(int a[], size_t length) {
   printf("%d }\n", a[length - 1]);
 }
 
-static void test_selection_sort(void) {
+void test_selection_sort(void) {
   printf("test_selection_sort\n");
   setup();
   selection_sort(unsorted, expected_length);
   assert(memcmp(expected, unsorted, expected_size) == 0);
 }
 
-static void test_insertion_sort(void) {
+void test_insertion_sort(void) {
   printf("test_insertion_sort\n");
   setup();
   insertion_sort(unsorted, expected_length);
   assert(memcmp(expected, unsorted, expected_size) == 0);
 }
 
-static void test_find_match(void) {
+void test_find_match(void) {
   printf("test_find_match\n");
   assert(find_match("pattern", "this is a pattern") == 10);
 }
 
-static void test_power(void) {
+void test_power(void) {
   printf("test_power\n");
   assert(power(2, 16) == 65536);
-}
-
-void chapter_2(void) {
-  test_selection_sort();
-  test_insertion_sort();
-  test_find_match();
-  test_power();
 }

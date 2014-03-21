@@ -12,7 +12,7 @@ bin_PROGRAMS = alib
 alib_SOURCES =\
   chapter_2.c\
   chapter_3.c\
-  chapter_3_values.c\
+	chapter_4.c\
   main.c\
   diag/contract.c\
   lang/algorithm.c\
