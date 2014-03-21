@@ -1,4 +1,4 @@
-#include "../math.h"
+#include "../math_extended.h"
 #include "../test.h"
 #include "algorithm.h"
 #include "array.h"
@@ -15,6 +15,7 @@
 #include "type.h"
 
 #include <assert.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -317,8 +318,35 @@ void question_3_27(void) {
 	puts("test_question_3_27: not implemented");
 }
 
+static int *unordered_product_ignoring_index(const int *X, size_t length) {
+	int number_of_products = log2(length);
+	int *Y = malloc(sizeof(int) * length);
+	int *M = malloc(sizeof(int) * length);
+	Y = memcpy(Y, X, sizeof(int) * length);
+	size_t i, j;
+	for (i = 0; i < length; i++)
+		for (j = 1; j < number_of_products; j++)
+			Y[i] *= X[(i + j) % length];
+	for (i = 0; i < length; i++) {
+		M[i] = Y[(i + 1) % length];
+		for (j = 1; j < (number_of_products - 1); j++)
+			M[i] *= Y[(i + (j * number_of_products) + 1) % length];
+		M[i] *= X[(i + (j * number_of_products) + 1) % length];
+	}
+	free(Y);
+	return M;
+}
+
 void question_3_28(void) {
-	puts("test_question_3_28: not implemented");
+	puts("test_question_3_28");
+	static int unordered[] = {6, 5, 3, 1, 7, 6, 2, 3};
+	static size_t unordered_length = sizeof(unordered) / sizeof(int);
+	static int expected[] = {3780, 4536, 7560, 22680, 3240, 3780, 11340, 7560};
+	int *actual = unordered_product_ignoring_index(unordered, unordered_length);
+	size_t i;
+	for (i = 0; i < unordered_length; i++)
+		assert_equals(actual[i], expected[i]);
+	free(actual);
 }
 
 void chapter_3(void) {

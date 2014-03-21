@@ -1,7 +1,9 @@
-#include "math.h"
+#include "math_extended.h"
 #include <stdbool.h>
 
 bool even(int x) { return x % 2 == 0; }
+
+bool odd(int x) { return x % 2 == 1; }
 
 int square(int x) { return x * x; }
 

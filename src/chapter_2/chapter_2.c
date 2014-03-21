@@ -1,4 +1,5 @@
 #include "chapter_2.h"
+#include "../math_extended.h"
 #include "sort.h"
 #include "string.h"
 

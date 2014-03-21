@@ -2,7 +2,7 @@
 #include "compare.h"
 #include "contract.h"
 #include "range_container.h"
-#include "../math.h"
+#include "../math_extended.h"
 
 #include <stdlib.h>
 #include <stdint.h>

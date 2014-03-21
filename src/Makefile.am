@@ -5,6 +5,7 @@ AM_CFLAGS = $(ALIB_CFLAGS)\
   -Wunused-function\
   -std=c11\
   -pedantic-errors\
+	-lm\
   -g
 
 bin_PROGRAMS = alib
@@ -13,7 +14,7 @@ alib_SOURCES =\
 	object.c\
   contract.c\
   main.c\
-  math.c\
+	math_extended.c\
   test.c\
   chapter_2/chapter_2.c\
   chapter_2/sort.c\
