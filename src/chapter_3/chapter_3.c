@@ -1,5 +1,6 @@
 #include "../math_extended.h"
 #include "../test.h"
+#include "../type.h"
 #include "algorithm.h"
 #include "array.h"
 #include "array_container.h"
@@ -13,7 +14,6 @@
 #include "sparse_array.h"
 #include "stack.h"
 #include "test_container.h"
-#include "type.h"
 
 #include <assert.h>
 #include <math.h>

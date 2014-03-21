@@ -1,10 +1,10 @@
-#include "algorithm.h"
 #include "../compare.h"
+#include "../type.h"
+#include "algorithm.h"
 #include "test_container.h"
 #include "sort_int.h"
 #include "string.h"
 #include "test.h"
-#include "type.h"
 
 #include <assert.h>
 #include <stdlib.h>

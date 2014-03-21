@@ -1,6 +1,6 @@
+#include "../contract.h"
+#include "../type.h"
 #include "array_container.h"
-#include "contract.h"
-#include "type.h"
 
 #include <stdlib.h>
 

@@ -1,7 +1,7 @@
-#include "array.h"
-#include "contract.h"
-#include "range_container.h"
+#include "../contract.h"
 #include "../math_extended.h"
+#include "array.h"
+#include "range_container.h"
 
 #include <stdlib.h>
 #include <stdint.h>

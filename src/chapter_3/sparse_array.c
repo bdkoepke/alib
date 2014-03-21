@@ -1,6 +1,6 @@
-#include "contract.h"
+#include "../contract.h"
+#include "../type.h"
 #include "sparse_array.h"
-#include "type.h"
 
 #include <limits.h>
 #include <stdlib.h>

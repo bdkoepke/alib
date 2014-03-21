@@ -1,5 +1,5 @@
+#include "../contract.h"
 #include "algorithm.h"
-#include "contract.h"
 
 static int _binary_search(const void *key, const void *values, size_t low,
                           size_t high, size_t size, Compare c) {

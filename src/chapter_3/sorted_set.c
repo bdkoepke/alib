@@ -1,7 +1,7 @@
+#include "../contract.h"
+#include "../type.h"
 #include "binary_node.h"
 #include "sorted_set.h"
-#include "../contract.h"
-#include "type.h"
 
 #include <assert.h>
 #include <stdlib.h>

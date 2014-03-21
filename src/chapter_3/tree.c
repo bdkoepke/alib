@@ -1,4 +1,4 @@
-#include "contract.h"
+#include "../contract.h"
 #include "tree.h"
 
 #include <stdlib.h>

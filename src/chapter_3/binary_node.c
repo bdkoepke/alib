@@ -1,5 +1,5 @@
+#include "../contract.h"
 #include "binary_node.h"
-#include "contract.h"
 #include "queue.h"
 
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-#include "contract.h"
+#include "../contract.h"
 #include "partial_sum.h"
 
 #include <stdlib.h>
