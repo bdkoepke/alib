@@ -12,8 +12,6 @@ typedef struct {
   void **p;
 } _Heap;
 
-static const size_t DEFAULT_CAPACITY = 11;
-
 static inline void *heap_get(_Heap *h, size_t n) {
   return n < h->size ? h->p[n] : NULL;
 }
@@ -108,22 +106,36 @@ static void heap_free(Object *o) {
   free(h);
 }
 
-Heap *heap_new(Compare c) {
+static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
   static heap_vtable vtable = {
     {.free = heap_free }, .insert = _heap_insert,
                               .extract_min = _heap_extract_min, .empty =
                                                                     _heap_empty
   };
 
-  contract_requires(c != NULL);
+  contract_requires(c != NULL && p != NULL && capacity > 0);
 
   _Heap *h = malloc(sizeof(_Heap));
   h->vtable = &vtable;
-  h->size = 0;
-  h->capacity = DEFAULT_CAPACITY;
+  h->size = size;
+  h->capacity = capacity;
   h->c = c;
-  h->p = calloc(h->capacity, sizeof(void *));
+  h->p = p;
   return (Heap *)h;
+}
+
+Heap *heap_new(Compare c) {
+  static const size_t DEFAULT_CAPACITY = 11;
+  return _heap_new(c, calloc(DEFAULT_CAPACITY, sizeof(void *)), 0,
+                   DEFAULT_CAPACITY);
+}
+
+Heap *heap_new_from_array(Compare c, void *a, size_t length) {
+  Heap *h = _heap_new(c, a, length, length);
+  size_t i;
+  for (i = 0; i < length; i++)
+    heap_bubble_down((_Heap *)h, (length - 1) - i);
+  return h;
 }
 
 void heap_insert(Heap *h, void *x) {

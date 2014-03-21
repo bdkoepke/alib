@@ -19,6 +19,7 @@ void test_array(Array *, const int *, size_t);
 void test_container(Container *, const int *, size_t);
 void test_dictionary(Dictionary *, const int *, size_t);
 void test_graph(Graph *, const int *, size_t);
+void test_heap_empty(Heap *, const int *, size_t);
 void test_heap(Heap *, const int *, size_t);
 void test_linked_stack(LinkedStack *, const int *, size_t);
 void test_partial_sum(PartialSum *, const int *, size_t);

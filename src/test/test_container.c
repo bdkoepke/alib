@@ -206,15 +206,23 @@ void test_range_container(RangeContainer *r, const int *values,
     range_container_insert(r, INT_TO_POINTER(values[i]));
 }
 
-void test_heap(Heap *h, const int *values, const size_t length) {
+void test_heap_empty(Heap *h, const int *values, const size_t length) {
   assert_true(heap_empty(h));
 
   int *sorted = sort_int(values, length);
   size_t i;
   for (i = 0; i < length; i++)
     heap_insert(h, INT_TO_POINTER(values[i]));
+
+  free(sorted);
+  test_heap(h, values, length);
+}
+
+void test_heap(Heap *h, const int *values, const size_t length) {
   assert_false(heap_empty(h));
 
+  int *sorted = sort_int(values, length);
+  size_t i;
   for (i = 0; i < length; i++)
     assert_equals(POINTER_TO_INT(heap_extract_min(h)), sorted[i]);
 

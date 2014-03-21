@@ -5,6 +5,7 @@
 #include "compare.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct _heap_vtable heap_vtable;
 typedef struct Heap {
@@ -18,6 +19,7 @@ struct _heap_vtable {
 };
 
 Heap *heap_new(Compare);
+Heap *heap_new_from_array(Compare, void *, size_t);
 
 void heap_insert(Heap *, void *);
 void *heap_extract_min(Heap *);

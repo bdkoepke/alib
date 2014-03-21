@@ -63,12 +63,8 @@
       <item path="src/main.c" ex="false" tool="0" flavor2="2">
       </item>
       <item path="src/test/test_container.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
       <item path="src/util/heap.c" ex="false" tool="0" flavor2="0">
-        <cTool flags="0">
-        </cTool>
       </item>
     </conf>
   </confs>
