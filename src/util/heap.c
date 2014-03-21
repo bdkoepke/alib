@@ -55,21 +55,20 @@ static inline void swap(void **p, size_t n, size_t parent) {
   p[parent] = t;
 }
 
-static inline void heap_bubble_up(void **p, size_t n, Compare c) {
+static inline void heap_bubble_up(_Heap *h, size_t n) {
   if (n == 0)
     return;
 
   size_t parent = heap_parent(n);
-  if (c(p[parent], p[n]) < 0) {
-    swap(p, n, parent);
-    heap_bubble_up(p, parent, c);
+  if (h->c(h->p[parent], h->p[n]) > 0) {
+    swap(h->p, n, parent);
+    heap_bubble_up(h, parent);
   }
 }
 
 static inline void heap_bubble_down(_Heap *h, size_t n) {
-  if (n == 0)
+  if (n >= h->size)
     return;
-
   size_t min_index =
       heap_min(h, n, heap_min(h, heap_left_child(n), heap_right_child(n)));
   if (min_index != n) {
@@ -88,7 +87,7 @@ static void _heap_insert(Heap *_h, void *x) {
   }
 
   h->p[h->size] = x;
-  heap_bubble_up(h->p, h->size, h->c);
+  heap_bubble_up(h, h->size);
   h->size++;
 }
 
@@ -129,7 +128,7 @@ Heap *heap_new(Compare c) {
 
 void heap_insert(Heap *h, void *x) {
   contract_requires(h != NULL && x != NULL);
-  return h->vtable->insert(h, x);
+  h->vtable->insert(h, x);
 }
 
 void *heap_extract_min(Heap *h) {

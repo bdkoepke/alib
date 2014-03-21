@@ -24,6 +24,7 @@ alib_SOURCES =\
   lang/string.c\
   test/test.c\
   test/test_container.c\
+  test/test_container_values.c\
   util/array.c\
   util/array_container.c\
   util/binary_node.c\

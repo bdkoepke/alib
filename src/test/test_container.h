@@ -5,6 +5,7 @@
 #include "../util/container.h"
 #include "../util/dictionary.h"
 #include "../util/graph.h"
+#include "../util/heap.h"
 #include "../util/linked_stack.h"
 #include "../util/partial_sum.h"
 #include "../util/priority_queue.h"
@@ -18,6 +19,7 @@ void test_array(Array *, const int *, size_t);
 void test_container(Container *, const int *, size_t);
 void test_dictionary(Dictionary *, const int *, size_t);
 void test_graph(Graph *, const int *, size_t);
+void test_heap(Heap *, const int *, size_t);
 void test_linked_stack(LinkedStack *, const int *, size_t);
 void test_partial_sum(PartialSum *, const int *, size_t);
 void test_priority_queue(PriorityQueue *, const int *, size_t);

@@ -36,11 +36,10 @@ void chapter_3(void) {
   question_3_28();
 }
 
-void chapter_4(void) {
-	test_heap();
-}
+void chapter_4(void) { _test_heap(); }
 
 int main(void) {
   chapter_2();
-	chapter_3();
+  chapter_3();
+  chapter_4();
 }
