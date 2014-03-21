@@ -10,41 +10,41 @@ AM_CFLAGS = $(ALIB_CFLAGS)\
 bin_PROGRAMS = alib
 
 alib_SOURCES =\
-	object.c\
-	compare.c\
-  contract.c\
+  chapter_2.c\
+  chapter_3.c\
+  chapter_3_values.c\
   main.c\
-	math_extended.c\
-  test.c\
-  chapter_2/chapter_2.c\
-  chapter_2/sort.c\
-  chapter_2/string.c\
-  chapter_3/algorithm.c\
-  chapter_3/array.c\
-  chapter_3/array_container.c\
-  chapter_3/binary_node.c\
-  chapter_3/binary_tree.c\
-  chapter_3/chapter_3.c\
-  chapter_3/chapter_3_values.c\
-  chapter_3/container.c\
-  chapter_3/dictionary.c\
-  chapter_3/hash.c\
-  chapter_3/hashtable.c\
-  chapter_3/iterator.c\
-	chapter_3/linked_stack.c\
-  chapter_3/node.c\
-  chapter_3/partial_sum.c\
-  chapter_3/priority_queue.c\
-  chapter_3/queue.c\
-  chapter_3/range_container.c\
-  chapter_3/red_black_tree.c\
-  chapter_3/sort_int.c\
-  chapter_3/sorted_set.c\
-  chapter_3/sparse_array.c\
-  chapter_3/stack.c\
-  chapter_3/test_container.c\
-  chapter_3/tree.c\
-  chapter_4/heap.c
+  diag/contract.c\
+  lang/algorithm.c\
+  lang/hash.c\
+  lang/math_extended.c\
+  lang/object.c\
+  lang/sort.c\
+  lang/sort_int.c\
+  lang/string.c\
+  test/test.c\
+  test/test_container.c\
+  util/array.c\
+  util/array_container.c\
+  util/binary_node.c\
+  util/binary_tree.c\
+  util/compare.c\
+  util/container.c\
+  util/dictionary.c\
+  util/hashtable.c\
+  util/heap.c
+  util/iterator.c\
+  util/linked_stack.c\
+  util/node.c\
+  util/partial_sum.c\
+  util/priority_queue.c\
+  util/queue.c\
+  util/range_container.c\
+  util/red_black_tree.c\
+  util/sorted_set.c\
+  util/sparse_array.c\
+  util/stack.c\
+  util/tree.c\
 
 alib_CFLAGS = $(ALIB_CFLAGS)
 
