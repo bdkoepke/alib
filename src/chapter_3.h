@@ -2,6 +2,7 @@
 #define CHAPTER_3_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 bool nested_parenthesis(const char *, int *);
 size_t bin_packing_best_fit(const double *, size_t);
