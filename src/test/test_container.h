@@ -1,7 +1,7 @@
 #ifndef TEST_CONTAINER_H
 #define TEST_CONTAINER_H
 
-#include "../util/array.h"
+#include "../util/array_list.h"
 #include "../util/container.h"
 #include "../util/dictionary.h"
 #include "../util/graph.h"
@@ -15,7 +15,7 @@
 #include "../util/stack.h"
 #include "../util/tree.h"
 
-void test_array(Array *, const int *, size_t);
+void test_array_list(ArrayList *, const int *, size_t);
 void test_container(Container *, const int *, size_t);
 void test_dictionary(Dictionary *, const int *, size_t);
 void test_graph(Graph *, const int *, size_t);

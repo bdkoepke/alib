@@ -68,25 +68,25 @@ static void _mergesort(int a[], int l, int h) {
 void mergesort(int a[], int length) { return _mergesort(a, 0, length - 1); }
 
 static int partition(int a[], int l, int h) {
-	size_t p = h;
-	int _h = l;
+  size_t p = h;
+  int _h = l;
 
-	size_t i;
-	for (i = l; i < h; i++)
-		if (a[i] < a[p]) {
-			swap(&a[i], &a[_h]);
-			_h++;
-		}
-	swap(&a[p], &a[_h]);
-	return _h;
+  size_t i;
+  for (i = l; i < h; i++)
+    if (a[i] < a[p]) {
+      swap(&a[i], &a[_h]);
+      _h++;
+    }
+  swap(&a[p], &a[_h]);
+  return _h;
 }
 
 static void _quicksort(int a[], int l, int h) {
-	if ((h - l) > 0) {
-		int p = partition(a, l, h);
-		_quicksort(a, l, p - 1);
-		_quicksort(a, p + 1, h);
-	}
+  if ((h - l) > 0) {
+    int p = partition(a, l, h);
+    _quicksort(a, l, p - 1);
+    _quicksort(a, p + 1, h);
+  }
 }
 
 void quicksort(int a[], int length) { return _quicksort(a, 0, length - 1); }

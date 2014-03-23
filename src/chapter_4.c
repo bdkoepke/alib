@@ -3,6 +3,8 @@
 #include "lang/type.h"
 #include "test/test_container.h"
 #include "test/test_container_values.h"
+#include "test/test_sort.h"
+#include "test/test.h"
 #include "util/compare.h"
 
 #include <assert.h>
@@ -38,17 +40,38 @@ void _test_heap(void) {
 }
 
 void test_mergesort(void) {
-	puts("test_mergesort");
-	int unsorted[] = { 3, 7, 4, 9, 5, 2, 6, 1 };
-	static const int sorted[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	mergesort(unsorted, sizeof(unsorted) / sizeof(int));
-	assert (memcmp(unsorted, sorted, sizeof(unsorted) / sizeof(int)) == 0);
+  puts("test_mergesort");
+  test_sort(mergesort);
 }
 
 void test_quicksort(void) {
-	puts("test_quicksort");
-	int unsorted[] = { 3, 7, 4, 9, 5, 2, 6, 1 };
-	static const int sorted[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-	quicksort(unsorted, sizeof(unsorted) / sizeof(int));
-	assert (memcmp(unsorted, sorted, sizeof(unsorted) / sizeof(int)) == 0);
+  puts("test_quicksort");
+  test_sort(quicksort);
 }
+
+static int _binary_search_int(int x, const int *a, size_t l, size_t h) {
+  if (l > h)
+    return -1;
+  size_t m = (l + h) / 2;
+  if (a[m] == x)
+    return m;
+  return x < a[m] ? _binary_search_int(x, a, l, m - 1)
+                  : _binary_search_int(x, a, m + 1, h);
+}
+
+int binary_search_int(int x, const int *a, size_t length) {
+  return _binary_search_int(x, a, 0, length - 1);
+}
+
+void test_binary_search(void) {
+  puts("test_binary_search");
+  static const int sorted[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+  size_t sorted_length = sizeof(sorted) / sizeof(int);
+
+  size_t i;
+  for (i = 0; i < sorted_length; i++)
+    assert_equals(sorted[binary_search_int(sorted[i], sorted, sorted_length)],
+                  sorted[i]);
+}
+
+void test_count_occurrences(void) {}

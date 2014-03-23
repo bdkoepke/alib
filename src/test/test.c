@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void _assert_true(bool expr, const char *expr_s, const char *file, int line,
                   const char *func) {

@@ -2,6 +2,7 @@
 #define TEST_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #define assert_true(expr)                                                      \
   _assert_true((expr), #expr, __FILE__, __LINE__, __func__)

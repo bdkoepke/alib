@@ -5,7 +5,7 @@
 #include "test/test.h"
 #include "test/test_container.h"
 #include "test/test_container_values.h"
-#include "util/array.h"
+#include "util/array_list.h"
 #include "util/array_container.h"
 #include "util/binary_tree.h"
 #include "util/hashtable.h"
@@ -46,7 +46,7 @@ static const double test_bin_packing_values[] = {
 static const size_t test_bin_packing_values_length =
     sizeof(test_bin_packing_values) / sizeof(double);
 
-static bool nested_parenthesis(const char *s, int *count) {
+bool nested_parenthesis(const char *s, int *count) {
   size_t c = 0;
   size_t i;
   size_t length = strlen(s);
@@ -71,14 +71,14 @@ static bool nested_parenthesis(const char *s, int *count) {
   return c == 0;
 }
 
-void _test_array(void) {
-  puts("test_array");
-  Array *a = array_new();
-  test_array(a, test_values, test_values_length);
+void _test_array_list(void) {
+  puts("test_array_list");
+  ArrayList *a = array_list_new();
+  test_array_list(a, test_values, test_values_length);
   object_free((Object *)a);
 
-  a = array_new();
-  test_array(a, test_values_extended, test_values_extended_length);
+  a = array_list_new();
+  test_array_list(a, test_values_extended, test_values_extended_length);
   object_free((Object *)a);
 }
 
@@ -163,10 +163,11 @@ void question_3_2(void) {
 
 void question_3_3(void) {
   puts("test_question_3_3");
-  Array *a = array_new();
+  ArrayList *a = array_list_new();
   test_container((Container *)a, test_values, test_values_length);
   object_free((Object *)a);
-  a = array_new();
+
+  a = array_list_new();
   test_container((Container *)a, test_values_extended,
                  test_values_extended_length);
   object_free((Object *)a);
@@ -230,7 +231,7 @@ void question_3_9(void) {
   object_free((Object *)concat);
 }
 
-static size_t bin_packing_best_fit(const double *w, size_t n) {
+size_t bin_packing_best_fit(const double *w, size_t n) {
   BinaryTree *b = binary_tree_new(compare_double);
   size_t i;
   for (i = 0; i < n; i++)
@@ -253,7 +254,7 @@ static size_t bin_packing_best_fit(const double *w, size_t n) {
   return bin == 0 ? bins : bins + 1;
 }
 
-static size_t bin_packing_worst_fit(const double *w, size_t n) {
+size_t bin_packing_worst_fit(const double *w, size_t n) {
   BinaryTree *b = binary_tree_new(compare_double);
   size_t i;
   for (i = 0; i < n; i++)
@@ -375,7 +376,7 @@ void question_3_23(void) {
   // completed in test_linked_stack
 }
 
-static char *reverse_line(const char *line, size_t length) {
+char *reverse_line(const char *line, size_t length) {
   char *reverse = malloc(sizeof(char) * length + 1);
   reverse[length] = '\0';
   size_t i;
@@ -399,8 +400,9 @@ static char *reverse_line(const char *line, size_t length) {
 
 void question_3_26(void) {
   puts("test_question_3_26");
-  static const char *line = "My name is Chris";
   static const char *line_reversed = "Chris is name My";
+
+  const char *line = "My name is Chris";
   char *reverse = reverse_line(line, strlen(line));
   size_t i;
   for (i = 0; i <= strlen(line); i++)
@@ -428,8 +430,8 @@ void question_3_27(void) {
   assert_equals(node_loop(head), 6);
 }
 
-static int *unordered_product_ignoring_index_with_division(const int *X,
-                                                           size_t length) {
+int *unordered_product_ignoring_index_with_division(const int *X,
+                                                    size_t length) {
   int *M = malloc(sizeof(int) * length);
   size_t i;
   int r = 1;
@@ -440,7 +442,7 @@ static int *unordered_product_ignoring_index_with_division(const int *X,
   return M;
 }
 
-static int *unordered_product_ignoring_index(const int *X, size_t length) {
+int *unordered_product_ignoring_index(const int *X, size_t length) {
   int number_of_products = log2(length);
   int *Y = malloc(sizeof(int) * length);
   int *M = malloc(sizeof(int) * length);

@@ -10,23 +10,25 @@ AM_CFLAGS = $(ALIB_CFLAGS)\
 bin_PROGRAMS = alib
 
 alib_SOURCES =\
+  chapter_4.c\
   chapter_2.c\
   chapter_3.c\
-	chapter_4.c\
-  main.c\
   diag/contract.c\
   lang/algorithm.c\
+  lang/array.c\
   lang/hash.c\
   lang/math_extended.c\
   lang/object.c\
   lang/sort.c\
   lang/sort_int.c\
   lang/string.c\
+  main.c\
   test/test.c\
   test/test_container.c\
   test/test_container_values.c\
-  util/array.c\
+  test/test_sort.c\
   util/array_container.c\
+  util/array_list.c\
   util/binary_node.c\
   util/binary_tree.c\
   util/compare.c\

@@ -9,23 +9,23 @@
 #include <assert.h>
 #include <stdlib.h>
 
-void test_array(Array *a, const int *values, size_t length) {
+void test_array_list(ArrayList *a, const int *values, size_t length) {
   test_container((Container *)a, values, length);
   assert_true(container_empty((Container *)a));
   size_t i;
   for (i = 0; i < length; i++) {
-    assert_equals(array_size(a), i);
+    assert_equals(array_list_size(a), i);
     container_insert((Container *)a, INT_TO_POINTER(values[i]));
     assert_equals(POINTER_TO_INT(container_search((Container *)a,
                                                   INT_TO_POINTER(values[i]))),
                   values[i]);
     assert_false(container_empty((Container *)a));
   }
-  assert_equals(array_size(a), length);
+  assert_equals(array_list_size(a), length);
   for (i = 0; i < length; i++)
-    array_set(a, i, NULL);
+    array_list_set(a, i, NULL);
   for (i = 0; i < length; i++)
-    assert_equals(POINTER_TO_INT(array_get(a, i)), POINTER_TO_INT(NULL));
+    assert_equals(POINTER_TO_INT(array_list_get(a, i)), POINTER_TO_INT(NULL));
   for (i = 0; i < length; i++)
     container_delete((Container *)a, NULL);
   assert_true(container_empty((Container *)a));

@@ -1,6 +1,5 @@
 #include "../diag/contract.h"
 #include "../lang/math_extended.h"
-#include "array.h"
 #include "range_container.h"
 
 #include <stdlib.h>

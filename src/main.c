@@ -10,7 +10,7 @@ void chapter_2(void) {
 }
 
 void chapter_3(void) {
-  _test_array();
+  _test_array_list();
   _test_linked_stack();
   _test_queue();
   test_binary_tree();
@@ -37,9 +37,10 @@ void chapter_3(void) {
 }
 
 void chapter_4(void) {
-	_test_heap();
-	test_mergesort();
-	test_quicksort();
+  _test_heap();
+  test_mergesort();
+  test_quicksort();
+  test_binary_search();
 }
 
 int main(void) {

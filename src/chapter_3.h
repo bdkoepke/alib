@@ -1,7 +1,16 @@
 #ifndef CHAPTER_3_H
 #define CHAPTER_3_H
 
-void _test_array(void);
+#include <stdbool.h>
+
+bool nested_parenthesis(const char *, int *);
+size_t bin_packing_best_fit(const double *, size_t);
+size_t bin_packing_worst_fit(const double *, size_t);
+char *reverse_line(const char *, size_t);
+int *unordered_product_ignoring_index_with_division(const int *, size_t);
+int *unordered_product_ignoring_index(const int *, size_t);
+
+void _test_array_list(void);
 void _test_linked_stack(void);
 void _test_queue(void);
 void test_binary_tree(void);
