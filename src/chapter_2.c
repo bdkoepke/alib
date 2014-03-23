@@ -12,46 +12,46 @@
 const int expected[] = { 1, 2, 3, 4, 5, 6, 7, 9 };
 const size_t expected_size = sizeof(expected);
 const size_t expected_length = sizeof(expected) / sizeof(int);
-int *unsorted;
 
-static void setup(void) {
-  int _unsorted[] = { 3, 7, 4, 9, 5, 2, 6, 1 };
-  if (unsorted)
-    free(unsorted);
-  unsorted = malloc(expected_size);
-  memcpy(unsorted, _unsorted, expected_size);
+static int *unsorted_new(void) {
+  static const int _unsorted[] = { 3, 7, 4, 9, 5, 2, 6, 1 };
+  int *unsorted = malloc(expected_length * sizeof(int));
+  memcpy(unsorted, _unsorted, expected_length * sizeof(int));
+	return unsorted;
 }
 
 static void show_array(int a[], size_t length) {
   if (length == 0)
     return;
-  printf("{ ");
+	puts("{ ");
   int i;
   for (i = 0; i < (length - 1); i++)
     printf("%d, ", a[i]);
   printf("%d }\n", a[length - 1]);
 }
 
-void test_selection_sort(void) {
-  printf("test_selection_sort\n");
-  setup();
-  selection_sort(unsorted, expected_length);
+void test_selectionsort(void) {
+	puts("test_selectionsort");
+	int *unsorted = unsorted_new();
+  selectionsort(unsorted, expected_length);
   assert(memcmp(expected, unsorted, expected_size) == 0);
+	free(unsorted);
 }
 
-void test_insertion_sort(void) {
-  printf("test_insertion_sort\n");
-  setup();
-  insertion_sort(unsorted, expected_length);
+void test_insertionsort(void) {
+	puts("test_insertionsort");
+	int *unsorted = unsorted_new();
+  insertionsort(unsorted, expected_length);
   assert(memcmp(expected, unsorted, expected_size) == 0);
+	free(unsorted);
 }
 
 void test_find_match(void) {
-  printf("test_find_match\n");
+	puts("test_find_match");
   assert(find_match("pattern", "this is a pattern") == 10);
 }
 
 void test_power(void) {
-  printf("test_power\n");
+	puts("test_power");
   assert(power(2, 16) == 65536);
 }

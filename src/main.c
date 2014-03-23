@@ -3,8 +3,8 @@
 #include "chapter_4.h"
 
 void chapter_2(void) {
-  test_selection_sort();
-  test_insertion_sort();
+  test_selectionsort();
+  test_insertionsort();
   test_find_match();
   test_power();
 }
@@ -36,7 +36,11 @@ void chapter_3(void) {
   question_3_28();
 }
 
-void chapter_4(void) { _test_heap(); }
+void chapter_4(void) {
+	_test_heap();
+	test_mergesort();
+	test_quicksort();
+}
 
 int main(void) {
   chapter_2();

@@ -101,25 +101,15 @@ static void *_heap_extract_min(Heap *_h) {
 
 static bool _heap_empty(const Heap *h) { return ((const _Heap *)h)->size == 0; }
 
-/*
-static bool __heap_compare(const Heap *h, const void *x, size_t k) {
+static bool __heap_compare(const _Heap *h, const void *x, size_t n, size_t k) {
+  if (k <= 0 || n >= h->size || h->c(h->p[n], x) >= 0)
+    return k;
+  return __heap_compare(h, x, heap_right_child(n),
+                        __heap_compare(h, x, heap_left_child(n), k - 1));
 }
 
-heap_compare(h, 1, k, x);
-int heap_compare(priority_queue *q, int i, int count, int x)
-{
-if ((count <= 0) || (i > q->n) return(count);
-if (q->q[i] < x) {
-count = heap_compare(q, pq_young_child(i), count-1, x);
-count = heap_compare(q, pq_young_child(i)+1, count, x);
-}
-return(count);
-}
-*/
-
-static bool _heap_compare(const Heap *h, const void *x, size_t k,
-                          size_t count) {
-  //return __heap_compare(h, x, k, count);
+static bool _heap_compare(const Heap *h, const void *x, size_t k) {
+  return __heap_compare((_Heap *)h, x, 0, k);
 }
 
 static void heap_free(Object *o) {

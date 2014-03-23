@@ -11,12 +11,14 @@ struct _queue_vtable {
   container_vtable container;
   void (*enqueue)(Queue *, void *);
   void *(*dequeue)(Queue *);
+  void *(*head)(const Queue *);
 };
 
 Queue *queue_new();
 
 void queue_enqueue(Queue *, void *);
 void *queue_dequeue(Queue *);
+void *queue_head(const Queue *);
 
 void _queue_insert(Container *, void *);
 

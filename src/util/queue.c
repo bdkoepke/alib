@@ -26,6 +26,10 @@ static void *_queue_dequeue(Queue *_q) {
   return x;
 }
 
+static void *_queue_head(const Queue *q) {
+  return ((const _Queue *)q)->head->x;
+}
+
 void _queue_insert(Container *c, void *x) { queue_enqueue((Queue *)c, x); }
 
 static bool queue_empty(const Container *c) {
@@ -62,7 +66,8 @@ Queue *queue_new() {
     { {.free = _queue_free }, .insert = _queue_insert,
                                   .search = queue_search, .empty = queue_empty,
                                   .delete = queue_delete },
-        .enqueue = _queue_enqueue, .dequeue = _queue_dequeue,
+        .enqueue = _queue_enqueue, .dequeue = _queue_dequeue, .head =
+                                                                  _queue_head
   };
 
   _Queue *q = malloc(sizeof(_Queue));
@@ -80,6 +85,11 @@ void queue_enqueue(Queue *q, void *x) {
 void *queue_dequeue(Queue *q) {
   contract_requires(q != NULL && !container_empty((Container *)q));
   return q->vtable->dequeue(q);
+}
+
+void *queue_head(const Queue *q) {
+  contract_requires(q != NULL && !container_empty((Container *)q));
+  return q->vtable->head(q);
 }
 
 void _queue_free(Object *o) {
