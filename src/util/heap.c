@@ -19,8 +19,7 @@ static inline void *heap_get(_Heap *h, size_t n) {
 static inline size_t heap_parent(size_t n) {
   contract_requires(n != 0);
   return n / 2;
-}
-
+} 
 static inline size_t heap_left_child(size_t n) {
   contract_requires(n < SIZE_MAX / 2 - 1);
   return n * 2;
@@ -75,6 +74,10 @@ static inline void heap_bubble_down(_Heap *h, size_t n) {
   }
 }
 
+static size_t _heap_size(const Heap *h) {
+	return ((_Heap *)h)->size;
+}
+
 static void _heap_insert(Heap *_h, void *x) {
   _Heap *h = (_Heap *)_h;
   if (h->size >= h->capacity) {
@@ -100,6 +103,26 @@ static void *_heap_extract_min(Heap *_h) {
 
 static bool _heap_empty(const Heap *h) { return ((const _Heap *)h)->size == 0; }
 
+/*
+static bool __heap_compare(const Heap *h, const void *x, size_t k) {
+}
+
+heap_compare(h, 1, k, x);
+int heap_compare(priority_queue *q, int i, int count, int x)
+{
+if ((count <= 0) || (i > q->n) return(count);
+if (q->q[i] < x) {
+count = heap_compare(q, pq_young_child(i), count-1, x);
+count = heap_compare(q, pq_young_child(i)+1, count, x);
+}
+return(count);
+}
+*/
+
+static bool _heap_compare(const Heap *h, const void *x, size_t k, size_t count) {
+	//return __heap_compare(h, x, k, count);
+}
+
 static void heap_free(Object *o) {
   _Heap *h = (_Heap *)o;
   free(h->p);
@@ -109,8 +132,7 @@ static void heap_free(Object *o) {
 static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
   static heap_vtable vtable = {
     {.free = heap_free }, .insert = _heap_insert,
-                              .extract_min = _heap_extract_min, .empty =
-                                                                    _heap_empty
+                              .extract_min = _heap_extract_min, .size = _heap_size, .compare = _heap_compare
   };
 
   contract_requires(c != NULL && p != NULL && capacity > 0);
@@ -150,5 +172,15 @@ void *heap_extract_min(Heap *h) {
 
 bool heap_empty(const Heap *h) {
   contract_requires(h != NULL);
-  return h->vtable->empty(h);
+	return heap_size(h) == 0;
+}
+
+size_t heap_size(const Heap *h) {
+	contract_requires(h != NULL);
+	return h->vtable->size(h);
+}
+
+bool heap_compare(const Heap *h, const void *x, size_t k) {
+	contract_requires(h != NULL && x != NULL && k < heap_size(h));
+	return h->vtable->compare(h, x, k);
 }
