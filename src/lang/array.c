@@ -1,5 +1,7 @@
 #include "array.h"
 
+#include <stdio.h>
+
 void array_puts(int a[], int length) {
   if (length == 0)
     return;

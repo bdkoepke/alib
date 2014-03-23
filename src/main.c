@@ -41,6 +41,8 @@ void chapter_4(void) {
   test_mergesort();
   test_quicksort();
   test_binary_search();
+  test_count_occurrences();
+  test_sqrt();
 }
 
 int main(void) {
