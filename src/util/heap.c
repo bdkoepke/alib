@@ -19,7 +19,7 @@ static inline void *heap_get(_Heap *h, size_t n) {
 static inline size_t heap_parent(size_t n) {
   contract_requires(n != 0);
   return n / 2;
-} 
+}
 static inline size_t heap_left_child(size_t n) {
   contract_requires(n < SIZE_MAX / 2 - 1);
   return n * 2;
@@ -74,9 +74,7 @@ static inline void heap_bubble_down(_Heap *h, size_t n) {
   }
 }
 
-static size_t _heap_size(const Heap *h) {
-	return ((_Heap *)h)->size;
-}
+static size_t _heap_size(const Heap *h) { return ((_Heap *)h)->size; }
 
 static void _heap_insert(Heap *_h, void *x) {
   _Heap *h = (_Heap *)_h;
@@ -119,8 +117,9 @@ return(count);
 }
 */
 
-static bool _heap_compare(const Heap *h, const void *x, size_t k, size_t count) {
-	//return __heap_compare(h, x, k, count);
+static bool _heap_compare(const Heap *h, const void *x, size_t k,
+                          size_t count) {
+  //return __heap_compare(h, x, k, count);
 }
 
 static void heap_free(Object *o) {
@@ -132,7 +131,8 @@ static void heap_free(Object *o) {
 static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
   static heap_vtable vtable = {
     {.free = heap_free }, .insert = _heap_insert,
-                              .extract_min = _heap_extract_min, .size = _heap_size, .compare = _heap_compare
+                              .extract_min = _heap_extract_min,
+                              .size = _heap_size, .compare = _heap_compare
   };
 
   contract_requires(c != NULL && p != NULL && capacity > 0);
@@ -172,15 +172,15 @@ void *heap_extract_min(Heap *h) {
 
 bool heap_empty(const Heap *h) {
   contract_requires(h != NULL);
-	return heap_size(h) == 0;
+  return heap_size(h) == 0;
 }
 
 size_t heap_size(const Heap *h) {
-	contract_requires(h != NULL);
-	return h->vtable->size(h);
+  contract_requires(h != NULL);
+  return h->vtable->size(h);
 }
 
 bool heap_compare(const Heap *h, const void *x, size_t k) {
-	contract_requires(h != NULL && x != NULL && k < heap_size(h));
-	return h->vtable->compare(h, x, k);
+  contract_requires(h != NULL && x != NULL && k < heap_size(h));
+  return h->vtable->compare(h, x, k);
 }

@@ -16,7 +16,7 @@ struct _heap_vtable {
   void (*insert)(Heap *, void *);
   void *(*extract_min)(Heap *);
   size_t (*size)(const Heap *);
-	bool (*compare)(const Heap *, const void *, size_t);
+  bool (*compare)(const Heap *, const void *, size_t);
 };
 
 Heap *heap_new(Compare);
