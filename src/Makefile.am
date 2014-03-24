@@ -22,6 +22,7 @@ alib_SOURCES =\
   lang/sort.c\
   lang/sort_int.c\
   lang/string.c\
+	lang/tuple.c\
   main.c\
   test/test.c\
   test/test_container.c\

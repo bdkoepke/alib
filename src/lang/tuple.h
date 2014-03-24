@@ -6,4 +6,6 @@ typedef struct {
   void *second;
 } Tuple;
 
+Tuple *tuple_new(void *, void *);
+
 #endif /* TUPLE_H */

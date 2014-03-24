@@ -37,12 +37,45 @@ void chapter_3(void) {
 }
 
 void chapter_4(void) {
+	test_max_min();
   _test_heap();
-  test_mergesort();
-  test_quicksort();
   test_binary_search();
   test_count_occurrences();
+  test_mergesort();
+  test_quicksort();
   test_sqrt();
+  question_4_1();
+  question_4_2();
+  question_4_3();
+  question_4_4();
+  question_4_5();
+  question_4_6();
+  question_4_7();
+  question_4_8();
+  question_4_9();
+  question_4_10();
+  question_4_11();
+  question_4_12();
+  question_4_14();
+  question_4_15();
+  question_4_16();
+  question_4_17();
+  question_4_18();
+  question_4_19();
+  question_4_20();
+  question_4_22();
+  question_4_23();
+  question_4_24();
+  question_4_25();
+  question_4_26();
+  question_4_27();
+  question_4_31();
+  question_4_33();
+  question_4_34();
+  question_4_35();
+  question_4_44();
+  question_4_45();
+  question_4_46();
 }
 
 int main(void) {

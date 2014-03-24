@@ -4,12 +4,14 @@
 #include <stddef.h>
 
 int count_occurrences(int x, int *s, size_t length);
+void max_min(int *, size_t, int *, int *);
 
 void _test_heap(void);
 void test_mergesort(void);
 void test_quicksort(void);
 void test_count_occurrences(void);
 void test_sqrt(void);
+void test_max_min(void);
 
 void question_4_1(void);
 void question_4_2(void);

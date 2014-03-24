@@ -1,6 +1,9 @@
 #include "chapter_4.h"
+#include "diag/contract.h"
+#include "lang/array.h"
 #include "lang/math_extended.h"
 #include "lang/sort.h"
+#include "lang/tuple.h"
 #include "lang/type.h"
 #include "test/test_container.h"
 #include "test/test_container_values.h"
@@ -9,6 +12,7 @@
 #include "util/compare.h"
 
 #include <assert.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -114,9 +118,106 @@ void test_sqrt(void) {
   assert_true(s - 80.696964007 < p && s - 80.696964007 > -p);
 }
 
-void question_4_1(void) {}
-void question_4_2(void) {}
-void question_4_3(void) {}
+void partition_players(int *a, size_t length, int *team_a, int *team_b) {
+	contract_requires(even(length));
+	size_t half = length / 2;
+
+	quicksort(a, length);
+	
+	size_t i;
+	for (i = 0; i < half; i++) {
+		team_a[i] = a[i];
+		team_b[i] = a[i + half];
+	}
+}
+
+void question_4_1(void) {
+	puts("question_4_1");
+	int players[] = { 3, 7, 4, 9, 5, 2, 6, 1 };
+	size_t players_length = array_size(players);
+	size_t team_size = players_length / 2;
+	int team_a[team_size];
+	int team_b[team_size];
+	partition_players(players, players_length, team_a, team_b);
+	int expected_team_a[] = { 1, 2, 3, 4 };
+	int expected_team_b[] = { 5, 6, 7, 8 };
+	assert_equals(memcmp(team_a, expected_team_a, team_size), 0);
+	assert_equals(memcmp(team_b, expected_team_b, team_size), 0);
+}
+
+void max_min(int *a, size_t len, int *max, int *min) {
+	contract_requires(len > 0);
+	int _max = INT_MIN;
+	int _min = INT_MAX;
+
+	size_t len_half = (len / 2);
+	size_t middle = even(len) ? len_half : len_half + 1;
+	size_t i;
+	for (i = 0; i < len_half; i++)
+		if (a[i] > a[i + middle])
+			swap(&a[i], &a[i + middle]);
+	for (i = 0; i <= middle; i++)
+		if (a[i] < _min)
+			_min = a[i];
+	for (i = len_half; i < len; i++)
+		if (a[i] > _max)
+			_max = a[i];
+	*max = _max;
+	*min = _min;
+}
+
+void test_max_min(void) {
+	puts("test_max_min");
+	int S[] = { 6, 13, 19, 3, 8};
+	int max, min;
+	max_min(S, array_size(S), &max, &min);
+	assert_equals(min, 3);
+	assert_equals(max, 19);
+	int _S[] = { 6, 13, 19, 3, 8, 20 };
+	max_min(_S, array_size(_S), &max, &min);
+	assert_equals(min, 3);
+	assert_equals(max, 20);
+}
+
+void question_4_2(void) {
+	puts("question_4_2");
+	int S[] = { 6, 13, 19, 3, 8};
+	int max, min;
+	max_min(S, array_size(S), &max, &min);
+	assert_equals(max - min, 16);
+
+	int sorted[] = {3, 6, 8, 13, 19};
+	assert_equals(sorted[array_size(sorted) - 1] - sorted[0], 16);
+
+	int s, e, d;
+	s = 0;
+	e = INT_MAX;
+	d = INT_MAX;
+	size_t i;
+	for (i = 0; i < (array_size(sorted) - 1); i++)
+		if (sorted[i + 1] - sorted[i] < d) {
+			s = i;
+			e = i + 1;
+			d = sorted[e] - sorted[s];
+		}
+	assert_equals(d, 2);
+}
+
+void min_partition_pairs(int *a, int n, Tuple **t) {
+	contract_requires(even(n));
+	quicksort(a, n);
+	size_t i;
+	for (i = 0; i < (n / 2); i++)
+		t[i] = tuple_new(&a[i], &a[n - i]);
+}
+
+void question_4_3(void) {
+	int numbers[] = { 1, 3, 5, 9 };
+	int numbers_length = array_size(n);
+	Tuple pairs[numbers_length / 2];
+	min_partition_pairs(numbers, numbers_length, &pairs);
+}
+
 void question_4_4(void) {}
 void question_4_5(void) {}
 void question_4_6(void) {}
