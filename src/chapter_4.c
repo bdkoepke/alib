@@ -10,6 +10,8 @@
 #include "test/test_sort.h"
 #include "test/test.h"
 #include "util/compare.h"
+#include "util/linked_stack.h"
+#include "util/stack.h"
 
 #include <assert.h>
 #include <limits.h>
@@ -208,22 +210,100 @@ void min_partition_pairs(int *a, int n, Tuple **t) {
 	quicksort(a, n);
 	size_t i;
 	for (i = 0; i < (n / 2); i++)
-		t[i] = tuple_new(&a[i], &a[n - i]);
+		t[i] = tuple_new(&a[i], &a[n - i - 1]);
 }
 
 void question_4_3(void) {
+	puts("question_4_3");
 	int numbers[] = { 1, 3, 5, 9 };
-	int numbers_length = array_size(n);
-	Tuple pairs[numbers_length / 2];
-	min_partition_pairs(numbers, numbers_length, &pairs);
+	int numbers_length = array_size(numbers);
+	Tuple *pairs[numbers_length / 2];
+	min_partition_pairs(numbers, numbers_length, pairs);
+	assert_equals(*(int*)pairs[0]->first, 1);
+	assert_equals(*(int*)pairs[0]->second, 9);
+	assert_equals(*(int*)pairs[1]->first, 3);
+	assert_equals(*(int*)pairs[1]->second, 5);
 }
 
-void question_4_4(void) {}
-void question_4_5(void) {}
-void question_4_6(void) {}
-void question_4_7(void) {}
-void question_4_8(void) {}
-void question_4_9(void) {}
+typedef enum {
+	red = 0,
+	blue = 1,
+	yellow = 2
+} Color;
+
+const char *color_to_string(Color c) {
+	switch (c) {
+		case red:
+			return "red";
+		case blue:
+			return "blue";
+		case yellow:
+			return "yellow";
+	}
+}
+
+void question_4_4(void) {
+	puts("question_4_4");
+	typedef struct {
+		int i;
+		Color c;
+	} ColorPair;
+
+	ColorPair pairs[] = { { 1, blue }, {3, red }, {4, blue}, {6, yellow}, {9, red} };
+	size_t pairs_length = array_size(pairs);
+	Queue *buckets[] = { queue_new(), queue_new(), queue_new() };
+
+	size_t i;
+	for (i = 0; i < pairs_length; i++)
+		queue_enqueue(buckets[pairs[i].c], &pairs[i]);
+
+	ColorPair sorted_pairs[pairs_length];
+	size_t j = 0;
+	for (i = 0; i < array_size(buckets); i++)
+		while (! container_empty((Container *)buckets[i]))
+			sorted_pairs[j++] = *(ColorPair*)queue_dequeue(buckets[i]);
+
+	ColorPair expected[] = { {3, red }, {9, red }, {1, blue}, { 4, blue }, {6, yellow} };
+
+	for (i = 0; i < pairs_length; i++) {
+		assert_equals(sorted_pairs[i].i, expected[i].i);
+		assert_equals(sorted_pairs[i].c, expected[i].c);
+	}
+}
+
+static void _bucketsort(int a[], int n) {
+	bucketsort(a, n, reduce_int(a, n, max, 0));
+}
+
+void test_bucketsort(void) {
+	puts("test_bucketsort");
+	test_sort(_bucketsort);
+}
+
+void find_mode(int a[], size_t len) {
+	bucketsort(a, len, reduce_int(a, len, max, 0));
+}
+
+void question_4_5(void) {
+	puts("question_4_5");
+	int numbers[] = { 4, 6, 2, 4, 3, 1 };
+	size_t numbers_length = array_size(numbers);
+
+	bucketsort(numbers, numbers_length, 6);
+}
+
+void question_4_6(void) {
+}
+
+void question_4_7(void) {
+}
+
+void question_4_8(void) {
+}
+
+void question_4_9(void) {
+}
+
 void question_4_10(void) {}
 void question_4_11(void) {}
 void question_4_12(void) {}

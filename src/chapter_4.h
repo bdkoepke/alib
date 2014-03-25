@@ -12,6 +12,7 @@ void test_quicksort(void);
 void test_count_occurrences(void);
 void test_sqrt(void);
 void test_max_min(void);
+void test_bucketsort(void);
 
 void question_4_1(void);
 void question_4_2(void);

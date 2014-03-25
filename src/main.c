@@ -1,7 +1,6 @@
 #include "chapter_2.h"
 #include "chapter_3.h"
 #include "chapter_4.h"
-
 void chapter_2(void) {
   test_selectionsort();
   test_insertionsort();
@@ -44,6 +43,7 @@ void chapter_4(void) {
   test_mergesort();
   test_quicksort();
   test_sqrt();
+	test_bucketsort();
   question_4_1();
   question_4_2();
   question_4_3();
