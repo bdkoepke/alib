@@ -56,7 +56,7 @@ void sorted_set_insert(SortedSet *s, void *x);
 void *sorted_set_delete(SortedSet *s, size_t k);
 
 /**
- * Gets a value indicating whether the sorted set 
+ * Gets a value indicating whether the sorted set
  * is empty or not.
  *
  * @param s the set to determine the emptiness of.

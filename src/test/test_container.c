@@ -11,12 +11,12 @@
 #include <string.h>
 
 static int *sort_int(const int *values, size_t length) {
-	contract_requires(values != NULL && length > 0);
+  contract_requires(values != NULL && length > 0);
 
-	int *s = malloc(sizeof(int) * length);
-	memcpy(s, values, sizeof(int) * length);
-	quicksort(s, length);
-	return s;
+  int *s = malloc(sizeof(int) * length);
+  memcpy(s, values, sizeof(int) * length);
+  quicksort(s, length);
+  return s;
 }
 
 void test_array_list(ArrayList *a, const int *values, size_t length) {

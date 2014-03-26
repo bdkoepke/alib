@@ -7,7 +7,7 @@ int count_occurrences(int x, int *s, size_t length);
 /**
  * Computes max and min in $n + ceiling(\frac{n}{2})$ comparisons.
  *
- * @param a the array to find the max and min of. The array itself is used as 
+ * @param a the array to find the max and min of. The array itself is used as
  * 	scratch space for the computation.
  * @param length the length of the array.
  * @param out_max the result maximum value.

@@ -26,7 +26,8 @@ bool balanced_parenthesis(const char *text, size_t length, int *out_position);
  * @return true if there is a weight that will fit in the current bin,
  * 	false otherwise.
  */
-typedef bool (*bin_packing_heuristic)(const Dictionary *b, double bin, double *out_next);
+typedef bool (*bin_packing_heuristic)(const Dictionary *b, double bin,
+                                      double *out_next);
 
 /**
  * Bin packing problem.
@@ -38,7 +39,8 @@ typedef bool (*bin_packing_heuristic)(const Dictionary *b, double bin, double *o
  * @return the number of required bins as determined by the specified
  * 	heuristic.
  */
-size_t bin_packing(const double *weights, size_t length, bin_packing_heuristic heuristic);
+size_t bin_packing(const double *weights, size_t length,
+                   bin_packing_heuristic heuristic);
 
 /**
  * Bin packing problem that selects the largest remaining weight that will fit
@@ -59,7 +61,8 @@ size_t bin_packing_worst_fit(const double *weights, size_t length);
  *
  * @param line the line to copy the reverse of.
  * @param length the length of the line.
- * @return a copy of the specified line with the words reversed, null terminated.
+ * @return a copy of the specified line with the words reversed, null
+ * terminated.
  */
 char *reverse_words_in_line(const char *line, size_t length);
 
@@ -71,7 +74,8 @@ char *reverse_words_in_line(const char *line, size_t length);
  * @param length the number of elements in $X$.
  * @return the array $M$
  */
-int *unordered_product_ignoring_index_with_division(const int *X, size_t length);
+int *unordered_product_ignoring_index_with_division(const int *X,
+                                                    size_t length);
 
 /**
  * Finds the array $M$ containing $n$ elements where $M_i$ is the product of all

@@ -5,10 +5,10 @@
 #include "lang/sort.h"
 #include "lang/tuple.h"
 #include "lang/type.h"
+#include "test/test.h"
 #include "test/test_container.h"
 #include "test/test_container_values.h"
 #include "test/test_sort.h"
-#include "test/test.h"
 #include "util/compare.h"
 #include "util/linked_queue.h"
 #include "util/linked_stack.h"
@@ -122,193 +122,187 @@ void test_sqrt(void) {
 }
 
 void partition_players(int *a, size_t length, int *team_a, int *team_b) {
-	contract_requires(even(length));
-	size_t half = length / 2;
+  contract_requires(even(length));
+  size_t half = length / 2;
 
-	quicksort(a, length);
-	
-	size_t i;
-	for (i = 0; i < half; i++) {
-		team_a[i] = a[i];
-		team_b[i] = a[i + half];
-	}
+  quicksort(a, length);
+
+  size_t i;
+  for (i = 0; i < half; i++) {
+    team_a[i] = a[i];
+    team_b[i] = a[i + half];
+  }
 }
 
 void question_4_1(void) {
-	puts("question_4_1");
-	int players[] = { 3, 7, 4, 9, 5, 2, 6, 1 };
-	size_t players_length = array_size(players);
-	size_t team_size = players_length / 2;
-	int team_a[team_size];
-	int team_b[team_size];
-	partition_players(players, players_length, team_a, team_b);
-	int expected_team_a[] = { 1, 2, 3, 4 };
-	int expected_team_b[] = { 5, 6, 7, 8 };
-	assert_equals(memcmp(team_a, expected_team_a, team_size), 0);
-	assert_equals(memcmp(team_b, expected_team_b, team_size), 0);
+  puts("question_4_1");
+  int players[] = { 3, 7, 4, 9, 5, 2, 6, 1 };
+  size_t players_length = array_size(players);
+  size_t team_size = players_length / 2;
+  int team_a[team_size];
+  int team_b[team_size];
+  partition_players(players, players_length, team_a, team_b);
+  int expected_team_a[] = { 1, 2, 3, 4 };
+  int expected_team_b[] = { 5, 6, 7, 8 };
+  assert_equals(memcmp(team_a, expected_team_a, team_size), 0);
+  assert_equals(memcmp(team_b, expected_team_b, team_size), 0);
 }
 
 void max_min(int *a, size_t len, int *max, int *min) {
-	contract_requires(len > 0);
-	int _max = INT_MIN;
-	int _min = INT_MAX;
+  contract_requires(len > 0);
+  int _max = INT_MIN;
+  int _min = INT_MAX;
 
-	size_t len_half = (len / 2);
-	size_t middle = even(len) ? len_half : len_half + 1;
-	size_t i;
-	for (i = 0; i < len_half; i++)
-		if (a[i] > a[i + middle])
-			swap(&a[i], &a[i + middle]);
-	for (i = 0; i <= middle; i++)
-		if (a[i] < _min)
-			_min = a[i];
-	for (i = len_half; i < len; i++)
-		if (a[i] > _max)
-			_max = a[i];
-	*max = _max;
-	*min = _min;
+  size_t len_half = (len / 2);
+  size_t middle = even(len) ? len_half : len_half + 1;
+  size_t i;
+  for (i = 0; i < len_half; i++)
+    if (a[i] > a[i + middle])
+      swap(&a[i], &a[i + middle]);
+  for (i = 0; i <= middle; i++)
+    if (a[i] < _min)
+      _min = a[i];
+  for (i = len_half; i < len; i++)
+    if (a[i] > _max)
+      _max = a[i];
+  *max = _max;
+  *min = _min;
 }
 
 void test_max_min(void) {
-	puts("test_max_min");
-	int S[] = { 6, 13, 19, 3, 8};
-	int max, min;
-	max_min(S, array_size(S), &max, &min);
-	assert_equals(min, 3);
-	assert_equals(max, 19);
-	int _S[] = { 6, 13, 19, 3, 8, 20 };
-	max_min(_S, array_size(_S), &max, &min);
-	assert_equals(min, 3);
-	assert_equals(max, 20);
+  puts("test_max_min");
+  int S[] = { 6, 13, 19, 3, 8 };
+  int max, min;
+  max_min(S, array_size(S), &max, &min);
+  assert_equals(min, 3);
+  assert_equals(max, 19);
+  int _S[] = { 6, 13, 19, 3, 8, 20 };
+  max_min(_S, array_size(_S), &max, &min);
+  assert_equals(min, 3);
+  assert_equals(max, 20);
 }
 
 void question_4_2(void) {
-	puts("question_4_2");
-	int S[] = { 6, 13, 19, 3, 8};
-	int max, min;
-	max_min(S, array_size(S), &max, &min);
-	assert_equals(max - min, 16);
+  puts("question_4_2");
+  int S[] = { 6, 13, 19, 3, 8 };
+  int max, min;
+  max_min(S, array_size(S), &max, &min);
+  assert_equals(max - min, 16);
 
-	int sorted[] = {3, 6, 8, 13, 19};
-	assert_equals(sorted[array_size(sorted) - 1] - sorted[0], 16);
+  int sorted[] = { 3, 6, 8, 13, 19 };
+  assert_equals(sorted[array_size(sorted) - 1] - sorted[0], 16);
 
-	int s, e, d;
-	s = 0;
-	e = INT_MAX;
-	d = INT_MAX;
-	size_t i;
-	for (i = 0; i < (array_size(sorted) - 1); i++)
-		if (sorted[i + 1] - sorted[i] < d) {
-			s = i;
-			e = i + 1;
-			d = sorted[e] - sorted[s];
-		}
-	assert_equals(d, 2);
+  int s, e, d;
+  s = 0;
+  e = INT_MAX;
+  d = INT_MAX;
+  size_t i;
+  for (i = 0; i < (array_size(sorted) - 1); i++)
+    if (sorted[i + 1] - sorted[i] < d) {
+      s = i;
+      e = i + 1;
+      d = sorted[e] - sorted[s];
+    }
+  assert_equals(d, 2);
 }
 
 void min_partition_pairs(int *a, int n, Tuple **t) {
-	contract_requires(even(n));
-	quicksort(a, n);
-	size_t i;
-	for (i = 0; i < (n / 2); i++)
-		t[i] = tuple_new(&a[i], &a[n - i - 1]);
+  contract_requires(even(n));
+  quicksort(a, n);
+  size_t i;
+  for (i = 0; i < (n / 2); i++)
+    t[i] = tuple_new(&a[i], &a[n - i - 1]);
 }
 
 void question_4_3(void) {
-	puts("question_4_3");
-	int numbers[] = { 1, 3, 5, 9 };
-	int numbers_length = array_size(numbers);
-	Tuple *pairs[numbers_length / 2];
-	min_partition_pairs(numbers, numbers_length, pairs);
-	assert_equals(*(int*)pairs[0]->first, 1);
-	assert_equals(*(int*)pairs[0]->second, 9);
-	assert_equals(*(int*)pairs[1]->first, 3);
-	assert_equals(*(int*)pairs[1]->second, 5);
+  puts("question_4_3");
+  int numbers[] = { 1, 3, 5, 9 };
+  int numbers_length = array_size(numbers);
+  Tuple *pairs[numbers_length / 2];
+  min_partition_pairs(numbers, numbers_length, pairs);
+  assert_equals(*(int *)pairs[0]->first, 1);
+  assert_equals(*(int *)pairs[0]->second, 9);
+  assert_equals(*(int *)pairs[1]->first, 3);
+  assert_equals(*(int *)pairs[1]->second, 5);
 }
 
 typedef enum {
-	red = 0,
-	blue = 1,
-	yellow = 2
+  red = 0,
+  blue = 1,
+  yellow = 2
 } Color;
 
 const char *color_to_string(Color c) {
-	switch (c) {
-		case red:
-			return "red";
-		case blue:
-			return "blue";
-		case yellow:
-			return "yellow";
-	}
+  switch (c) {
+  case red:
+    return "red";
+  case blue:
+    return "blue";
+  case yellow:
+    return "yellow";
+  }
 }
 
 void question_4_4(void) {
-	puts("question_4_4");
-	typedef struct {
-		int i;
-		Color c;
-	} ColorPair;
+  puts("question_4_4");
+  typedef struct {
+    int i;
+    Color c;
+  } ColorPair;
 
-	ColorPair pairs[] = { { 1, blue }, {3, red }, {4, blue}, {6, yellow}, {9, red} };
-	size_t pairs_length = array_size(pairs);
-	Queue *buckets[] = { linked_queue_new(), linked_queue_new(), linked_queue_new() };
+  ColorPair pairs[] = { { 1, blue }, { 3, red }, { 4, blue }, { 6, yellow },
+                        { 9, red } };
+  size_t pairs_length = array_size(pairs);
+  Queue *buckets[] = { linked_queue_new(), linked_queue_new(),
+                       linked_queue_new() };
 
-	size_t i;
-	for (i = 0; i < pairs_length; i++)
-		queue_enqueue(buckets[pairs[i].c], &pairs[i]);
+  size_t i;
+  for (i = 0; i < pairs_length; i++)
+    queue_enqueue(buckets[pairs[i].c], &pairs[i]);
 
-	ColorPair sorted_pairs[pairs_length];
-	size_t j = 0;
-	for (i = 0; i < array_size(buckets); i++)
-		while (! container_empty((Container *)buckets[i]))
-			sorted_pairs[j++] = *(ColorPair*)queue_dequeue(buckets[i]);
+  ColorPair sorted_pairs[pairs_length];
+  size_t j = 0;
+  for (i = 0; i < array_size(buckets); i++)
+    while (!container_empty((Container *)buckets[i]))
+      sorted_pairs[j++] = *(ColorPair *)queue_dequeue(buckets[i]);
 
-	ColorPair expected[] = { {3, red }, {9, red }, {1, blue}, { 4, blue }, {6, yellow} };
+  ColorPair expected[] = { { 3, red }, { 9, red }, { 1, blue }, { 4, blue },
+                           { 6, yellow } };
 
-	for (i = 0; i < pairs_length; i++) {
-		assert_equals(sorted_pairs[i].i, expected[i].i);
-		assert_equals(sorted_pairs[i].c, expected[i].c);
-	}
+  for (i = 0; i < pairs_length; i++) {
+    assert_equals(sorted_pairs[i].i, expected[i].i);
+    assert_equals(sorted_pairs[i].c, expected[i].c);
+  }
 }
 
 static void _bucketsort(int a[], int n) {
-	bucketsort(a, n, reduce_int(a, n, max, 0));
+  bucketsort(a, n, reduce_int(a, n, max, 0));
 }
 
 void test_bucketsort(void) {
-	puts("test_bucketsort");
-	test_sort(_bucketsort);
+  puts("test_bucketsort");
+  test_sort(_bucketsort);
 }
 
 void find_mode(int a[], size_t len) {
-	bucketsort(a, len, reduce_int(a, len, max, 0));
+  bucketsort(a, len, reduce_int(a, len, max, 0));
 }
 
 void question_4_5(void) {
-	puts("question_4_5");
-	int numbers[] = { 4, 6, 2, 4, 3, 1 };
-	size_t numbers_length = array_size(numbers);
+  puts("question_4_5");
+  int numbers[] = { 4, 6, 2, 4, 3, 1 };
+  size_t numbers_length = array_size(numbers);
 
-	bucketsort(numbers, numbers_length, 6);
+  _bucketsort(numbers, numbers_length);
 }
 
-void question_4_6(void) {
-}
-
-void question_4_7(void) {
-}
-
-void question_4_8(void) {
-}
-
-void question_4_9(void) {
-}
-
+void question_4_6(void) {}
+void question_4_7(void) {}
+void question_4_8(void) {}
+void question_4_9(void) {}
 void question_4_10(void) {}
 void question_4_11(void) {}
 void question_4_12(void) {}
-
 void question_4_14(void) {}
 void question_4_15(void) {}
 void question_4_16(void) {}
@@ -316,20 +310,16 @@ void question_4_17(void) {}
 void question_4_18(void) {}
 void question_4_19(void) {}
 void question_4_20(void) {}
-
 void question_4_22(void) {}
 void question_4_23(void) {}
 void question_4_24(void) {}
 void question_4_25(void) {}
 void question_4_26(void) {}
 void question_4_27(void) {}
-
 void question_4_31(void) {}
-
 void question_4_33(void) {}
 void question_4_34(void) {}
 void question_4_35(void) {}
-
 void question_4_44(void) {}
 void question_4_45(void) {}
 void question_4_46(void) {}

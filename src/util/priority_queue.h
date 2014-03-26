@@ -69,7 +69,7 @@ void priority_queue_delete_minimum(PriorityQueue *p);
 void priority_queue_delete_maximum(PriorityQueue *p);
 
 /**
- * Gets a value indicating whether the priority queue is empty 
+ * Gets a value indicating whether the priority queue is empty
  * or not.
  *
  * @param p the priority queue to get the emptiness of.

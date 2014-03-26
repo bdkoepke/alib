@@ -29,7 +29,7 @@
  * @param b the pointer to the second memory region.
  * @param num the number of bytes to compare.
  */
-#define assert_memcmp_len(a, b, num) \
+#define assert_memcmp_len(a, b, num)                                           \
   _assert_memcmp((a), (b), (num), #a, #b, __FILE__, __LINE__, __func__)
 
 void _assert_true(bool expr, const char *expr_s, const char *file, int line,
@@ -40,7 +40,8 @@ void _assert_equals(int a, int b, const char *a_s, const char *b_s,
                     const char *file, int line, const char *func);
 void _assert_not_equals(int a, int b, const char *a_s, const char *b_s,
                         const char *file, int line, const char *func);
-void _assert_memcmp(const void *a, const void *b, size_t num, const char *a_s, const char *b_s,
-                        const char *file, int line, const char *func);
+void _assert_memcmp(const void *a, const void *b, size_t num, const char *a_s,
+                    const char *b_s, const char *file, int line,
+                    const char *func);
 
 #endif /* TEST_H */

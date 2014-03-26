@@ -14,4 +14,13 @@
  */
 void array_puts(const int a[], int length);
 
+/**
+ * Creates a new copy of the specified array.
+ *
+ * @param a the array to copy.
+ * @param length the length of the array.
+ * @return a copy of the array a.
+ */
+int *array_copy(const int a[], int length);
+
 #endif /* ARRAY_H */

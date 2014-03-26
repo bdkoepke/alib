@@ -20,13 +20,12 @@ int max(int a, int b) { return a > b ? a : b; }
 
 static double _sqrt(unsigned int x, double l, double h, double p) {
   if ((h - l) < p)
-		return l;
+    return l;
   double m = (l + h) / 2;
-  return x < (m * m) ? _sqrt(x, l, m, p)
-                  : _sqrt(x, m, h, p);
+  return x < (m * m) ? _sqrt(x, l, m, p) : _sqrt(x, m, h, p);
 }
 
 double sqrt_int(unsigned int x, double p) {
-	contract_requires(p < 1 && p > 0);
-	return _sqrt(x, 0.0, x, p);
+  contract_requires(p < 1 && p > 0);
+  return _sqrt(x, 0.0, x, p);
 }

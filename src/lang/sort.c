@@ -92,16 +92,16 @@ static void _quicksort(int a[], int l, int h) {
 void quicksort(int a[], int length) { return _quicksort(a, 0, length - 1); }
 
 void bucketsort(int a[], int n, int max) {
-	int s[max];
+  int s[max + 1];
 
-	size_t i, j, k;
-	for (i = 0; i < max; i++)
-		s[i] = 0;
-	for (i = 0; i < n; i++)
-		s[a[i]]++;
+  size_t i, j, k;
+  for (i = 0; i <= max; i++)
+    s[i] = 0;
+  for (i = 0; i < n; i++)
+    s[a[i]]++;
 
-	j = 0;
-	for (i = 0; i < max; i++)
-		for (k = 0; k < s[i]; k++)
-			a[j++] = i;
+  j = 0;
+  for (i = 0; i <= max; i++)
+    for (k = 0; k < s[i]; k++)
+      a[j++] = i;
 }

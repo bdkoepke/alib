@@ -22,8 +22,8 @@ void test_insertionsort(void) {
 
 void test_find_match(void) {
   puts("test_find_match");
-	const char pattern[] = "pattern";
-	const char text[] = "this is a pattern";
+  const char pattern[] = "pattern";
+  const char text[] = "this is a pattern";
   assert_equals(find_match(pattern, text, strlen(pattern), strlen(text)), 10);
 }
 

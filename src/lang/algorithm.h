@@ -8,7 +8,7 @@
 
 // TODO: use c11 generics
 
-bool all_double(const double *, size_t, bool (*)(double));
+bool all_double(const double *, size_t, bool(*)(double));
 bool all_int(const int *, size_t, bool(*)(int));
 int reduce_int(const int *, size_t, int(*)(int, int), int);
 

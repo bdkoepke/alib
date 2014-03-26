@@ -37,14 +37,14 @@ void chapter_3(void) {
 }
 
 void chapter_4(void) {
-	test_max_min();
+  test_max_min();
   _test_heap();
   test_binary_search();
   test_count_occurrences();
   test_mergesort();
   test_quicksort();
   test_sqrt();
-	test_bucketsort();
+  test_bucketsort();
   question_4_1();
   question_4_2();
   question_4_3();
