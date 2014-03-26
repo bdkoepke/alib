@@ -329,9 +329,35 @@ void question_4_6(void) {
   assert_true(sum_pair_equals_x(S_1, S_2, array_size(S_1), 8));
 }
 
-void sorted_set_union(int A[], int B[], size_t A_len, size_t B_len, int **U,
-                      int *U_len) {
-  //int U[A_len + B_len];
+void sorted_set_union(const int A[], const int B[], size_t A_len, size_t B_len,
+                      int **U_p, size_t *U_len) {
+  // TODO: add contracts...
+  int *U = malloc(sizeof(int) * (A_len + B_len));
+  *U_p = U;
+
+  size_t i, j, k;
+  i = j = k = 0;
+  while (i < A_len && j < B_len)
+    if (A[i] == B[j]) {
+      j++;
+      U[k++] = A[i++];
+    } else
+      U[k++] = A[i] < B[j] ? A[i++] : B[j++];
+
+  while (i < A_len)
+    U[k++] = A[i++];
+  while (j < B_len)
+    U[k++] = B[j++];
+
+  U = realloc(U, k * sizeof(int));
+  *U_len = k;
+}
+
+void set_union(int A[], int B[], size_t A_len, size_t B_len, int **U_p,
+               size_t *U_len, Sort sort) {
+  sort(A, A_len);
+  sort(B, B_len);
+  sorted_set_union(A, B, A_len, B_len, U_p, U_len);
 }
 
 void question_4_8(void) {
@@ -350,7 +376,26 @@ void question_4_8(void) {
               97, 86, 221, 122, 38, 208, 136, 46, 233, 5, 17, 244, 55, 84, 137,
               186, 142, 175, 28, 99, 202, 191, 156, 112, 222, 220, 218, 76, 171,
               245, 139, 242, 209 };
+  int S[] = { 0, 1, 2, 3, 5, 7, 8, 9, 12, 16, 17, 18, 19, 22, 23, 25, 28, 29,
+              30, 36, 37, 38, 39, 41, 42, 44, 46, 47, 48, 50, 53, 55, 56, 58,
+              59, 60, 61, 64, 65, 66, 67, 71, 72, 73, 75, 76, 79, 82, 84, 86,
+              90, 93, 94, 95, 97, 98, 99, 107, 109, 112, 113, 115, 116, 117,
+              118, 122, 123, 125, 126, 127, 128, 131, 133, 134, 135, 136, 137,
+              138, 139, 142, 144, 146, 147, 149, 152, 156, 157, 159, 160, 162,
+              164, 165, 166, 169, 171, 175, 179, 181, 183, 186, 187, 188, 189,
+              190, 191, 192, 193, 194, 195, 198, 199, 200, 202, 203, 205, 206,
+              208, 209, 210, 211, 212, 215, 216, 218, 220, 221, 222, 223, 226,
+              227, 231, 233, 234, 236, 242, 243, 244, 245, 246, 250, 251, 253 };
 
+  int *U;
+  size_t length;
+  set_union(A, B, array_size(A), array_size(B), &U, &length, quicksort);
+  assert_memcmp(S, U);
+  free(U);
+
+  sorted_set_union(A, B, array_size(A), array_size(B), &U, &length);
+  assert_memcmp(S, U);
+  free(U);
 }
 
 void question_4_9(void) {}

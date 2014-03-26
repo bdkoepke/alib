@@ -6,7 +6,7 @@
 void array_puts(const int a[], int length) {
   if (length == 0)
     return;
-  puts("{ ");
+  printf("{ ");
   int i;
   for (i = 0; i < (length - 1); i++)
     printf("%d, ", a[i]);
