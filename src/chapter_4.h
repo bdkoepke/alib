@@ -4,8 +4,18 @@
 #include <stddef.h>
 
 int count_occurrences(int x, int *s, size_t length);
-void max_min(int *, size_t, int *, int *);
+/**
+ * Computes max and min in $n + ceiling(\frac{n}{2})$ comparisons.
+ *
+ * @param a the array to find the max and min of. The array itself is used as 
+ * 	scratch space for the computation.
+ * @param length the length of the array.
+ * @param out_max the result maximum value.
+ * @param out_min the result minimum value.
+ */
+void max_min(int *a, size_t length, int *out_max, int *out_min);
 
+/** Basic collection tests. */
 void _test_heap(void);
 void test_mergesort(void);
 void test_quicksort(void);

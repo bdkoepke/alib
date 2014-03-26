@@ -1,8 +1,17 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
+/**
+ * Gets the size of a static array, must be > 0.
+ */
 #define array_size(a) (sizeof((a)) / sizeof((a)[0]))
 
-void array_puts(int a[], int);
+/**
+ * Writes the specified array to stdout.
+ *
+ * @param a the array to write.
+ * @param length the length of the array.
+ */
+void array_puts(const int a[], int length);
 
 #endif /* ARRAY_H */

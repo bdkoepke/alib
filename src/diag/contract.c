@@ -4,32 +4,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void _contract_ensures(bool expr, const char *expr_s, const char *file,
-                       int line, const char *func) {
+static inline void contract(bool expr, const char *expr_s, const char *file,
+                       int line, const char *func, const char *format) {
   if (!expr) {
-    fprintf(stderr, "%s:%d: %s: Ensures `%s' failed.\n", file, line, func,
+    fprintf(stderr, format, file, line, func,
             expr_s);
     assert(false);
     exit(EXIT_FAILURE);
   }
+}
+
+
+void _contract_ensures(bool expr, const char *expr_s, const char *file,
+                       int line, const char *func) {
+	return contract(expr, expr_s, file, line, func, "%s:%d: %s: Ensures `%s' failed.\n");
 }
 
 void _contract_invariant(bool expr, const char *expr_s, const char *file,
                          int line, const char *func) {
-  if (!expr) {
-    fprintf(stderr, "%s:%s: %s: Invariant `%s' failed.\n", file, line, func,
-            expr_s);
-    assert(false);
-    exit(EXIT_FAILURE);
-  }
+	return contract(expr, expr_s, file, line, func, "%s:%d: %s: Invariant `%s' failed.\n");
 }
 
 void _contract_requires(bool expr, const char *expr_s, const char *file,
                         int line, const char *func) {
-  if (!expr) {
-    fprintf(stderr, "%s:%d: %s: Requires `%s' failed.\n", file, line, func,
-            expr_s);
-    assert(false);
-    exit(EXIT_FAILURE);
-  }
+	return contract(expr, expr_s, file, line, func, "%s:%d: %s: Requires `%s' failed.\n");
 }

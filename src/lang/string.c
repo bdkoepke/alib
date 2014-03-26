@@ -1,10 +1,10 @@
+#include "../diag/contract.h"
 #include "string.h"
-#include <string.h>
 
-int find_match(const char *pattern, const char *text) {
-  int m = strlen(pattern);
-  int n = strlen(text);
+#include <stdlib.h>
 
+int find_match(const char *pattern, const char *text, int m, int n) {
+	contract_requires(pattern != NULL && text != NULL);
   int i;
   for (i = 0; i <= (n - m); i++) {
     int j;

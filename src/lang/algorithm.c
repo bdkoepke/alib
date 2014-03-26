@@ -20,6 +20,24 @@ int binary_search(const void *key, const void *values, size_t length,
   return _binary_search(key, values, 0, length, size, c);
 }
 
+bool all_double(const double *a, size_t length, bool(*p)(double)) {
+  contract_requires(a != NULL && p != NULL);
+	size_t i;
+	for (i = 0; i < length; i++)
+		if (! p(a[i]))
+			return false;
+	return true;
+}
+
+bool all_int(const int *a, size_t length, bool(*p)(int)) {
+  contract_requires(a != NULL && p != NULL);
+	size_t i;
+	for (i = 0; i < length; i++)
+		if (! p(a[i]))
+			return false;
+	return true;
+}
+
 int reduce_int(const int *a, size_t length, int (*f)(int a, int b),
                int _default) {
   contract_requires(a != NULL && f != NULL);

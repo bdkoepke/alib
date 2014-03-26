@@ -22,7 +22,9 @@ void test_insertionsort(void) {
 
 void test_find_match(void) {
   puts("test_find_match");
-  assert_equals(find_match("pattern", "this is a pattern"), 10);
+	const char pattern[] = "pattern";
+	const char text[] = "this is a pattern";
+  assert_equals(find_match(pattern, text, strlen(pattern), strlen(text)), 10);
 }
 
 void test_power(void) {

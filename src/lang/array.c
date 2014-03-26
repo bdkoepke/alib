@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-void array_puts(int a[], int length) {
+void array_puts(const int a[], int length) {
   if (length == 0)
     return;
   puts("{ ");

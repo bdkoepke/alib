@@ -20,7 +20,6 @@ alib_SOURCES =\
   lang/math_extended.c\
   lang/object.c\
   lang/sort.c\
-  lang/sort_int.c\
   lang/string.c\
 	lang/tuple.c\
   main.c\

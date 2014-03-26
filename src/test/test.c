@@ -40,3 +40,12 @@ void _assert_not_equals(int a, int b, const char *a_s, const char *b_s,
     exit(EXIT_FAILURE);
   }
 }
+
+void _assert_memcmp(const void *a, const void *b, size_t num, const char *a_s, const char *b_s,
+                        const char *file, int line, const char *func) {
+  if (memcmp(a, b, num)) {
+    fprintf(stderr, "%s:%d: %s: `%d' != `%d'.\n", file, line, func, a, b);
+    assert(false);
+    exit(EXIT_FAILURE);
+  }
+}

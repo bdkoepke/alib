@@ -1,13 +1,23 @@
-#include "../util/compare.h"
-#include "../lang/type.h"
+#include "../diag/contract.h"
 #include "../lang/algorithm.h"
-#include "test_container.h"
-#include "../lang/sort_int.h"
 #include "../lang/string.h"
+#include "../lang/type.h"
+#include "../util/compare.h"
 #include "test.h"
+#include "test_container.h"
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
+
+static int *sort_int(const int *values, size_t length) {
+	contract_requires(values != NULL && length > 0);
+
+	int *s = malloc(sizeof(int) * length);
+	memcpy(s, values, sizeof(int) * length);
+	quicksort(s, length);
+	return s;
+}
 
 void test_array_list(ArrayList *a, const int *values, size_t length) {
   test_container((Container *)a, values, length);
