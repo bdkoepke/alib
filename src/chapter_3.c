@@ -10,6 +10,7 @@
 #include "util/array_container.h"
 #include "util/binary_tree.h"
 #include "util/hashtable.h"
+#include "util/linked_queue.h"
 #include "util/linked_stack.h"
 #include "util/node.h"
 #include "util/red_black_tree.h"
@@ -73,13 +74,13 @@ void _test_linked_stack(void) {
   object_free((Object *)l);
 }
 
-void _test_queue(void) {
-  puts("test_queue");
-  Queue *q = queue_new();
+void test_linked_queue(void) {
+  puts("test_linked_queue");
+  Queue *q = linked_queue_new();
   test_queue(q, test_values, test_values_length);
   object_free((Object *)q);
 
-  q = queue_new();
+  q = linked_queue_new();
   test_queue(q, test_values_extended, test_values_extended_length);
   object_free((Object *)q);
 }

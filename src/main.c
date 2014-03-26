@@ -12,7 +12,7 @@ void chapter_2(void) {
 void chapter_3(void) {
   _test_array_list();
   _test_linked_stack();
-  _test_queue();
+  test_linked_queue();
   test_binary_tree();
   test_red_black_tree();
   test_hashtable();

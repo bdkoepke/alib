@@ -10,6 +10,7 @@
 #include "test/test_sort.h"
 #include "test/test.h"
 #include "util/compare.h"
+#include "util/linked_queue.h"
 #include "util/linked_stack.h"
 #include "util/stack.h"
 
@@ -251,7 +252,7 @@ void question_4_4(void) {
 
 	ColorPair pairs[] = { { 1, blue }, {3, red }, {4, blue}, {6, yellow}, {9, red} };
 	size_t pairs_length = array_size(pairs);
-	Queue *buckets[] = { queue_new(), queue_new(), queue_new() };
+	Queue *buckets[] = { linked_queue_new(), linked_queue_new(), linked_queue_new() };
 
 	size_t i;
 	for (i = 0; i < pairs_length; i++)

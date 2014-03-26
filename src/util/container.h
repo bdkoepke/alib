@@ -17,9 +17,37 @@ struct _container_vtable {
   bool (*empty)(const Container *);
 };
 
-void *container_search(const Container *, const void *);
-void container_insert(Container *, void *);
-void container_delete(Container *, const void *);
-bool container_empty(const Container *);
+/**
+ * Searches the specified container for the specified item.
+ *
+ * @param c the container to search.
+ * @param x the object to search for.
+ * @return the object x from the container if it exists, NULL otherwise.
+ */
+void *container_search(const Container *c, const void *x);
+
+/**
+ * Inserts the specified object into the container.
+ *
+ * @param c the container to insert the object into.
+ * @param x the object to insert into the container.
+ */
+void container_insert(Container *c, void *x);
+
+/**
+ * Deletes the specified object from the container.
+ *
+ * @param c the container to delete the object from.
+ * @param x the object to delete from the container.
+ */
+void container_delete(Container *c, const void *x);
+
+/**
+ * Gets a value indicating whether the container is empty or not.
+ *
+ * @param c the container to check for emptiness.
+ * @return true if the container is empty, false otherwise.
+ */
+bool container_empty(const Container *c);
 
 #endif /* CONTAINER_H */

@@ -15,7 +15,20 @@ struct _iterator_vtable {
   bool (*move_next)(Iterator *);
 };
 
-void *iterator_current(Iterator *);
-bool iterator_move_next(Iterator *);
+/**
+ * Gets the current iterator object.
+ *
+ * @param i the iterator.
+ * @return the current iterator object.
+ */
+void *iterator_current(Iterator *i);
+
+/**
+ * Moves the iterator to the next object.
+ * @param i the iterator to advance.
+ * @return true if the iterator moved to
+ * 	the next object, false otherwise.
+ */
+bool iterator_move_next(Iterator *i);
 
 #endif /* ITERATOR_H */

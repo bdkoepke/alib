@@ -86,7 +86,7 @@ int *unordered_product_ignoring_index(const int *X, size_t length);
 /** Basic collection tests. */
 void _test_array_list(void);
 void _test_linked_stack(void);
-void _test_queue(void);
+void test_linked_queue(void);
 void test_binary_tree(void);
 void test_red_black_tree(void);
 void test_hashtable(void);

@@ -50,6 +50,8 @@ Container *array_container_new(size_t length) {
         .delete = array_container_delete, .empty = array_container_empty
   };
 
+	// TODO: should be possible to create a lower bound to, so you could have an
+	// array that requires 1999-2010, etc.
   ArrayContainer *array = malloc(sizeof(ArrayContainer));
   array->vtable = &vtable;
   array->array = calloc(length, sizeof(void *));

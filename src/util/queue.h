@@ -14,8 +14,6 @@ struct _queue_vtable {
   void *(*head)(const Queue *);
 };
 
-Queue *queue_new();
-
 void queue_enqueue(Queue *, void *);
 void *queue_dequeue(Queue *);
 void *queue_head(const Queue *);

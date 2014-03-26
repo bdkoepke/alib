@@ -1,6 +1,6 @@
 #include "../diag/contract.h"
 #include "binary_node.h"
-#include "queue.h"
+#include "linked_queue.h"
 
 #include <stdlib.h>
 
@@ -145,7 +145,7 @@ static void queue_enqueue_non_null(Queue *q, void *x) {
 }
 
 void binary_node_level_order(BinaryNode *root, Visitor v, void *user_data) {
-  Queue *q = queue_new();
+  Queue *q = linked_queue_new();
   queue_enqueue(q, root);
   while (!container_empty((Container *)q)) {
     BinaryNode *n = queue_dequeue(q);

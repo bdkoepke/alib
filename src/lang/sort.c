@@ -1,6 +1,6 @@
-#include "../util/queue.h"
-#include "sort.h"
 #include "../lang/type.h"
+#include "../util/linked_queue.h"
+#include "sort.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -36,8 +36,8 @@ static inline bool queue_empty(const Queue *q) {
 }
 
 static void merge(int a[], int l, int m, int h) {
-  Queue *lq = queue_new();
-  Queue *hq = queue_new();
+  Queue *lq = linked_queue_new();
+  Queue *hq = linked_queue_new();
 
   size_t i;
   for (i = l; i <= m; i++)

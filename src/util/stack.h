@@ -16,12 +16,32 @@ struct _stack_vtable {
   const void *(*peek)(const Stack *);
 };
 
-void stack_push(Stack *, void *);
-void *stack_pop(Stack *);
-const void *stack_peek(const Stack *);
+/**
+ * Pushes the specified object onto the stack.
+ *
+ * @param s the stack to push the object onto.
+ * @param x the object to push onto the stack.
+ */
+void stack_push(Stack *s, void *x);
 
-void _stack_insert(Container *, void *);
+/**
+ * Removes and returns the top object from the stack.
+ *
+ * @param s the stack to get the object from.
+ * @return the object on the top of the stack.
+ */
+void *stack_pop(Stack *s);
 
-void _stack_free(Object *);
+/**
+ * Retrieves but does not remove the top object from the stack.
+ *
+ * @param s the stack to get the object from.
+ * @return the object on the top of the stack.
+ */
+const void *stack_peek(const Stack *s);
+
+void _stack_insert(Container *c, void *x);
+
+void _stack_free(Object *o);
 
 #endif /* STACK_H */

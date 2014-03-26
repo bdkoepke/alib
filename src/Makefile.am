@@ -37,6 +37,7 @@ alib_SOURCES =\
   util/hashtable.c\
   util/heap.c\
   util/iterator.c\
+  util/linked_queue.c\
   util/linked_stack.c\
   util/node.c\
   util/partial_sum.c\
