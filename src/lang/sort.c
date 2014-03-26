@@ -4,6 +4,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 void swap(int *a, int *b) {
   int temp = *a;
@@ -90,6 +91,14 @@ static void _quicksort(int a[], int l, int h) {
 }
 
 void quicksort(int a[], int length) { return _quicksort(a, 0, length - 1); }
+
+int *buckets_new(int a[], int length, int max) {
+  int *s = calloc(max + 1, sizeof(int));
+  size_t i;
+  for (i = 0; i < length; i++)
+    s[a[i]]++;
+  return s;
+}
 
 void bucketsort(int a[], int n, int max) {
   int s[max + 1];

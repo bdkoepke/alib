@@ -54,8 +54,8 @@ static int _binary_search_int(int x, const int *a, size_t l, size_t h) {
   size_t m = (l + h) / 2;
   if (a[m] == x)
     return m;
-  return x < a[m] ? _binary_search_int(x, a, l, m - 1)
-                  : _binary_search_int(x, a, m + 1, h);
+  return x < a[m] ? m == 0 ? -1 : _binary_search_int(x, a, l, m - 1)
+                           : _binary_search_int(x, a, m + 1, h);
 }
 
 int binary_search_int(int x, const int *a, size_t length) {

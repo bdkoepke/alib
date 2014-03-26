@@ -284,21 +284,75 @@ void test_bucketsort(void) {
   test_sort(_bucketsort);
 }
 
-void find_mode(int a[], size_t len) {
-  bucketsort(a, len, reduce_int(a, len, max, 0));
+size_t find_mode(int a[], size_t len) {
+  int *b = buckets_new(a, len, reduce_int(a, len, max, 0));
+
+  int bucket_value = 0;
+  size_t i, largest_bucket;
+  for (i = largest_bucket = 0; i < len; i++)
+    if (b[i] > largest_bucket) {
+      largest_bucket = b[i];
+      bucket_value = i;
+    }
+  free(b);
+  return bucket_value;
 }
 
 void question_4_5(void) {
   puts("question_4_5");
   int numbers[] = { 4, 6, 2, 4, 3, 1 };
   size_t numbers_length = array_size(numbers);
-
-  _bucketsort(numbers, numbers_length);
+  assert_equals(find_mode(numbers, numbers_length), 4);
 }
 
-void question_4_6(void) {}
-void question_4_7(void) {}
-void question_4_8(void) {}
+bool sum_pair_equals_x(int S_1[], int S_2[], size_t len, int x) {
+  // TODO: ignores integer overflow, should also be able to early exit...
+  contract_requires(S_1 != NULL && S_2 != NULL);
+
+  quicksort(S_1, len);
+  quicksort(S_2, len);
+  size_t i;
+  for (i = 0; i < len; i++)
+    if (binary_search_int(x - S_1[i], S_2, len) != -1)
+      return true;
+  return false;
+}
+
+void question_4_6(void) {
+  puts("question_4_6");
+  int S_1[] = { 1, 2, 3, 4, 5, 6 };
+  int S_2[] = { 7, 8, 9, 10, 11, 12 };
+
+  assert_true(sum_pair_equals_x(S_1, S_2, array_size(S_1), 18));
+  assert_false(sum_pair_equals_x(S_1, S_2, array_size(S_1), 19));
+  assert_false(sum_pair_equals_x(S_1, S_2, array_size(S_1), 7));
+  assert_true(sum_pair_equals_x(S_1, S_2, array_size(S_1), 8));
+}
+
+void sorted_set_union(int A[], int B[], size_t A_len, size_t B_len, int **U,
+                      int *U_len) {
+  //int U[A_len + B_len];
+}
+
+void question_4_8(void) {
+  puts("question_4_8");
+
+  int A[] = { 139, 127, 218, 117, 1, 76, 186, 190, 165, 53, 123, 58, 189, 42,
+              236, 72, 7, 67, 128, 23, 244, 206, 65, 203, 59, 137, 144, 175, 61,
+              60, 66, 200, 16, 29, 208, 95, 187, 211, 131, 28, 135, 146, 107,
+              162, 0, 82, 166, 223, 193, 41, 90, 181, 79, 251, 18, 243, 216,
+              122, 118, 36, 12, 188, 195, 8, 113, 56, 147, 149, 22, 98, 93, 210,
+              133, 84, 246, 220, 73, 227, 9, 2, 192, 183, 152, 157, 71, 39, 198,
+              138, 212, 234, 142, 47, 25, 202, 215, 37, 125, 50, 30, 109 };
+  int B[] = { 79, 64, 199, 44, 194, 192, 250, 95, 149, 1, 227, 115, 223, 226,
+              159, 243, 113, 127, 253, 165, 48, 75, 231, 164, 134, 179, 193,
+              205, 236, 160, 19, 3, 126, 73, 210, 116, 169, 18, 37, 16, 94, 162,
+              97, 86, 221, 122, 38, 208, 136, 46, 233, 5, 17, 244, 55, 84, 137,
+              186, 142, 175, 28, 99, 202, 191, 156, 112, 222, 220, 218, 76, 171,
+              245, 139, 242, 209 };
+
+}
+
 void question_4_9(void) {}
 void question_4_10(void) {}
 void question_4_11(void) {}
