@@ -273,7 +273,7 @@ void question_4_4(void) {
 
 void test_bucketsort(void) {
   puts("test_bucketsort");
-  void _bucketsort(int a[], int n) {
+  void _bucketsort(int a[], size_t n) {
     bucketsort(a, n, reduce_int(a, n, max, 0));
   }
   test_sort(_bucketsort);
@@ -527,7 +527,12 @@ void question_4_15(void) {
               120, 25, 173, 141, 245, 195, 238 };
 }
 
-void question_4_16(void) { puts("question_4_16"); }
+void question_4_16(void) {
+	puts("question_4_16");
+  int S[] = { 216, 126, 253, 231, 161, 76, 104, 60, 112, 190, 250, 138, 115,
+              120, 25, 173, 141, 245, 195, 238 };
+	assert_equals(quickselect(S, array_size(S), 10), 161);
+}
 
 void question_4_17(void) {}
 void question_4_18(void) {}

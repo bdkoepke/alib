@@ -25,8 +25,7 @@ static inline size_t heap_right_child(size_t n) {
 
 static inline void swap(void **p, size_t n, size_t parent) {
   void *t = p[n];
-  p[n] = p[parent];
-  p[parent] = t;
+  p[n] = p[parent], p[parent] = t;
 }
 
 static inline void heap_bubble_down(_Heap *h, size_t n) {

@@ -1,7 +1,9 @@
 #ifndef TEST_SORT_H
 #define TEST_SORT_H
 
-typedef void (*Sort)(int a[], int);
+#include <stddef.h>
+
+typedef void (*Sort)(int a[], size_t);
 
 void test_sort(Sort);
 

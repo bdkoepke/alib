@@ -57,6 +57,5 @@ int binary_search_int(int x, const int *a, size_t length) {
     return x < a[m] ? m == 0 ? -1 : _binary_search_int(x, a, l, m - 1)
                              : _binary_search_int(x, a, m + 1, h);
   }
-
   return _binary_search_int(x, a, 0, length - 1);
 }
