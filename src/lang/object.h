@@ -16,4 +16,13 @@ struct _object_vtable {
  */
 void object_free(Object *o);
 
+/**
+ * Default implementation of object_free for simple
+ * objects that don't require additional resource
+ * management.
+ *
+ * @param o the object to free.
+ */
+void _object_free(Object *o);
+
 #endif /* OBJECT_H */

@@ -1,4 +1,5 @@
 #include "../diag/contract.h"
+#include "../lang/math_extended.h"
 #include "heap.h"
 
 #include <stdint.h>
@@ -12,14 +13,6 @@ typedef struct {
   void **p;
 } _Heap;
 
-static inline void *heap_get(_Heap *h, size_t n) {
-  return n < h->size ? h->p[n] : NULL;
-}
-
-static inline size_t heap_parent(size_t n) {
-  contract_requires(n != 0);
-  return n / 2;
-}
 static inline size_t heap_left_child(size_t n) {
   contract_requires(n < SIZE_MAX / 2 - 1);
   return n * 2;
@@ -30,40 +23,27 @@ static inline size_t heap_right_child(size_t n) {
   return n * 2 + 1;
 }
 
-static inline size_t checked_product(size_t multiplicand, size_t multiplier,
-                                     size_t _default) {
-  size_t product = multiplicand * multiplier;
-  return product < multiplicand ? _default : product;
-}
-
-static inline size_t heap_min(_Heap *h, size_t a, size_t b) {
-  void *left = heap_get(h, a);
-  void *right = heap_get(h, b);
-  if (left == NULL)
-    return b;
-  if (right == NULL)
-    return a;
-  return h->c(left, right) < 0 ? a : b;
-}
-
 static inline void swap(void **p, size_t n, size_t parent) {
   void *t = p[n];
   p[n] = p[parent];
   p[parent] = t;
 }
 
-static inline void heap_bubble_up(_Heap *h, size_t n) {
-  if (n == 0)
-    return;
-
-  size_t parent = heap_parent(n);
-  if (h->c(h->p[parent], h->p[n]) > 0) {
-    swap(h->p, n, parent);
-    heap_bubble_up(h, parent);
-  }
-}
-
 static inline void heap_bubble_down(_Heap *h, size_t n) {
+  inline size_t heap_min(_Heap * h, size_t a, size_t b) {
+    inline void *heap_get(_Heap * h, size_t n) {
+      return n < h->size ? h->p[n] : NULL;
+    }
+
+    void *left = heap_get(h, a);
+    void *right = heap_get(h, b);
+    if (left == NULL)
+      return b;
+    if (right == NULL)
+      return a;
+    return h->c(left, right) < 0 ? a : b;
+  }
+
   if (n >= h->size)
     return;
   size_t min_index =
@@ -77,6 +57,20 @@ static inline void heap_bubble_down(_Heap *h, size_t n) {
 static size_t _heap_size(const Heap *h) { return ((_Heap *)h)->size; }
 
 static void _heap_insert(Heap *_h, void *x) {
+  inline void heap_bubble_up(_Heap * h, size_t n) {
+    inline size_t heap_parent(size_t n) {
+      contract_requires(n != 0);
+      return n / 2;
+    }
+    if (n == 0)
+      return;
+    size_t parent = heap_parent(n);
+    if (h->c(h->p[parent], h->p[n]) > 0) {
+      swap(h->p, n, parent);
+      heap_bubble_up(h, parent);
+    }
+  }
+
   _Heap *h = (_Heap *)_h;
   if (h->size >= h->capacity) {
     size_t capacity =
@@ -101,14 +95,13 @@ static void *_heap_extract_min(Heap *_h) {
 
 static bool _heap_empty(const Heap *h) { return ((const _Heap *)h)->size == 0; }
 
-static bool __heap_compare(const _Heap *h, const void *x, size_t n, size_t k) {
-  if (k <= 0 || n >= h->size || h->c(h->p[n], x) >= 0)
-    return k;
-  return __heap_compare(h, x, heap_right_child(n),
-                        __heap_compare(h, x, heap_left_child(n), k - 1));
-}
-
 static bool _heap_compare(const Heap *h, const void *x, size_t k) {
+  bool __heap_compare(const _Heap * h, const void * x, size_t n, size_t k) {
+    if (k <= 0 || n >= h->size || h->c(h->p[n], x) >= 0)
+      return k;
+    return __heap_compare(h, x, heap_right_child(n),
+                          __heap_compare(h, x, heap_left_child(n), k - 1));
+  }
   return __heap_compare((_Heap *)h, x, 0, k);
 }
 

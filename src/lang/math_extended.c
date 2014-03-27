@@ -18,14 +18,19 @@ int min(int a, int b) { return a < b ? a : b; }
 
 int max(int a, int b) { return a > b ? a : b; }
 
-static double _sqrt(unsigned int x, double l, double h, double p) {
-  if ((h - l) < p)
-    return l;
-  double m = (l + h) / 2;
-  return x < (m * m) ? _sqrt(x, l, m, p) : _sqrt(x, m, h, p);
-}
-
 double sqrt_int(unsigned int x, double p) {
+  double _sqrt(unsigned int x, double l, double h, double p) {
+    if ((h - l) < p)
+      return l;
+    double m = (l + h) / 2;
+    return x < (m * m) ? _sqrt(x, l, m, p) : _sqrt(x, m, h, p);
+  }
   contract_requires(p < 1 && p > 0);
   return _sqrt(x, 0.0, x, p);
+}
+
+size_t checked_product(size_t multiplicand, size_t multiplier,
+                       size_t _default) {
+  size_t product = multiplicand * multiplier;
+  return product < multiplicand ? _default : product;
 }

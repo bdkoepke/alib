@@ -164,13 +164,12 @@ BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   return (BinaryTree *)b;
 }
 
-static void swap(void **a, void **b) {
-  void *temp = *a;
-  *a = *b;
-  *b = temp;
-}
-
 BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
+  inline void swap(void * *a, void * *b) {
+    void *temp = *a;
+    *a = *b;
+    *b = temp;
+  }
   contract_requires(
       a != NULL && b != NULL && a->c == b->c &&
       (binary_tree_min((Dictionary *)a) > binary_tree_max((Dictionary *)b) ||
@@ -191,15 +190,14 @@ BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
   return a;
 }
 
-static bool binary_node_compare(const BinaryNode *a, const BinaryNode *b,
-                                Compare c) {
-  if (a == NULL)
-    return b == NULL;
-  return b == NULL ? false : c(a->x, b->x) == 0 &&
-                                 binary_node_compare(a->left, b->left, c) &&
-                                 binary_node_compare(a->right, b->right, c);
-}
-
 bool binary_tree_compare(const BinaryTree *a, const BinaryTree *b) {
+  bool binary_node_compare(const BinaryNode * a, const BinaryNode * b,
+                           Compare c) {
+    if (a == NULL)
+      return b == NULL;
+    return b == NULL ? false : c(a->x, b->x) == 0 &&
+                                   binary_node_compare(a->left, b->left, c) &&
+                                   binary_node_compare(a->right, b->right, c);
+  }
   return a->c != b->c ? false : binary_node_compare(a->root, b->root, a->c);
 }

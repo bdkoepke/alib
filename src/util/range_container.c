@@ -15,12 +15,6 @@ typedef struct {
 
 static const int DEFAULT_CAPACITY = 11;
 
-static inline size_t checked_product(size_t multiplicand, size_t multiplier,
-                                     size_t _default) {
-  size_t product = multiplicand * multiplier;
-  return product < multiplicand ? _default : product;
-}
-
 static void array_range_container_insert(RangeContainer *r, void *x) {
   ArrayRangeContainer *a = (ArrayRangeContainer *)r;
   if (a->size >= a->capacity) {

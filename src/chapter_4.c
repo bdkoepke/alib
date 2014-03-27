@@ -68,23 +68,21 @@ void test_binary_search(void) {
                   sorted[i]);
 }
 
-static int right_boundary(int x, const int *a, size_t l, size_t h) {
-  if (l > h)
-    return l;
-  size_t m = (l + h) / 2;
-  return x < a[m] ? right_boundary(x, a, l, m - 1)
-                  : right_boundary(x, a, m + 1, h);
-}
-
-static int left_boundary(int x, const int *a, size_t l, size_t h) {
-  if (l > h)
-    return l;
-  size_t m = (l + h) / 2;
-  return x < a[m] ? left_boundary(x, a, l, m - 1)
-                  : left_boundary(x, a, m + 1, h);
-}
-
 int count_occurrences(int x, int *s, size_t length) {
+  int right_boundary(int x, const int * a, size_t l, size_t h) {
+    if (l > h)
+      return l;
+    size_t m = (l + h) / 2;
+    return x < a[m] ? right_boundary(x, a, l, m - 1)
+                    : right_boundary(x, a, m + 1, h);
+  }
+  int left_boundary(int x, const int * a, size_t l, size_t h) {
+    if (l > h)
+      return l;
+    size_t m = (l + h) / 2;
+    return x < a[m] ? left_boundary(x, a, l, m - 1)
+                    : left_boundary(x, a, m + 1, h);
+  }
   int right = right_boundary(x, s, 0, length - 1);
   int left = left_boundary(x, s, 0, length - 1);
   assert(s[left] == s[right]);
@@ -98,13 +96,12 @@ void test_count_occurrences(void) {
  	assert_equals(count_occurrences(3, occurrences, occurrences_length), 5); */
 }
 
-static int _one_sided_binary_search(int x, int *a, int i) {
-  if (a[i - 1] == x)
-    return binary_search_int(x, a, i);
-  return _one_sided_binary_search(x, a, i * 2);
-}
-
 int one_sided_binary_search(int x, int *a) {
+  int _one_sided_binary_search(int x, int * a, int i) {
+    if (a[i - 1] == x)
+      return binary_search_int(x, a, i);
+    return _one_sided_binary_search(x, a, i * 2);
+  }
   return _one_sided_binary_search(x, a, 1);
 }
 
@@ -226,25 +223,24 @@ void question_4_3(void) {
   assert_equals(*(int *)pairs[1]->second, 5);
 }
 
-typedef enum {
-  red = 0,
-  blue = 1,
-  yellow = 2
-} Color;
-
-const char *color_to_string(Color c) {
-  switch (c) {
-  case red:
-    return "red";
-  case blue:
-    return "blue";
-  case yellow:
-    return "yellow";
-  }
-}
-
 void question_4_4(void) {
   puts("question_4_4");
+
+  typedef enum {
+    red = 0,
+    blue = 1,
+    yellow = 2
+  } Color;
+  const char *color_to_string(Color c) {
+    switch (c) {
+    case red:
+      return "red";
+    case blue:
+      return "blue";
+    case yellow:
+      return "yellow";
+    }
+  }
   typedef struct {
     int i;
     Color c;
@@ -275,12 +271,11 @@ void question_4_4(void) {
   }
 }
 
-static void _bucketsort(int a[], int n) {
-  bucketsort(a, n, reduce_int(a, n, max, 0));
-}
-
 void test_bucketsort(void) {
   puts("test_bucketsort");
+  void _bucketsort(int a[], int n) {
+    bucketsort(a, n, reduce_int(a, n, max, 0));
+  }
   test_sort(_bucketsort);
 }
 
@@ -329,6 +324,8 @@ void question_4_6(void) {
   assert_true(sum_pair_equals_x(S_1, S_2, array_size(S_1), 8));
 }
 
+void question_4_8(void) { puts("question_4_8: not implemented"); }
+
 void sorted_set_union(const int A[], const int B[], size_t A_len, size_t B_len,
                       int **U_p, size_t *U_len) {
   // TODO: add contracts...
@@ -360,9 +357,8 @@ void set_union(int A[], int B[], size_t A_len, size_t B_len, int **U_p,
   sorted_set_union(A, B, A_len, B_len, U_p, U_len);
 }
 
-void question_4_8(void) {
-  puts("question_4_8");
-
+void question_4_9(void) {
+  puts("question_4_9");
   int A[] = { 139, 127, 218, 117, 1, 76, 186, 190, 165, 53, 123, 58, 189, 42,
               236, 72, 7, 67, 128, 23, 244, 206, 65, 203, 59, 137, 144, 175, 61,
               60, 66, 200, 16, 29, 208, 95, 187, 211, 131, 28, 135, 146, 107,
@@ -386,7 +382,6 @@ void question_4_8(void) {
               190, 191, 192, 193, 194, 195, 198, 199, 200, 202, 203, 205, 206,
               208, 209, 210, 211, 212, 215, 216, 218, 220, 221, 222, 223, 226,
               227, 231, 233, 234, 236, 242, 243, 244, 245, 246, 250, 251, 253 };
-
   int *U;
   size_t length;
   set_union(A, B, array_size(A), array_size(B), &U, &length, quicksort);
@@ -398,13 +393,142 @@ void question_4_8(void) {
   free(U);
 }
 
-void question_4_9(void) {}
-void question_4_10(void) {}
-void question_4_11(void) {}
-void question_4_12(void) {}
-void question_4_14(void) {}
-void question_4_15(void) {}
-void question_4_16(void) {}
+void question_4_10(void) { puts("question_4_10: not implemented"); }
+
+void get_elements_with_frequency(int S[], size_t length, int frequency,
+                                 int **result, int *result_length) {
+  contract_requires(frequency > 0);
+
+  int _max = reduce_int(S, length, max, 0);
+  int *b = buckets_new(S, length, _max);
+  *result = malloc(sizeof(int) * (length / frequency));
+
+  *result_length = 0;
+  size_t i;
+  for (i = 0; i <= _max; i++)
+    if (b[i] > frequency)
+      (*result)[(*result_length)++] = i;
+
+  *result = realloc(*result, *result_length * sizeof(int));
+  free(b);
+}
+
+void question_4_11(void) {
+  puts("question_4_11");
+
+  int S_2[] = { 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1,
+                1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1,
+                1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1,
+                1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1,
+                1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1 };
+  size_t S_2_len = array_size(S_2);
+  int S_4[] = { 0, 0, 3, 3, 0, 0, 2, 2, 1, 3, 3, 1, 1, 0, 1, 2, 1, 1, 1, 0, 0,
+                1, 2, 0, 0, 0, 1, 3, 3, 3, 0, 0, 3, 3, 1, 1, 0, 0, 1, 1, 1, 1,
+                3, 0, 0, 3, 0, 1, 0, 0, 2, 0, 3, 2, 1, 1, 0, 1, 3, 0, 2, 2, 0,
+                0, 0, 2, 3, 2, 2, 3, 1, 0, 2, 1, 1, 2, 1, 1, 1, 1, 0, 2, 0, 2,
+                2, 1, 2, 0, 1, 3, 1, 1, 3, 2, 1, 3, 2, 1, 2, 0 };
+  size_t S_4_len = array_size(S_4);
+
+  int *S_r;
+  int r_length;
+
+  int S_2_expected[] = { 1 };
+  int S_4_expected[] = { 0, 1 };
+  get_elements_with_frequency(S_2, S_2_len, S_2_len / 2, &S_r, &r_length);
+  assert_memcmp(S_2_expected, S_r);
+  assert_equals(r_length, 1);
+  free(S_r);
+
+  get_elements_with_frequency(S_4, S_4_len, S_4_len / 4, &S_r, &r_length);
+  assert_memcmp(S_4_expected, S_r);
+  assert_equals(r_length, 2);
+  free(S_r);
+}
+
+void question_4_12(void) {
+  puts("question_4_12");
+
+  Heap *h = heap_new(compare_int_pointer);
+  int S[] = { 7, 3, 4, 2, 1, 9, 8, 5, 6 };
+  int sorted[] = { 1, 2, 3, 4, 5 };
+  int k = array_size(sorted);
+
+  size_t i;
+  for (i = 0; i < array_size(S); i++)
+    heap_insert(h, INT_TO_POINTER(S[i]));
+  for (i = 0; i < k; i++)
+    assert_equals(POINTER_TO_INT(heap_extract_min(h)), sorted[i]);
+  object_free((Object *)h);
+}
+
+void question_4_14(void) {
+  puts("question_4_14");
+
+  int S_0[] = { 66, 73, 27, 57, 56, 84, 14, 1, 94, 72, 28, 54, 51, 89, 95, 77,
+                90, 47 };
+  int S_1[] = { 41, 34, 57, 40, 98, 78, 72, 77, 32, 11 };
+  int S_2[] = { 44, 93, 11, 98, 28, 51, 35, 79, 55, 3, 90 };
+  int S_3[] = { 62, 79, 55, 65, 73 };
+  int S_4[] = { 37, 55, 88, 1, 45, 98 };
+  int S_5[] = { 85, 73, 99, 80, 53, 59, 83, 86, 52, 19, 60 };
+  int S_6[] = { 68, 38, 34, 52, 6, 95, 99, 49, 56, 11, 85 };
+  int S_7[] = { 75, 27, 24, 6, 83, 21 };
+  int S_8[] = { 53, 97, 31, 32, 91, 64, 55, 96, 23, 87, 95 };
+  int S_9[] = { 56, 4, 74, 83, 2, 55, 23, 92, 19, 45, 26 };
+  size_t k = 10;
+  int S[] = { 1, 2, 3, 4, 6, 11, 14, 19, 21, 23, 24, 26, 27, 28, 31, 32, 34, 35,
+              37, 38, 40, 41, 44, 45, 47, 49, 51, 52, 53, 54, 55, 56, 57, 59,
+              60, 62, 64, 65, 66, 68, 72, 73, 74, 75, 77, 78, 79, 80, 83, 84,
+              85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
+  size_t n = array_size(S);
+
+  Heap *h = heap_new(compare_int_pointer);
+  size_t i;
+  for (i = 0; i < array_size(S_0); i++)
+    heap_insert(h, INT_TO_POINTER(S_0[i]));
+  for (i = 0; i < array_size(S_1); i++)
+    heap_insert(h, INT_TO_POINTER(S_1[i]));
+  for (i = 0; i < array_size(S_2); i++)
+    heap_insert(h, INT_TO_POINTER(S_2[i]));
+  for (i = 0; i < array_size(S_3); i++)
+    heap_insert(h, INT_TO_POINTER(S_3[i]));
+  for (i = 0; i < array_size(S_4); i++)
+    heap_insert(h, INT_TO_POINTER(S_4[i]));
+  for (i = 0; i < array_size(S_5); i++)
+    heap_insert(h, INT_TO_POINTER(S_5[i]));
+  for (i = 0; i < array_size(S_6); i++)
+    heap_insert(h, INT_TO_POINTER(S_6[i]));
+  for (i = 0; i < array_size(S_7); i++)
+    heap_insert(h, INT_TO_POINTER(S_7[i]));
+  for (i = 0; i < array_size(S_8); i++)
+    heap_insert(h, INT_TO_POINTER(S_8[i]));
+  for (i = 0; i < array_size(S_9); i++)
+    heap_insert(h, INT_TO_POINTER(S_9[i]));
+
+  int *_S = calloc(n, sizeof(int));
+
+  i = 0;
+  int _min = 0;
+  while (!heap_empty(h)) {
+    int min = POINTER_TO_INT(heap_extract_min(h));
+    if (_min != min)
+      _S[i++] = _min = min;
+  }
+  object_free((Object *)h);
+
+  assert_equals(i, n);
+  assert_memcmp(S, _S);
+  free(_S);
+}
+
+void question_4_15(void) {
+  puts("question_4_15: not implemented");
+  int S[] = { 216, 126, 253, 231, 161, 76, 104, 60, 112, 190, 250, 138, 115,
+              120, 25, 173, 141, 245, 195, 238 };
+}
+
+void question_4_16(void) { puts("question_4_16"); }
+
 void question_4_17(void) {}
 void question_4_18(void) {}
 void question_4_19(void) {}

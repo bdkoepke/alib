@@ -17,48 +17,45 @@ typedef struct {
   void *x;
 } KeyValue;
 
-static KeyValue *key_value_new(int k, void *x) {
-  KeyValue *t = malloc(sizeof(KeyValue));
-  t->k = k;
-  t->x = x;
-  return t;
-}
-
-static bool __sorted_set_member(const BinaryNode *n, Compare c, const void *x) {
-  if (n == NULL)
-    return false;
-  KeyValue *t = (KeyValue *)n->x;
-  int r = c(x, t->x);
-  if (r == 0)
-    return true;
-  return r < 0 ? __sorted_set_member(n->left, c, x)
-               : __sorted_set_member(n->right, c, x);
-}
-
 static bool _sorted_set_member(const SortedSet *s, const void *x) {
+  bool __sorted_set_member(const BinaryNode * n, Compare c, const void * x) {
+    if (n == NULL)
+      return false;
+    KeyValue *t = (KeyValue *)n->x;
+    int r = c(x, t->x);
+    if (r == 0)
+      return true;
+    return r < 0 ? __sorted_set_member(n->left, c, x)
+                 : __sorted_set_member(n->right, c, x);
+  }
   return __sorted_set_member(((const _SortedSet *)s)->root,
                              ((const _SortedSet *)s)->c, x);
 }
 
-static void __sorted_set_insert(BinaryNode *n, BinaryNode **p, Compare c,
-                                void *x) {
-  if (n == NULL)
-    *p = binary_node_new_leaf(key_value_new(0, x));
-  else {
-    KeyValue *t = (KeyValue *)n->x;
-    int r = c(x, t->x);
-    BinaryNode **_p;
-    if (r > 0)
-      _p = &(n->right);
-    else {
-      _p = &(n->left);
-      t->k++;
-    }
-    __sorted_set_insert(*_p, _p, c, x);
-  }
-}
-
 static void _sorted_set_insert(SortedSet *_s, void *x) {
+  void __sorted_set_insert(BinaryNode * n, BinaryNode * *p, Compare c,
+                           void * x) {
+    KeyValue *key_value_new(int k, void * x) {
+      KeyValue *t = malloc(sizeof(KeyValue));
+      t->k = k;
+      t->x = x;
+      return t;
+    }
+    if (n == NULL)
+      *p = binary_node_new_leaf(key_value_new(0, x));
+    else {
+      KeyValue *t = (KeyValue *)n->x;
+      int r = c(x, t->x);
+      BinaryNode **_p;
+      if (r > 0)
+        _p = &(n->right);
+      else {
+        _p = &(n->left);
+        t->k++;
+      }
+      __sorted_set_insert(*_p, _p, c, x);
+    }
+  }
   _SortedSet *s = (_SortedSet *)_s;
   __sorted_set_insert(s->root, &(s->root), s->c, x);
 }
@@ -70,33 +67,32 @@ static KeyValue *sorted_set_min(BinaryNode *root) {
   return (KeyValue *)n->x;
 }
 
-static void *__sorted_set_delete(BinaryNode *n, BinaryNode **p, size_t k) {
-  KeyValue *t = (KeyValue *)n->x;
-  /*
- 	printf("k: %d, t->k: %d\n", k, t->k);
-   int r = k - t->k;
-   if (r < 0) {
-     t->k--;
-     return __sorted_set_delete(n->left, &(n->left), k);
-   } else if (r > 0)
-     return __sorted_set_delete(n->right, &(n->right), k);
-   else {
-     if (binary_node_is_branch(n)) {
-       KeyValue *min = sorted_set_min(n->right);
-       n->x = min;
-       return __sorted_set_delete(n->right, &(n->right), min->k);
-     } else {
-       *p = (n->left != NULL) ? n->left : n->right;
-       void *x = ((KeyValue *)n->x)->x;
-       free(n->x);
-       free(n);
-       return x;
-     }
-   }
- 	*/
-}
-
 static void *_sorted_set_delete(SortedSet *s, size_t k) {
+  void *__sorted_set_delete(BinaryNode * n, BinaryNode * *p, size_t k) {
+    KeyValue *t = (KeyValue *)n->x;
+    /*
+  		printf("k: %d, t->k: %d\n", k, t->k);
+  		 int r = k - t->k;
+  		 if (r < 0) {
+  			 t->k--;
+  			 return __sorted_set_delete(n->left, &(n->left), k);
+  		 } else if (r > 0)
+  			 return __sorted_set_delete(n->right, &(n->right), k);
+  		 else {
+  			 if (binary_node_is_branch(n)) {
+  				 KeyValue *min = sorted_set_min(n->right);
+  				 n->x = min;
+  				 return __sorted_set_delete(n->right, &(n->right), min->k);
+  			 } else {
+  				 *p = (n->left != NULL) ? n->left : n->right;
+  				 void *x = ((KeyValue *)n->x)->x;
+  				 free(n->x);
+  				 free(n);
+  				 return x;
+  			 }
+  		 }
+  		*/
+  }
   BinaryNode *root = (((_SortedSet *)s)->root);
   return __sorted_set_delete(root, &(root), k);
 }

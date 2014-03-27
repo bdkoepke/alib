@@ -1,4 +1,5 @@
 #include "../diag/contract.h"
+#include "../lang/math_extended.h"
 #include "hashtable.h"
 #include "node.h"
 
@@ -15,32 +16,9 @@ typedef struct {
   float factor;
 } Hashtable;
 
-static inline size_t checked_product(size_t multiplicand, size_t multiplier,
-                                     size_t _default) {
-  size_t product = multiplicand * multiplier;
-  return product < multiplicand ? _default : product;
-}
-
 static inline void _hashtable_insert(Hashtable *h, void *x) {
   size_t hash = h->h(x) % h->capacity;
   node_insert(&h->array[hash], x);
-}
-
-static inline void hashtable_resize(Hashtable *h, size_t capacity) {
-  contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
-  Node **array = h->array;
-  size_t _capacity = h->capacity;
-  h->capacity = capacity;
-  h->array = calloc(capacity, sizeof(Node *));
-  size_t i;
-  for (i = 0; i < _capacity; i++)
-    if (array[i] != NULL) {
-      Node *n;
-      for (n = array[i]; n != NULL; n = n->n)
-        _hashtable_insert(h, n->x);
-      node_free_r(n);
-    }
-  free(array);
 }
 
 static void hashtable_free(Object *o) {
@@ -57,6 +35,23 @@ static void *hashtable_search(const Container *c, const void *x) {
 }
 
 static void hashtable_insert(Container *c, void *x) {
+  inline void hashtable_resize(Hashtable * h, size_t capacity) {
+    contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
+    Node **array = h->array;
+    size_t _capacity = h->capacity;
+    h->capacity = capacity;
+    h->array = calloc(capacity, sizeof(Node *));
+    size_t i;
+    for (i = 0; i < _capacity; i++)
+      if (array[i] != NULL) {
+        Node *n;
+        for (n = array[i]; n != NULL; n = n->n)
+          _hashtable_insert(h, n->x);
+        node_free_r(n);
+      }
+    free(array);
+  }
+
   Hashtable *h = (Hashtable *)c;
   contract_requires(x != NULL && h->size < SIZE_MAX);
 

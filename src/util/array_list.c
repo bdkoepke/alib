@@ -1,4 +1,5 @@
 #include "../diag/contract.h"
+#include "../lang/math_extended.h"
 #include "array_list.h"
 
 #include <assert.h>
@@ -13,20 +14,6 @@ typedef struct {
 } _ArrayList;
 
 static const int DEFAULT_CAPACITY = 11;
-
-static inline size_t max(size_t a, size_t b) { return a > b ? a : b; }
-
-static inline size_t checked_product(size_t multiplicand, size_t multiplier,
-                                     size_t _default) {
-  size_t product = multiplicand * multiplier;
-  return product < multiplicand ? _default : product;
-}
-
-static void shift_right(void **a, size_t length, size_t offset, size_t x) {
-  size_t i;
-  for (i = offset; i < (length - x); i++)
-    a[i] = a[i + x];
-}
 
 static inline void array_list_resize(_ArrayList *a, size_t capacity) {
   contract_requires(a->size < capacity);
@@ -58,15 +45,21 @@ static void _array_list_insert(Container *_a, void *x) {
   array_list_set((ArrayList *)a, size, x);
 }
 
-static inline size_t array_list_indexof(ArrayList *a, const void *x) {
-  size_t i;
-  size_t size = array_list_size(a);
-  for (i = 0; i < size; i++)
-    if (array_list_get(a, i) == x)
-      return i;
-}
-
 static void array_list_delete(Container *c, const void *x) {
+  inline void shift_right(void * *a, size_t length, size_t offset, size_t x) {
+    size_t i;
+    for (i = offset; i < (length - x); i++)
+      a[i] = a[i + x];
+  }
+  inline size_t array_list_indexof(ArrayList * a, const void * x) {
+    size_t i;
+    size_t size = array_list_size(a);
+    for (i = 0; i < size; i++)
+      if (array_list_get(a, i) == x)
+        return i;
+  }
+  inline size_t max(size_t a, size_t b) { return a > b ? a : b; }
+
   ArrayList *a = (ArrayList *)c;
   _ArrayList *_a = (_ArrayList *)a;
   size_t size = array_list_size(a);

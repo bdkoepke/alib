@@ -213,12 +213,9 @@ void question_3_9(void) {
   object_free((Object *)concat);
 }
 
-static bool validate_weight(double weight) {
-  return weight > 0.0 && weight <= 1.0;
-}
-
 size_t bin_packing(const double *weights, size_t length,
                    bool (*f)(const Dictionary *, double, double *)) {
+  bool validate_weight(double weight) { return weight > 0.0 && weight <= 1.0; }
   contract_requires(weights != NULL &&
                     all_double(weights, length, validate_weight));
 
@@ -243,22 +240,22 @@ size_t bin_packing(const double *weights, size_t length,
   return bin == 0 ? bins : bins + 1;
 }
 
-static bool bin_packing_best_fit_heuristic(const Dictionary *d, double bin,
-                                           double *out_next) {
-  contract_requires(d != NULL && out_next != NULL);
-  *out_next = *(double *)dictionary_predecessor(d, &bin);
-  return out_next == NULL;
-}
 size_t bin_packing_best_fit(const double *weights, size_t length) {
+  bool bin_packing_best_fit_heuristic(const Dictionary * d, double bin,
+                                      double * out_next) {
+    contract_requires(d != NULL && out_next != NULL);
+    *out_next = *(double *)dictionary_predecessor(d, &bin);
+    return out_next == NULL;
+  }
   return bin_packing(weights, length, bin_packing_best_fit_heuristic);
 }
 
-static bool bin_packing_worst_fit_heuristic(const Dictionary *d, double bin,
-                                            double *out_next) {
-  contract_requires(d != NULL && out_next != NULL);
-  return (*out_next = *(double *)dictionary_min(d)) > (1 - bin);
-}
 size_t bin_packing_worst_fit(const double *weights, size_t length) {
+  bool bin_packing_worst_fit_heuristic(const Dictionary * d, double bin,
+                                       double * out_next) {
+    contract_requires(d != NULL && out_next != NULL);
+    return (*out_next = *(double *)dictionary_min(d)) > (1 - bin);
+  }
   return bin_packing(weights, length, bin_packing_worst_fit_heuristic);
 }
 
@@ -361,10 +358,6 @@ void question_3_21(void) {
 
   object_free((Object *)a);
   object_free((Object *)b);
-}
-
-static void linked_stack_visitor(void *p, void *x) {
-  stack_push((Stack *)p, x);
 }
 
 void question_3_22(void) {

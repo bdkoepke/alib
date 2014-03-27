@@ -23,11 +23,8 @@ void tree_level_order(Tree *t, Visitor v, void *user_data) {
   t->vtable->level_order(t, v, user_data);
 }
 
-static void linked_stack_visitor(void *p, void *x) {
-  stack_push((Stack *)p, x);
-}
-
 LinkedStack *tree_to_linked_stack(Tree *t) {
+  void linked_stack_visitor(void * p, void * x) { stack_push((Stack *)p, x); }
   LinkedStack *l = linked_stack_new();
   tree_in_order(t, linked_stack_visitor, l);
   return l;

@@ -139,12 +139,12 @@ void binary_node_post_order(BinaryNode *n, Visitor v, void *user_data) {
   }
 }
 
-static void queue_enqueue_non_null(Queue *q, void *x) {
-  if (x != NULL)
-    queue_enqueue(q, x);
-}
-
 void binary_node_level_order(BinaryNode *root, Visitor v, void *user_data) {
+  inline void queue_enqueue_non_null(Queue * q, void * x) {
+    if (x != NULL)
+      queue_enqueue(q, x);
+  }
+
   Queue *q = linked_queue_new();
   queue_enqueue(q, root);
   while (!container_empty((Container *)q)) {
