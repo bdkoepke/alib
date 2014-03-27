@@ -59,7 +59,6 @@ void chapter_4(void) {
   question_4_14();
   question_4_15();
   question_4_16();
-  question_4_17();
   question_4_18();
   question_4_19();
   question_4_20();

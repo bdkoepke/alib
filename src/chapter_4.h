@@ -40,7 +40,7 @@ void question_4_12(void);
 void question_4_14(void);
 void question_4_15(void);
 void question_4_16(void);
-void question_4_17(void);
+
 void question_4_18(void);
 void question_4_19(void);
 void question_4_20(void);

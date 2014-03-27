@@ -31,6 +31,7 @@ alib_SOURCES =\
   util/array_list.c\
   util/binary_node.c\
   util/binary_tree.c\
+	util/color_array.c\
   util/compare.c\
   util/container.c\
   util/dictionary.c\

@@ -9,6 +9,7 @@
 #include "test/test_container.h"
 #include "test/test_container_values.h"
 #include "test/test_sort.h"
+#include "util/color_array.h"
 #include "util/compare.h"
 #include "util/linked_queue.h"
 #include "util/linked_stack.h"
@@ -528,16 +529,69 @@ void question_4_15(void) {
 }
 
 void question_4_16(void) {
-	puts("question_4_16");
+  puts("question_4_16");
   int S[] = { 216, 126, 253, 231, 161, 76, 104, 60, 112, 190, 250, 138, 115,
               120, 25, 173, 141, 245, 195, 238 };
-	assert_equals(quickselect(S, array_size(S), 10), 161);
+  assert_equals(quickselect(S, array_size(S), 10), 161);
 }
 
-void question_4_17(void) {}
-void question_4_18(void) {}
+void dutch_national_flag_problem(ColorArray *c) {
+  size_t low = 0, middle = 0, high = color_array_length(c) - 1;
+  while (middle <= high)
+    switch (color_array_examine(c, middle)) {
+    case Red:
+      color_array_swap(c, low++, middle++);
+      break;
+    case White:
+      middle++;
+      break;
+    case Blue:
+      color_array_swap(c, middle, high--);
+      break;
+    }
+}
+
+void question_4_18(void) {
+  puts("question_4_18");
+
+  Color colors[] = { Red, White, Blue, Blue, White, White, Red, White, Red,
+                     Blue };
+  Color sorted[] = { Red, Red, Red, White, White, White, White, Blue, Blue,
+                     Blue };
+
+  ColorArray *c = color_array_new(colors, array_size(colors));
+  dutch_national_flag_problem(c);
+  assert_memcmp(colors, sorted);
+  object_free((Object *)c);
+}
+
 void question_4_19(void) {}
-void question_4_20(void) {}
+
+void three_way_partition(int a[], size_t length) {
+  size_t low = 0, middle = 0, high = length - 1;
+  while (middle <= high)
+    if (a[middle] < 0)
+      swap(&a[low++], &a[middle++]);
+    else if (a[middle] == 0)
+      middle++;
+    else
+      swap(&a[middle], &a[high--]);
+}
+
+void question_4_20(void) {
+  puts("question_4_20");
+
+  int a[] = { 0, -4, 7, 8, -1, 7, -1, -1, 0, -4, -8, -2, -2, -9, 1, 4, -6, -6,
+              3, -4 };
+  int ordering[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2,
+                     2 };
+
+  three_way_partition(a, array_size(a));
+  size_t i;
+  for (i = 0; i < array_size(a); i++)
+			assert_equals(ordering[i], a[i] < 0 ? 0 : a[i] == 0 ? 1 : 2);
+}
+
 void question_4_22(void) {}
 void question_4_23(void) {}
 void question_4_24(void) {}

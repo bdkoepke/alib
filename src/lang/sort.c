@@ -74,26 +74,23 @@ void mergesort(int a[], size_t length) {
   return _mergesort(a, 0, length - 1);
 }
 
-static int partition(int a[], size_t l, size_t h) {
-	size_t p = h;
-	int _h = l;
-
-	size_t i;
+static size_t partition(int a[], size_t l, size_t h) {
+	size_t i, p = l;
 	for (i = l; i < h; i++)
-		if (a[i] < a[p]) {
-			swap(&a[i], &a[_h]);
-			_h++;
+		if (a[i] < a[h]) {
+			swap(&a[i], &a[p]);
+			p++;
 		}
-	swap(&a[p], &a[_h]);
-	return _h;
+	swap(&a[h], &a[p]);
+	return p;
 }
 
 int quickselect(int a[], size_t length, size_t k) {
 	int qs(int a[], size_t l, size_t h, size_t k) {
-		int p = partition(a, l, h);
+		size_t p = partition(a, l, h);
 		if (k == p)
 			return a[p];
-		return k < p ? qs(a, l, p - 1, k) : qs(a, p + 1, h, k);
+		return k < p ? qs(a, l, p == 0 ? 0 : p - 1, k) : qs(a, p + 1, h, k);
 	}
 	contract_requires(a != NULL && k < length);
 	return qs(a, 0, length, k);
@@ -102,7 +99,7 @@ int quickselect(int a[], size_t length, size_t k) {
 void quicksort(int a[], size_t length) {
   void _quicksort(int a[], size_t l, size_t h) {
     if (l < h) {
-      int p = partition(a, l, h);
+      size_t p = partition(a, l, h);
       _quicksort(a, l, p == 0 ? 0 : p - 1);
       _quicksort(a, p + 1, h);
     }
