@@ -8,13 +8,13 @@
 #include <stdlib.h>
 
 void swap(int *a, int *b) {
-	contract_requires(a != NULL && b != NULL);
+  contract_requires(a != NULL && b != NULL);
   int t = *a;
-	*a = *b, *b = t;
+  *a = *b, *b = t;
 }
 
 void selectionsort(int a[], size_t length) {
-	contract_requires(a != NULL);
+  contract_requires(a != NULL);
   int i;
   for (i = 0; i < length; i++) {
     int min = i;
@@ -28,40 +28,43 @@ void selectionsort(int a[], size_t length) {
 }
 
 void insertionsort(int a[], size_t length) {
-	contract_requires(a != NULL);
+  contract_requires(a != NULL);
   int i, j;
   for (i = 1; i < length; i++)
     for (j = i; j > 0 && a[j - 1] > a[j]; j--)
       swap(&a[j], &a[j - 1]);
 }
 
+void merge(int a[], int l, int m, int h) {
+  inline bool queue_empty(const Queue * q) {
+    return container_empty((const Container *)q);
+  }
+
+  Queue *lq = linked_queue_new();
+  Queue *hq = linked_queue_new();
+
+  size_t i;
+  for (i = l; i <= m; i++)
+    queue_enqueue(lq, INT_TO_POINTER(a[i]));
+  for (; i <= h; i++)
+    queue_enqueue(hq, INT_TO_POINTER(a[i]));
+
+  for (i = l; !queue_empty(lq) && !queue_empty(hq); i++)
+    a[i] = POINTER_TO_INT(queue_dequeue(
+        POINTER_TO_INT(queue_head(lq)) <= POINTER_TO_INT(queue_head(hq)) ? lq
+                                                                         : hq));
+
+  for (; !queue_empty(lq); i++)
+    a[i] = POINTER_TO_INT(queue_dequeue(lq));
+  for (; !queue_empty(hq); i++)
+    a[i] = POINTER_TO_INT(queue_dequeue(hq));
+
+  object_free((Object *)lq);
+  object_free((Object *)hq);
+}
+
 void mergesort(int a[], size_t length) {
   void _mergesort(int a[], int l, int h) {
-    void merge(int a[], int l, int m, int h) {
-      Queue *lq = linked_queue_new();
-      Queue *hq = linked_queue_new();
-
-      size_t i;
-      for (i = l; i <= m; i++)
-        queue_enqueue(lq, INT_TO_POINTER(a[i]));
-      for (; i <= h; i++)
-        queue_enqueue(hq, INT_TO_POINTER(a[i]));
-
-      inline bool queue_empty(const Queue * q) {
-        return container_empty((const Container *)q);
-      }
-
-      for (i = l; !queue_empty(lq) && !queue_empty(hq); i++)
-        a[i] = POINTER_TO_INT(queue_dequeue(
-            POINTER_TO_INT(queue_head(lq)) <= POINTER_TO_INT(queue_head(hq))
-                ? lq
-                : hq));
-
-      for (; !queue_empty(lq); i++)
-        a[i] = POINTER_TO_INT(queue_dequeue(lq));
-      for (; !queue_empty(hq); i++)
-        a[i] = POINTER_TO_INT(queue_dequeue(hq));
-    }
 
     if (l < h) {
       size_t m = (l + h) / 2;
@@ -70,30 +73,30 @@ void mergesort(int a[], size_t length) {
       merge(a, l, m, h);
     }
   }
-	contract_requires(a != NULL);
+  contract_requires(a != NULL);
   return _mergesort(a, 0, length - 1);
 }
 
 static size_t partition(int a[], size_t l, size_t h) {
-	size_t i, p = l;
-	for (i = l; i < h; i++)
-		if (a[i] < a[h]) {
-			swap(&a[i], &a[p]);
-			p++;
-		}
-	swap(&a[h], &a[p]);
-	return p;
+  size_t i, p = l;
+  for (i = l; i < h; i++)
+    if (a[i] < a[h]) {
+      swap(&a[i], &a[p]);
+      p++;
+    }
+  swap(&a[h], &a[p]);
+  return p;
 }
 
 int quickselect(int a[], size_t length, size_t k) {
-	int qs(int a[], size_t l, size_t h, size_t k) {
-		size_t p = partition(a, l, h);
-		if (k == p)
-			return a[p];
-		return k < p ? qs(a, l, p == 0 ? 0 : p - 1, k) : qs(a, p + 1, h, k);
-	}
-	contract_requires(a != NULL && k < length);
-	return qs(a, 0, length, k);
+  int qs(int a[], size_t l, size_t h, size_t k) {
+    size_t p = partition(a, l, h);
+    if (k == p)
+      return a[p];
+    return k < p ? qs(a, l, p == 0 ? 0 : p - 1, k) : qs(a, p + 1, h, k);
+  }
+  contract_requires(a != NULL && k < length);
+  return qs(a, 0, length, k);
 }
 
 void quicksort(int a[], size_t length) {
@@ -104,12 +107,12 @@ void quicksort(int a[], size_t length) {
       _quicksort(a, p + 1, h);
     }
   }
-	contract_requires(a != NULL);
+  contract_requires(a != NULL);
   return _quicksort(a, 0, length - 1);
 }
 
 int *buckets_new(int a[], size_t length, int max) {
-	contract_requires(a != NULL);
+  contract_requires(a != NULL);
   int *s = calloc(max + 1, sizeof(int));
   size_t i;
   for (i = 0; i < length; i++)
@@ -118,7 +121,7 @@ int *buckets_new(int a[], size_t length, int max) {
 }
 
 void bucketsort(int a[], size_t length, int max) {
-	contract_requires(a != NULL);
+  contract_requires(a != NULL);
   int s[max + 1];
 
   size_t i, j, k;

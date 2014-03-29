@@ -30,6 +30,16 @@ void quicksort(int a[], size_t length);
 void bucketsort(int a[], size_t length, int max);
 
 /**
+ * Merge portion of mergesort.
+ *
+ * @param a the array to merge.
+ * @param l the start of the array.
+ * @param m the middle of the array.
+ * @param h the end of the array.
+ */
+void merge(int a[], int l, int m, int h);
+
+/**
  * Quickly selects the kth ordered element from the list.
  *
  * @param a the array to get the kth element from.

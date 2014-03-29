@@ -4,9 +4,9 @@
 #include <stddef.h>
 
 typedef enum {
-	Red = 0,
-	White = 1,
-	Blue = 2
+  Red = 0,
+  White = 1,
+  Blue = 2
 } Color;
 
 const char *color_to_string(const Color);

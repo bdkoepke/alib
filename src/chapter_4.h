@@ -3,7 +3,17 @@
 
 #include <stddef.h>
 
-int count_occurrences(int x, int *s, size_t length);
+/**
+ * Counts the number of occurrences of the element x
+ * in the specified array.
+ *
+ * @param a the array to search.
+ * @param length the length of the array.
+ * @param x the element to search for.
+ * @return the number of occurrences of the element.
+ */
+size_t count_occurrences(int a[], size_t length, int x);
+
 /**
  * Computes max and min in $n + ceiling(\frac{n}{2})$ comparisons.
  *
@@ -15,7 +25,7 @@ int count_occurrences(int x, int *s, size_t length);
  */
 void max_min(int *a, size_t length, int *out_max, int *out_min);
 
-/** Basic collection tests. */
+/** Basic lang tests. */
 void _test_heap(void);
 void test_mergesort(void);
 void test_quicksort(void);
@@ -23,6 +33,7 @@ void test_count_occurrences(void);
 void test_sqrt(void);
 void test_max_min(void);
 void test_bucketsort(void);
+void test_binary_sort(void);
 
 void question_4_1(void);
 void question_4_2(void);
@@ -42,10 +53,8 @@ void question_4_15(void);
 void question_4_16(void);
 
 void question_4_18(void);
-void question_4_19(void);
 void question_4_20(void);
 
-void question_4_22(void);
 void question_4_23(void);
 void question_4_24(void);
 void question_4_25(void);

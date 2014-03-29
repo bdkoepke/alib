@@ -59,6 +59,6 @@ void tree_level_order(Tree *t, Visitor v, void *user_data);
  * @param t the tree to get a stack of.
  * @return a new sorted linked stack containing the elements from the tree.
  */
-LinkedStack *tree_to_linked_stack(Tree *t);
+LinkedStack *tree_to_linked_stack(const Tree *t);
 
 #endif /* TREE_H */

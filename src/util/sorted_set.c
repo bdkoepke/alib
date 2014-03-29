@@ -46,7 +46,7 @@ static void _sorted_set_insert(SortedSet *_s, void *x) {
     else {
       KeyValue *t = (KeyValue *)n->x;
       int r = c(x, t->x);
-			BinaryNode **_p = (r > 0) ? &(n->right) : (t->k++, &(n->left));
+      BinaryNode **_p = (r > 0) ? &(n->right) : (t->k++, &(n->left));
       __sorted_set_insert(*_p, _p, c, x);
     }
   }
