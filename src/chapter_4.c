@@ -993,9 +993,6 @@ void question_4_46(void) {
     assert_equals(table[2][2][1].i, 2);
     assert_equals(table[2][2][2].c, Light);
     assert_equals(table[2][2][2].i, 1);
-    printf("%d\n", compare_coins(set_0, set_1, array_size(set_0)));
-    printf("%d\n", compare_coins(set_2, set_3, array_size(set_2)));
-    printf("%d\n", compare_coins(set_4, set_5, array_size(set_4)));
     return table[compare_coins(set_0, set_1, array_size(set_0))][
         compare_coins(set_2, set_3, array_size(set_2))][
         compare_coins(set_4, set_5, array_size(set_4))];
