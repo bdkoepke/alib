@@ -73,16 +73,16 @@ void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
 
 bool binary_node_empty(const BinaryNode *n) { return n == NULL; }
 
-void *binary_node_min(BinaryNode *root) {
+void *binary_node_min(const BinaryNode *root) {
   BinaryNode *n;
-  for (n = root; n->left != NULL; n = n->left)
+  for (n = (BinaryNode *)root; n->left != NULL; n = n->left)
     continue;
   return n->x;
 }
 
-void *binary_node_max(BinaryNode *root) {
+void *binary_node_max(const BinaryNode *root) {
   BinaryNode *n;
-  for (n = root; n->right != NULL; n = n->right)
+  for (n = (BinaryNode *)root; n->right != NULL; n = n->right)
     continue;
   return n->x;
 }
@@ -115,7 +115,7 @@ void *binary_node_successor(const BinaryNode *n, Compare c, const void *x) {
   }
 }
 
-void binary_node_pre_order(BinaryNode *n, Visitor v, void *user_data) {
+void binary_node_pre_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
     v(user_data, n->x);
     binary_node_pre_order(n->left, v, user_data);
@@ -123,7 +123,7 @@ void binary_node_pre_order(BinaryNode *n, Visitor v, void *user_data) {
   }
 }
 
-void binary_node_in_order(BinaryNode *n, Visitor v, void *user_data) {
+void binary_node_in_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
     binary_node_in_order(n->left, v, user_data);
     v(user_data, n->x);
@@ -131,7 +131,7 @@ void binary_node_in_order(BinaryNode *n, Visitor v, void *user_data) {
   }
 }
 
-void binary_node_post_order(BinaryNode *n, Visitor v, void *user_data) {
+void binary_node_post_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
     binary_node_post_order(n->left, v, user_data);
     binary_node_post_order(n->right, v, user_data);
@@ -139,14 +139,15 @@ void binary_node_post_order(BinaryNode *n, Visitor v, void *user_data) {
   }
 }
 
-void binary_node_level_order(BinaryNode *root, Visitor v, void *user_data) {
+void binary_node_level_order(const BinaryNode *root, Visitor v,
+                             void *user_data) {
   inline void queue_enqueue_non_null(Queue * q, void * x) {
     if (x != NULL)
       queue_enqueue(q, x);
   }
 
   Queue *q = linked_queue_new();
-  queue_enqueue(q, root);
+  queue_enqueue(q, (BinaryNode *)root);
   while (!container_empty((Container *)q)) {
     BinaryNode *n = queue_dequeue(q);
     v(user_data, n->x);

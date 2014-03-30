@@ -100,17 +100,17 @@ void test_binary_tree(void) {
 }
 
 void test_red_black_tree(void) {
-  puts("test_red_black_tree: not implemented");
-  /*  Tree *r = red_black_tree_new(compare_int_pointer);
-    test_tree((Tree *)r, test_values, test_values_length, test_values_pre_order,
-              test_values_in_order, test_values_post_order,
-              test_values_level_order);
-    object_free((Object *)r);
-  
-    r = red_black_tree_new(compare_int_pointer);
-    test_dictionary((Dictionary *)r, test_values_extended,
-                    test_values_extended_length);
-    object_free((Object *)r); */
+  puts("test_red_black_tree");
+  Tree *r = red_black_tree_new(compare_int_pointer);
+  test_tree((Tree *)r, test_values, test_values_length, test_values_pre_order,
+            test_values_in_order, test_values_post_order,
+            test_values_level_order);
+  object_free((Object *)r);
+
+  r = red_black_tree_new(compare_int_pointer);
+  test_dictionary((Dictionary *)r, test_values_extended,
+                  test_values_extended_length);
+  object_free((Object *)r);
 }
 
 void test_hashtable(void) {

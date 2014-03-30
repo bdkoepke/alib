@@ -18,8 +18,8 @@ static void binary_tree_free(Object *o) {
 }
 
 static void *binary_tree_search(const Container *c, const void *x) {
-  const BinaryTree *t = (BinaryTree *)c;
-  return binary_node_search(t->root, t->c, x);
+  return binary_node_search(((const BinaryTree *)c)->root,
+                            ((const BinaryTree *)c)->c, x);
 }
 
 static void binary_tree_insert(Container *c, void *x) {
@@ -49,29 +49,29 @@ static void *binary_tree_min(const Dictionary *d) {
 }
 
 static void *binary_tree_predecessor(const Dictionary *d, const void *x) {
-  const BinaryTree *t = (const BinaryTree *)d;
-  return binary_node_predecessor(t->root, t->c, x);
+  return binary_node_predecessor(((const BinaryTree *)d)->root,
+                                 ((const BinaryTree *)d)->c, x);
 }
 
 static void *binary_tree_successor(const Dictionary *d, const void *x) {
-  const BinaryTree *t = (const BinaryTree *)d;
-  return binary_node_successor(t->root, t->c, x);
+  return binary_node_successor(((const BinaryTree *)d)->root,
+                               ((const BinaryTree *)d)->c, x);
 }
 
-static void binary_tree_pre_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_pre_order(((BinaryTree *)t)->root, v, user_data);
+static void binary_tree_pre_order(const Tree *t, Visitor v, void *user_data) {
+  return binary_node_pre_order(((const BinaryTree *)t)->root, v, user_data);
 }
 
-static void binary_tree_in_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_in_order(((BinaryTree *)t)->root, v, user_data);
+static void binary_tree_in_order(const Tree *t, Visitor v, void *user_data) {
+  return binary_node_in_order(((const BinaryTree *)t)->root, v, user_data);
 }
 
-static void binary_tree_post_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_post_order(((BinaryTree *)t)->root, v, user_data);
+static void binary_tree_post_order(const Tree *t, Visitor v, void *user_data) {
+  return binary_node_post_order(((const BinaryTree *)t)->root, v, user_data);
 }
 
-static void binary_tree_level_order(Tree *t, Visitor v, void *user_data) {
-  return binary_node_level_order(((BinaryTree *)t)->root, v, user_data);
+static void binary_tree_level_order(const Tree *t, Visitor v, void *user_data) {
+  return binary_node_level_order(((const BinaryTree *)t)->root, v, user_data);
 }
 
 BinaryTree *binary_tree_new(Compare c) {

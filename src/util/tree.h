@@ -11,10 +11,10 @@ typedef struct Tree {
 } Tree;
 struct _tree_vtable {
   dictionary_vtable dictionary;
-  void (*pre_order)(Tree *, Visitor, void *);
-  void (*in_order)(Tree *, Visitor, void *);
-  void (*post_order)(Tree *, Visitor, void *);
-  void (*level_order)(Tree *, Visitor, void *);
+  void (*pre_order)(const Tree *, Visitor, void *);
+  void (*in_order)(const Tree *, Visitor, void *);
+  void (*post_order)(const Tree *, Visitor, void *);
+  void (*level_order)(const Tree *, Visitor, void *);
 };
 
 /**
@@ -24,7 +24,7 @@ struct _tree_vtable {
  * @param v the visitor function for the tree.
  * @param user_data the state for the visitor function.
  */
-void tree_pre_order(Tree *t, Visitor v, void *user_data);
+void tree_pre_order(const Tree *t, Visitor v, void *user_data);
 
 /**
  * In order tree traversal.
@@ -33,7 +33,7 @@ void tree_pre_order(Tree *t, Visitor v, void *user_data);
  * @param v the visitor function for the tree.
  * @param user_data the state for the visitor function.
  */
-void tree_in_order(Tree *t, Visitor v, void *user_data);
+void tree_in_order(const Tree *t, Visitor v, void *user_data);
 
 /**
  * Post order tree traversal.
@@ -42,7 +42,7 @@ void tree_in_order(Tree *t, Visitor v, void *user_data);
  * @param v the visitor function for the tree.
  * @param user_data the state for the visitor function.
  */
-void tree_post_order(Tree *t, Visitor v, void *user_data);
+void tree_post_order(const Tree *t, Visitor v, void *user_data);
 
 /**
  * Level order tree traversal.
@@ -51,7 +51,7 @@ void tree_post_order(Tree *t, Visitor v, void *user_data);
  * @param v the visitor function for the tree.
  * @param user_data the state for the visitor function.
  */
-void tree_level_order(Tree *t, Visitor v, void *user_data);
+void tree_level_order(const Tree *t, Visitor v, void *user_data);
 
 /**
  * Converts the tree to a sorted linked stack.

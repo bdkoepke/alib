@@ -24,14 +24,14 @@ void *binary_node_search(const BinaryNode *, Compare, const void *);
 void binary_node_delete(BinaryNode *, BinaryNode **, Compare, const void *);
 bool binary_node_empty(const BinaryNode *);
 
-void *binary_node_min(BinaryNode *);
-void *binary_node_max(BinaryNode *);
+void *binary_node_min(const BinaryNode *);
+void *binary_node_max(const BinaryNode *);
 void *binary_node_predecessor(const BinaryNode *, Compare, const void *);
 void *binary_node_successor(const BinaryNode *, Compare, const void *);
 
-void binary_node_pre_order(BinaryNode *, Visitor, void *);
-void binary_node_in_order(BinaryNode *, Visitor, void *);
-void binary_node_post_order(BinaryNode *, Visitor, void *);
-void binary_node_level_order(BinaryNode *, Visitor, void *);
+void binary_node_pre_order(const BinaryNode *, Visitor, void *);
+void binary_node_in_order(const BinaryNode *, Visitor, void *);
+void binary_node_post_order(const BinaryNode *, Visitor, void *);
+void binary_node_level_order(const BinaryNode *, Visitor, void *);
 
 #endif /* BINARY_NODE_H */
