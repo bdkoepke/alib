@@ -70,7 +70,6 @@ void chapter_4(void) {
   question_4_33();
   question_4_34();
   question_4_35();
-  question_4_44();
   question_4_45();
   question_4_46();
 }

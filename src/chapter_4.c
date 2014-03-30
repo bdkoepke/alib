@@ -788,46 +788,229 @@ void question_4_26(void) {
                     1 };
 }
 
-void question_4_27(void) {
-	puts("question_4_27: not implemented");
-}
-
-int max_shifted(const int A[], size_t length, size_t k) {
-	return A[(length + k - 1) % length];
-}
-
-int max_shifted_unknown(const int A[], size_t length) {
-	/*
-  int _max_shift_unknown(int A[], size_t l, size_t h) {
-    if (l > h)
-      return -1;
-    size_t m = (l + h) / 2;
-    if (a[m] == x)
-      return m;
-    return x < a[m] ? m == 0 ? -1 : _binary_search_int(x, a, l, m - 1)
-                             : _binary_search_int(x, a, m + 1, h);
-  }
-  return _max_shift_unknown(A, 0, length - 1);
-	*/
-}
+void question_4_27(void) { puts("question_4_27: not implemented"); }
 
 void question_4_31(void) {
-	puts("question_4_31: not implemented");
-	int A_2[] = {35, 42, 5, 15, 27, 29};
-	int A_4[] = {27, 29, 35, 42, 5, 15};
+  puts("question_4_31");
+  int max_shifted(const int A[], size_t length, size_t k) {
+    return A[(length + k - 1) % length];
+  }
+  size_t find_k(const int A[], size_t length) {
+    size_t _find_k(const int A[], size_t l, size_t h) {
+      if ((h - l) == 1)
+        return A[l] < A[h] ? l : h;
+      size_t m = (l + h) / 2;
+      return A[l] > A[m] ? _find_k(A, l, m) : _find_k(A, m, h);
+    }
+    return A[0] < A[length - 1] ? 0 : _find_k(A, 0, length - 1);
+  }
 
-	assert_equals(max_shifted(A_2, array_size(A_2), 2), 42);
-	assert_equals(max_shifted(A_4, array_size(A_4), 4), 42);
+  int A_2[] = { 35, 42, 5, 15, 27, 29 };
+  int A_4[] = { 27, 29, 35, 42, 5, 15 };
+
+  assert_equals(max_shifted(A_2, array_size(A_2), 2), 42);
+  assert_equals(max_shifted(A_4, array_size(A_4), 4), 42);
+
+  assert_equals(max_shifted(A_2, array_size(A_2), find_k(A_2, array_size(A_2))),
+                42);
+  assert_equals(max_shifted(A_4, array_size(A_4), find_k(A_4, array_size(A_4))),
+                42);
 }
 
-void question_4_33(void) { puts("question_4_33: not implemented"); }
+void question_4_33(void) {
+  puts("question_4_33");
+  bool find_matching_index(const int A[], size_t length) {
+    bool _find_matching_index(const int A[], size_t l, size_t h) {
+      if (l > h)
+        return false;
+      size_t m = (l + h) / 2;
+      if (A[m] == m)
+        return m;
+      return m > A[m] ? m == 0 ? false : _find_matching_index(A, l, m - 1)
+                               : _find_matching_index(A, m + 1, h);
 
-void question_4_34(void) { puts("question_4_34: not implemented"); }
+    }
+    return _find_matching_index(A, 0, length - 1);
+  }
 
-void question_4_35(void) { puts("question_4_35: not implemented"); }
+  // using 0 as first index instead of 1 as in the question...
+  int A_0[] = { -10, -3, 2, 5, 7 };
+  int A_1[] = { 2, 3, 4, 5, 6, 7 };
 
-void question_4_44(void) { puts("question_4_44: not implemented"); }
+  assert_true(find_matching_index(A_0, array_size(A_0)));
+  assert_false(find_matching_index(A_1, array_size(A_1)));
+}
+
+size_t find_smallest_index(int A[], size_t length) {}
+
+void question_4_34(void) {
+  puts("question_4_34: not implemented");
+
+  size_t m = 20, n = 10;
+  int A_0[] = { 2, 3, 4, 8, 12, 13, 14, 16, 18, 20 };
+  int A_1[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+}
+
+void question_4_35(void) {
+  puts("question_4_35");
+  typedef struct {
+    int n;
+    int m;
+  } Point;
+  Point matrix_search(int M[][8], size_t n, size_t m, int k) {
+    size_t i = 0, j = m - 1;
+    while (i < n && j >= 0) {
+      if (M[i][j] > k)
+        j--;
+      else if (M[i][j] < k)
+        i++;
+      else {
+        Point p = { i, j };
+        return p;
+      }
+    }
+    Point null = { n, m };
+    return null;
+  }
+
+  const size_t n = 16, m = 8;
+  int M[][8] = { { 13, 14, 18, 29, 29, 40, 52, 64 },
+                 { 18, 29, 39, 39, 52, 63, 76, 76 },
+                 { 22, 32, 52, 57, 61, 75, 92, 101 },
+                 { 29, 46, 59, 65, 81, 88, 96, 114 },
+                 { 40, 55, 73, 88, 99, 111, 115, 115 },
+                 { 49, 68, 81, 91, 111, 120, 133, 135 },
+                 { 61, 72, 86, 93, 120, 121, 141, 143 },
+                 { 72, 76, 86, 93, 121, 121, 154, 158 },
+                 { 75, 82, 86, 106, 129, 133, 160, 172 },
+                 { 89, 95, 111, 126, 142, 157, 174, 180 },
+                 { 102, 102, 117, 135, 154, 166, 178, 183 },
+                 { 105, 111, 118, 141, 159, 169, 188, 193 },
+                 { 113, 122, 131, 157, 164, 182, 190, 194 },
+                 { 117, 135, 147, 168, 183, 190, 201, 214 },
+                 { 120, 139, 147, 184, 195, 207, 211, 216 },
+                 { 127, 153, 155, 192, 201, 208, 219, 228 } };
+  Point p = matrix_search(M, n, m, 27);
+  assert_equals(p.n, 16);
+  assert_equals(p.m, 8);
+  p = matrix_search(M, n, m, 29);
+  assert_equals(p.n, 0);
+  assert_equals(p.m, 4);
+  p = matrix_search(M, n, m, 180);
+  assert_equals(p.n, 9);
+  assert_equals(p.m, 7);
+  p = matrix_search(M, n, m, 158);
+  assert_equals(p.n, 7);
+  assert_equals(p.m, 7);
+  p = matrix_search(M, n, m, 156);
+  assert_equals(p.n, n);
+  assert_equals(p.m, m);
+}
 
 void question_4_45(void) { puts("question_4_45: not implemented"); }
 
-void question_4_46(void) { puts("question_4_46: not implemented"); }
+void question_4_46(void) {
+  puts("question_4_46: partial implementation");
+  typedef enum {
+    Light = 0,
+    Normal = 1,
+    Heavy = 2
+  } Coin;
+  typedef struct {
+    size_t i;
+    Coin c;
+  } CoinPair;
+  Coin compare_coins(Coin a[], Coin b[], size_t length) {
+    size_t i;
+    for (i = 0; i < length; i++)
+      if (a[i] != b[i])
+        return a[i] > b[i] ? 0 : 2;
+    return 1;
+  }
+  CoinPair find_fake_coin(Coin C[], size_t length) {
+    Coin set_0[] = { C[0], C[1], C[2], C[9] };
+    Coin set_1[] = { C[3], C[4], C[5], C[10] };
+    Coin set_2[] = { C[0], C[1], C[2], C[10] };
+    Coin set_3[] = { C[6], C[7], C[8], C[9] };
+    Coin set_4[] = { C[0], C[3], C[6], C[9] };
+    Coin set_5[] = { C[2], C[5], C[8], C[11] };
+    CoinPair table[3][3][3] = {
+      { { { 1, Heavy }, { 2, Heavy }, { 3, Heavy } },
+        { { 6, Light }, { 5, Light }, { 4, Light } },
+        { { 10, Light }, { 11, Heavy }, {} } },
+      { { { 9, Light }, { 8, Light }, { 7, Light } },
+        { { 12, Light }, {}, { 12, Heavy } },
+        { { 7, Heavy }, { 8, Heavy }, { 9, Heavy } } },
+      { { {}, { 11, Light }, { 10, Heavy } },
+        { { 4, Heavy }, { 5, Heavy }, { 6, Heavy } },
+        { { 3, Light }, { 2, Light }, { 1, Light } } }
+    };
+    assert_equals(table[0][0][0].c, Heavy);
+    assert_equals(table[0][0][0].i, 1);
+    assert_equals(table[0][0][1].c, Heavy);
+    assert_equals(table[0][0][1].i, 2);
+    assert_equals(table[0][0][2].c, Heavy);
+    assert_equals(table[0][0][2].i, 3);
+    assert_equals(table[0][1][0].c, Light);
+    assert_equals(table[0][1][0].i, 6);
+    assert_equals(table[0][1][1].c, Light);
+    assert_equals(table[0][1][1].i, 5);
+    assert_equals(table[0][1][2].c, Light);
+    assert_equals(table[0][1][2].i, 4);
+    assert_equals(table[0][2][0].c, Light);
+    assert_equals(table[0][2][0].i, 10);
+    assert_equals(table[0][2][1].c, Heavy);
+    assert_equals(table[0][2][1].i, 11);
+    assert_equals(table[1][0][0].c, Light);
+    assert_equals(table[1][0][0].i, 9);
+    assert_equals(table[1][0][1].c, Light);
+    assert_equals(table[1][0][1].i, 8);
+    assert_equals(table[1][0][2].c, Light);
+    assert_equals(table[1][0][2].i, 7);
+    assert_equals(table[1][1][0].c, Light);
+    assert_equals(table[1][1][0].i, 12);
+    assert_equals(table[1][1][2].c, Heavy);
+    assert_equals(table[1][1][2].i, 12);
+    assert_equals(table[1][2][0].c, Heavy);
+    assert_equals(table[1][2][0].i, 7);
+    assert_equals(table[1][2][1].c, Heavy);
+    assert_equals(table[1][2][1].i, 8);
+    assert_equals(table[1][2][2].c, Heavy);
+    assert_equals(table[1][2][2].i, 9);
+    assert_equals(table[2][0][1].c, Light);
+    assert_equals(table[2][0][1].i, 11);
+    assert_equals(table[2][0][2].c, Heavy);
+    assert_equals(table[2][0][2].i, 10);
+    assert_equals(table[2][1][0].c, Heavy);
+    assert_equals(table[2][1][0].i, 4);
+    assert_equals(table[2][1][1].c, Heavy);
+    assert_equals(table[2][1][1].i, 5);
+    assert_equals(table[2][1][2].c, Heavy);
+    assert_equals(table[2][1][2].i, 6);
+    assert_equals(table[2][2][0].c, Light);
+    assert_equals(table[2][2][0].i, 3);
+    assert_equals(table[2][2][1].c, Light);
+    assert_equals(table[2][2][1].i, 2);
+    assert_equals(table[2][2][2].c, Light);
+    assert_equals(table[2][2][2].i, 1);
+    printf("%d\n", compare_coins(set_0, set_1, array_size(set_0)));
+    printf("%d\n", compare_coins(set_2, set_3, array_size(set_2)));
+    printf("%d\n", compare_coins(set_4, set_5, array_size(set_4)));
+    return table[compare_coins(set_0, set_1, array_size(set_0))][
+        compare_coins(set_2, set_3, array_size(set_2))][
+        compare_coins(set_4, set_5, array_size(set_4))];
+  }
+
+  Coin heavier_coins[] = { Normal, Normal, Normal, Normal, Heavy, Normal,
+                           Normal, Normal, Normal, Normal, Normal, Normal };
+  Coin lighter_coins[] = { Normal, Normal, Normal, Normal, Normal, Normal,
+                           Normal, Normal, Normal, Normal, Light, Normal };
+  /*
+ 	CoinPair r = find_fake_coin(heavier_coins, array_size(heavier_coins));
+ 	assert_equals(r.i, 5);
+ 	assert_equals(r.c, Heavy);
+ 	r = find_fake_coin(lighter_coins, array_size(lighter_coins));
+ 	assert_equals(r.i, 11);
+ 	assert_equals(r.c, Light);
+ 	*/
+}
