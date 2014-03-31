@@ -9,7 +9,6 @@ typedef enum Color {
   Red,
   Black
 } Color;
-
 typedef struct RedBlackNode {
   void *x;
   struct RedBlackNode *left;
@@ -17,11 +16,13 @@ typedef struct RedBlackNode {
   struct RedBlackNode *parent;
   Color c;
 } RedBlackNode;
+typedef struct {
+  tree_vtable *vtable;
+  RedBlackNode *root;
+  Compare c;
+} RedBlackTree;
 
-void red_black_node_insert_case_1(RedBlackNode *, Compare, void *);
-void red_black_node_delete_case_1(RedBlackNode *n, Compare c, const void *x);
-
-RedBlackNode *red_black_node_new(void *x, Color c, RedBlackNode *left,
+static RedBlackNode *red_black_node_new(void *x, Color c, RedBlackNode *left,
                                  RedBlackNode *right, RedBlackNode *parent) {
   RedBlackNode *r = malloc(sizeof(RedBlackNode));
   r->x = x;
@@ -32,187 +33,217 @@ RedBlackNode *red_black_node_new(void *x, Color c, RedBlackNode *left,
   return r;
 }
 
-RedBlackNode *red_black_node_new_leaf(void *x, Color c, RedBlackNode *parent) {
+static RedBlackNode *red_black_node_new_leaf(void *x, Color c, RedBlackNode *parent) {
   return red_black_node_new(x, c, NULL, NULL, parent);
 }
-
-typedef struct {
-  tree_vtable *vtable;
-  RedBlackNode *root;
-  Compare c;
-} RedBlackTree;
 
 static void red_black_tree_free(Object *o) {
   binary_node_free_r((BinaryNode *)((RedBlackTree *)o)->root);
   free(o);
 }
 
-RedBlackNode *grandparent(RedBlackNode *n) {
+static bool red_black_tree_is_parents_valid(RedBlackTree *r) {
+	bool red_black_node_is_parents_valid(RedBlackNode *n) {
+		if (n == NULL)
+			return true;
+		if ((n->left != NULL && n->left->parent != n) || (n->right != NULL && n->right->parent != n))
+			return false;
+		return red_black_node_is_parents_valid(n->left) && red_black_node_is_parents_valid(n->right);
+	}
+	return red_black_node_is_parents_valid(r->root);
+}
+
+static bool red_black_tree_is_balanced(RedBlackTree *r) {
+	bool red_black_node_is_balanced(RedBlackNode *n) {
+		if (n == NULL)
+			return true;
+		if (n->parent->c == n->c)
+			return false;
+		return red_black_node_is_balanced(n->left) && red_black_node_is_balanced(n->right);
+	}
+	RedBlackNode *root = r->root;
+	if (root == NULL)
+		return true;
+	return root->c != Black ? false : red_black_node_is_balanced(root->left) && red_black_node_is_balanced(root->right);
+}
+
+static RedBlackNode *grandparent(RedBlackNode *n) {
   return (n != NULL && n->parent != NULL) ? n->parent->parent : NULL;
 }
 
-RedBlackNode *uncle(RedBlackNode *n) {
+static RedBlackNode *uncle(RedBlackNode *n) {
   RedBlackNode *g = grandparent(n);
   return g == NULL ? NULL : n->parent == g->left ? g->right : g->left;
 }
 
-RedBlackNode *sibling(RedBlackNode *n) {
+static RedBlackNode *sibling(RedBlackNode *n) {
   return n == n->parent->left ? n->parent->right : n->parent->left;
 }
 
-void rotate_right(RedBlackNode *n) {
+static void rotate_right(RedBlackNode *n) {
   RedBlackNode *g = grandparent(n), *p = n->parent, *u = uncle(n);
-  g->left = p->right, p->right->parent = g;
-  p->right = g, g->parent = p;
+	if (g != NULL)
+  	g->left = p->right;
+	p->right->parent = g;
+	if (g != NULL)
+		g->parent = p;
+  p->right = g;
 }
 
-void rotate_left(RedBlackNode *n) {
+static void rotate_left(RedBlackNode *n) {
   RedBlackNode *g = grandparent(n), *p = n->parent, *u = uncle(n);
   g->right = p->left, p->left->parent = g;
   p->left = g, g->parent = p;
 }
 
-void red_black_node_insert_case_5(RedBlackNode *n, Compare c, void *x) {
-  RedBlackNode *g = grandparent(n);
-  n->parent->c = Black, g->c = Red;
-  (n == n->parent->left ? rotate_right : rotate_left)(g);
-}
-
-void red_black_node_insert_case_4(RedBlackNode *n, Compare c, void *x) {
-  RedBlackNode *g = grandparent(n);
-  if (n == n->parent->right && n->parent == g->left) {
-    rotate_left(n->parent);
-    n = n->left;
-  } else if (n == n->parent->left && n->parent == g->right) {
-    rotate_right(n->parent);
-    n = n->left;
-  }
-  red_black_node_insert_case_5(n, c, x);
-}
-
-void red_black_node_insert_case_3(RedBlackNode *n, Compare c, void *x) {
-  RedBlackNode *u = uncle(n);
-  if (u != NULL && u->c == Red) {
-    n->parent->c = u->c = Black;
-    RedBlackNode *g = grandparent(n);
-    g->c = Red;
-    red_black_node_insert_case_1(g, c, x);
-  } else
-    red_black_node_insert_case_4(n, c, x);
-}
-
-void red_black_node_insert_case_2(RedBlackNode *n, Compare c, void *x) {
-  if (n->parent->c == Red)
-    red_black_node_insert_case_3(n, c, x);
-}
-
-void red_black_node_insert_case_1(RedBlackNode *n, Compare c, void *x) {
-  if (n->parent == NULL)
-    n->c = Black;
-  else
-    red_black_node_insert_case_2(n, c, x);
-}
-
-void red_black_node_insert(RedBlackNode *n, RedBlackNode **p, Compare c,
-                           void *x) {
-  if (n == NULL)
-    red_black_node_insert_case_1(*p = red_black_node_new_leaf(x, Red, *p), c,
-                                 x);
-  else {
-    int r = c(x, n->x);
-    RedBlackNode **_p = r < 0 ? &(n->left) : &(n->right);
-    red_black_node_insert(*_p, _p, c, x);
-  }
-}
-
 static void red_black_tree_insert(Container *c, void *x) {
-  RedBlackTree *r = (RedBlackTree *)c;
-  red_black_node_insert(r->root, &(r->root), r->c, x);
-}
-
-void red_black_node_delete_case_6(RedBlackNode *n, Compare c, const void *x) {
-  RedBlackNode *s = sibling(n);
-  s->c = n->parent->c, n->parent->c = Black;
-  if (n == n->parent->left)
-    s->right->c = Black, rotate_left(n->parent);
-  else
-    s->left->c = Black, rotate_right(n->parent);
-}
-
-void red_black_node_delete_case_5(RedBlackNode *n, Compare c, const void *x) {
-  RedBlackNode *s = sibling(n);
-  if (s->c == Black) {
-    if (n == n->parent->left && s->right->c == Black && s->left->c == Red) {
-      s->c = Red, s->left->c = Black;
-      rotate_right(s);
-    } else if (n == n->parent->right && s->left->c == Black &&
-               s->right->c == Red) {
-      s->c = Red, s->right->c = Black;
-      rotate_left(s);
-    }
-  }
-  red_black_node_delete_case_6(n, c, x);
-}
-
-void red_black_node_delete_case_4(RedBlackNode *n, Compare c, const void *x) {
-  RedBlackNode *s = sibling(n);
-  if (n->parent == Red && Black == s->c == s->left->c == s->right->c)
-    s->c = Red, n->parent->c = Black;
-  else
-    red_black_node_delete_case_5(n, c, x);
-}
-
-void red_black_node_delete_case_3(RedBlackNode *n, Compare c, const void *x) {
-  RedBlackNode *s = sibling(n);
-  if (Black == n->parent->c == s->c == s->left->c == s->right->c)
-    s->c = Red, red_black_node_delete_case_1(n->parent, c, x);
-  else
-    red_black_node_delete_case_4(n, c, x);
-}
-
-void red_black_node_delete_case_2(RedBlackNode *n, Compare c, const void *x) {
-  RedBlackNode *s = sibling(n);
-  if (s->c == Red) {
-    n->parent->c = Red, s->c = Black;
-    (n == n->parent->left ? rotate_left : rotate_right)(n->parent);
-  }
-  red_black_node_delete_case_3(n, c, x);
-}
-
-void red_black_node_delete_case_1(RedBlackNode *n, Compare c, const void *x) {
-  if (n->parent != NULL)
-    red_black_node_delete_case_2(n, c, x);
-}
-
-void red_black_node_delete(RedBlackNode *n, RedBlackNode **p, Compare c,
-                           const void *x) {
-  int r = c(x, n->x);
-  if (r < 0)
-    red_black_node_delete(n->left, &(n->left), c, x);
-  else if (r > 0)
-    red_black_node_delete(n->right, &(n->right), c, x);
-  else if (binary_node_is_branch((BinaryNode *)n)) {
-    n->x = binary_node_min((BinaryNode *)n->right);
-    red_black_node_delete(n->right, &(n->right), c, n->x);
-  } else {
-    RedBlackNode *child = (n->left != NULL) ? n->left : n->right;
-    *p = child;
-    if (child != NULL) {
-      child->parent = n->parent;
-      if (n->c == Black) {
-        if (child->c == Red)
-          child->c = Black;
-        else
-          red_black_node_delete_case_1(child, c, x);
+  void red_black_node_insert(RedBlackNode * n, RedBlackNode * p, Compare c,
+                             void * x) {
+    void red_black_node_insert_case_1(RedBlackNode * n, Compare c, void * x) {
+      void red_black_node_insert_case_2(RedBlackNode * n, Compare c, void * x) {
+        void red_black_node_insert_case_3(RedBlackNode * n, Compare c,
+                                          void * x) {
+          void red_black_node_insert_case_4(RedBlackNode * n, Compare c,
+                                            void * x) {
+            void red_black_node_insert_case_5(RedBlackNode * n, Compare c,
+                                              void * x) {
+              RedBlackNode *g = grandparent(n);
+              n->parent->c = Black, g->c = Red;
+              (n == n->parent->left ? rotate_right : rotate_left)(g);
+            }
+            RedBlackNode *g = grandparent(n);
+            if (n == n->parent->right && n->parent == g->left) {
+              rotate_left(n->parent);
+              n = n->left;
+            } else if (n == n->parent->left && n->parent == g->right) {
+              rotate_right(n->parent);
+              n = n->left;
+            }
+            red_black_node_insert_case_5(n, c, x);
+          }
+          RedBlackNode *u = uncle(n);
+          if (u != NULL && u->c == Red) {
+            n->parent->c = u->c = Black;
+            RedBlackNode *g = grandparent(n);
+            g->c = Red;
+            red_black_node_insert_case_1(g, c, x);
+          } else
+            red_black_node_insert_case_4(n, c, x);
+        }
+        if (n->parent->c == Red)
+          red_black_node_insert_case_3(n, c, x);
       }
+      if (n->parent == NULL)
+        n->c = Black;
+      else
+        red_black_node_insert_case_2(n, c, x);
     }
-    free(n);
+
+    if (n == NULL) {
+			RedBlackNode *leaf = red_black_node_new_leaf(x, Red, p);
+			if (c(x, p->x) < 0)
+				p->left = leaf;
+			else
+				p->right = leaf;
+      //red_black_node_insert_case_1(leaf, c, x);
+		}
+    else
+      red_black_node_insert(c(x, n->x) < 0 ? n->left : n->right, n, c, x);
   }
+  RedBlackTree *r = (RedBlackTree *)c;
+	contract_requires(red_black_tree_is_parents_valid(r));
+	if (r->root == NULL)
+		r->root = red_black_node_new_leaf(x, Black, NULL);
+  else
+		red_black_node_insert(r->root, NULL, r->c, x);
+	contract_requires(red_black_tree_is_parents_valid(r));
 }
 
 static void red_black_tree_delete(Container *c, const void *x) {
+  void red_black_node_delete(RedBlackNode * n, RedBlackNode * *p, Compare c,
+                             const void * x) {
+    void red_black_node_delete_case_1(RedBlackNode * n, Compare c,
+                                      const void * x) {
+      void red_black_node_delete_case_2(RedBlackNode * n, Compare c,
+                                        const void * x) {
+        void red_black_node_delete_case_3(RedBlackNode * n, Compare c,
+                                          const void * x) {
+          void red_black_node_delete_case_4(RedBlackNode * n, Compare c,
+                                            const void * x) {
+            void red_black_node_delete_case_5(RedBlackNode * n, Compare c,
+                                              const void * x) {
+              void red_black_node_delete_case_6(RedBlackNode * n, Compare c,
+                                                const void * x) {
+                RedBlackNode *s = sibling(n);
+                s->c = n->parent->c, n->parent->c = Black;
+                if (n == n->parent->left)
+                  s->right->c = Black, rotate_left(n->parent);
+                else
+                  s->left->c = Black, rotate_right(n->parent);
+              }
+              RedBlackNode *s = sibling(n);
+              if (s->c == Black) {
+                if (n == n->parent->left && s->right->c == Black &&
+                    s->left->c == Red) {
+                  s->c = Red, s->left->c = Black;
+                  rotate_right(s);
+                } else if (n == n->parent->right && s->left->c == Black &&
+                           s->right->c == Red) {
+                  s->c = Red, s->right->c = Black;
+                  rotate_left(s);
+                }
+              }
+              red_black_node_delete_case_6(n, c, x);
+            }
+            RedBlackNode *s = sibling(n);
+            if (n->parent == Red && Black == s->c == s->left->c == s->right->c)
+              s->c = Red, n->parent->c = Black;
+            else
+              red_black_node_delete_case_5(n, c, x);
+          }
+          RedBlackNode *s = sibling(n);
+          if (Black == n->parent->c == s->c == s->left->c == s->right->c)
+            s->c = Red, red_black_node_delete_case_1(n->parent, c, x);
+          else
+            red_black_node_delete_case_4(n, c, x);
+        }
+        RedBlackNode *s = sibling(n);
+        if (s->c == Red) {
+          n->parent->c = Red, s->c = Black;
+          (n == n->parent->left ? rotate_left : rotate_right)(n->parent);
+        }
+        red_black_node_delete_case_3(n, c, x);
+      }
+      if (n->parent != NULL)
+        red_black_node_delete_case_2(n, c, x);
+    }
+    int r = c(x, n->x);
+    if (r < 0)
+      red_black_node_delete(n->left, &(n->left), c, x);
+    else if (r > 0)
+      red_black_node_delete(n->right, &(n->right), c, x);
+    else if (binary_node_is_branch((BinaryNode *)n)) {
+      n->x = binary_node_min((BinaryNode *)n->right);
+      red_black_node_delete(n->right, &(n->right), c, n->x);
+    } else {
+      RedBlackNode *child = (n->left != NULL) ? n->left : n->right;
+      *p = child;
+      if (child != NULL) {
+        child->parent = n->parent;
+        if (n->c == Black) {
+          if (child->c == Red)
+            child->c = Black;
+          /*else
+            red_black_node_delete_case_1(child, c, x); */
+        }
+      }
+      free(n);
+    }
+  }
   RedBlackTree *r = (RedBlackTree *)c;
+	contract_requires(red_black_tree_is_parents_valid(r));
   red_black_node_delete(r->root, &(r->root), r->c, x);
+	contract_requires(red_black_tree_is_parents_valid(r));
 }
 
 static void *red_black_tree_search(const Container *c, const void *x) {
