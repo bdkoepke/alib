@@ -3,7 +3,6 @@
 #include "hashtable.h"
 #include "node.h"
 
-#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -68,7 +67,7 @@ static void hashtable_delete(Container *c, const void *x) {
   Hashtable *h = (Hashtable *)c;
   h->size--;
   size_t hash = h->h(x) % h->capacity;
-  assert(h->array[hash]);
+  contract_weak_requires(h->array[hash]);
   node_delete(&(h->array[hash]), x);
 }
 

@@ -3,7 +3,6 @@
 #include "binary_node.h"
 #include "sorted_set.h"
 
-#include <assert.h>
 #include <stdlib.h>
 
 typedef struct {
@@ -134,7 +133,8 @@ bool sorted_set_member(const SortedSet *s, const void *x) {
 }
 
 void sorted_set_insert(SortedSet *s, void *x) {
-  contract_requires(s != NULL && x != NULL && !sorted_set_member(s, x));
+  contract_requires(s != NULL && x != NULL);
+	contract_weak_requires(!sorted_set_member(s, x));
   s->vtable->insert(s, x);
   contract_ensures(sorted_set_member(s, x));
 }

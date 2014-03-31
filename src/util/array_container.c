@@ -19,8 +19,8 @@ static void array_container_free(Object *o) {
 static void array_container_insert(Container *c, void *x) {
   ArrayContainer *a = (ArrayContainer *)c;
   size_t _x = POINTER_TO_INT(x);
-  contract_requires(x != NULL && container_search(c, x) ==
-                                     INT_TO_POINTER(false) && _x <= a->length);
+  contract_requires(x != NULL && _x <= a->length);
+	contract_weak_requires(container_search(c, x) == INT_TO_POINTER(false));
   a->array[_x - 1] = x;
   a->size++;
 }

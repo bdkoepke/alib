@@ -24,7 +24,8 @@
 #include <string.h>
 
 bool balanced_parenthesis(const char *text, size_t length, int *out_position) {
-  contract_requires(text != NULL && length <= strlen(text));
+  contract_requires(text != NULL);
+	contract_weak_requires(length <= strlen(text));
 
   size_t left_parenthesis = 0;
   size_t i;
@@ -216,8 +217,8 @@ void question_3_9(void) {
 size_t bin_packing(const double *weights, size_t length,
                    bool (*f)(const Dictionary *, double, double *)) {
   bool validate_weight(double weight) { return weight > 0.0 && weight <= 1.0; }
-  contract_requires(weights != NULL &&
-                    all_double(weights, length, validate_weight));
+  contract_requires(weights != NULL);
+	contract_weak_requires(all_double(weights, length, validate_weight));
 
   BinaryTree *b = binary_tree_new(compare_double);
   size_t i;
@@ -383,7 +384,8 @@ void question_3_23(void) {
 }
 
 char *reverse_words_in_line(const char *line, size_t length) {
-  contract_requires(line != NULL && length <= strlen(line));
+  contract_requires(line != NULL);
+	contract_weak_requires(length <= strlen(line));
 
   char *reverse = malloc(sizeof(char) * length + 1);
   reverse[length] = '\0';

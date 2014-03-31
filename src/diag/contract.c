@@ -30,3 +30,8 @@ void _contract_requires(bool expr, const char *expr_s, const char *file,
   return contract(expr, expr_s, file, line, func,
                   "%s:%d: %s: Requires `%s' failed.\n");
 }
+void _contract_weak_requires(bool expr, const char *expr_s, const char *file,
+                        int line, const char *func) {
+  return contract(expr, expr_s, file, line, func,
+                  "%s:%d: %s: Weak Requires `%s' failed.\n");
+}
