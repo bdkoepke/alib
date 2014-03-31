@@ -134,7 +134,7 @@ bool sorted_set_member(const SortedSet *s, const void *x) {
 
 void sorted_set_insert(SortedSet *s, void *x) {
   contract_requires(s != NULL && x != NULL);
-	contract_weak_requires(!sorted_set_member(s, x));
+  contract_weak_requires(!sorted_set_member(s, x));
   s->vtable->insert(s, x);
   contract_ensures(sorted_set_member(s, x));
 }

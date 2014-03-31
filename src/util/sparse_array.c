@@ -25,7 +25,7 @@ static void sparse_array_insert(Container *c, void *x) {
   SparseArray *s = (SparseArray *)c;
   unsigned int _x = POINTER_TO_INT(x);
   contract_requires(_x < s->n && s->size < UINT_MAX && s->size < s->m);
-	contract_weak_requires(container_search(c, x) == INT_TO_POINTER(false));
+  contract_weak_requires(container_search(c, x) == INT_TO_POINTER(false));
   s->size++;
   s->A[_x] = s->size;
   s->B[s->A[_x] - 1] = _x;

@@ -23,7 +23,7 @@
  *
  * @param expr the expression to validate.
  */
-#define contract_weak_requires(expr)                                                \
+#define contract_weak_requires(expr)                                           \
   _contract_weak_requires((expr), #expr, __FILE__, __LINE__, __func__)
 /**
  * Specifies a condition that must be true after a function executes.
@@ -40,14 +40,13 @@
 #define contract_invariant(expr)                                               \
   _contract_invariant((expr), #expr, __FILE__, __LINE__, __func__)
 
-
 void _contract_requires(bool expr, const char *expr_s, const char *file,
                         int line, const char *func);
 void _contract_weak_requires(bool expr, const char *expr_s, const char *file,
-                        int line, const char *func);
+                             int line, const char *func);
 void _contract_invariant(bool expr, const char *expr_s, const char *file,
                          int line, const char *func);
 void _contract_ensures(bool expr, const char *expr_s, const char *file,
-                        int line, const char *func);
+                       int line, const char *func);
 
 #endif /* CONTRACT_H */
