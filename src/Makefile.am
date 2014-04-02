@@ -10,9 +10,10 @@ AM_CFLAGS = $(ALIB_CFLAGS)\
 bin_PROGRAMS = alib
 
 alib_SOURCES =\
-  chapter_4.c\
   chapter_2.c\
   chapter_3.c\
+  chapter_4.c\
+  chapter_5.c\
   diag/contract.c\
   lang/algorithm.c\
   lang/array.c\
@@ -35,9 +36,10 @@ alib_SOURCES =\
   util/compare.c\
   util/container.c\
   util/dictionary.c\
+	util/graph.c\
   util/hashtable.c\
   util/heap.c\
-  util/iterator.c\
+	util/linked_graph.c\
   util/linked_queue.c\
   util/linked_stack.c\
   util/node.c\
