@@ -1,7 +1,7 @@
 #ifndef ARRAY_LIST_H
 #define ARRAY_LIST_H
 
-#include "container.h"
+#include "mutable_container.h"
 
 #include <stddef.h>
 
@@ -10,7 +10,7 @@ typedef struct ArrayList {
   array_list_vtable *vtable;
 } ArrayList;
 struct _array_list_vtable {
-  container_vtable container;
+  mutable_container_vtable container;
   void (*set)(ArrayList *, size_t, void *);
   void *(*get)(const ArrayList *, size_t);
   size_t (*size)(const ArrayList *);

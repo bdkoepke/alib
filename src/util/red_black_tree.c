@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef enum Color {
   Red,
@@ -133,8 +134,8 @@ static void rotate_left(RedBlackNode *n, RedBlackTree *r) {
   p->left = g, g->parent = p;
 }
 
-static void red_black_tree_insert(Container *c, void *x) {
-	RedBlackTree *r = (RedBlackTree *)c;
+static void red_black_tree_insert(MutableContainer *m, void *x) {
+	RedBlackTree *r = (RedBlackTree *)m;
   void red_black_node_insert(RedBlackNode * n, RedBlackNode * p, Compare c,
                              void * x) {
     void red_black_node_insert_case_1(RedBlackNode * n) {
@@ -195,8 +196,8 @@ static void red_black_tree_insert(Container *c, void *x) {
   contract_invariant(red_black_tree_is_valid(r));
 }
 
-static void red_black_tree_delete(Container *c, const void *x) {
-  RedBlackTree *r = (RedBlackTree *)c;
+static void red_black_tree_delete(MutableContainer *m, const void *x) {
+  RedBlackTree *r = (RedBlackTree *)m;
   void red_black_node_delete(RedBlackNode * n, RedBlackNode * *p, Compare c,
                              const void * x) {
     void red_black_node_delete_case_1(RedBlackNode * n, Compare c,
@@ -342,9 +343,9 @@ static void red_black_tree_level_order(const Tree *t, Visitor v,
 
 Tree *red_black_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { {.free = red_black_tree_free },
-            .search = red_black_tree_search, .insert = red_black_tree_insert,
-            .delete = red_black_tree_delete, .empty = red_black_tree_empty },
+    { { { {.free = red_black_tree_free },
+            .search = red_black_tree_search, .empty = red_black_tree_empty },
+            .delete = red_black_tree_delete, .insert = red_black_tree_insert },
           .max = red_black_tree_max, .min = red_black_tree_min,
           .predecessor = red_black_tree_predecessor,
           .successor = red_black_tree_successor },

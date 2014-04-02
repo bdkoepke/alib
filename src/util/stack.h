@@ -1,7 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include "container.h"
+#include "mutable_container.h"
 
 #include <stdbool.h>
 
@@ -10,7 +10,7 @@ typedef struct Stack {
   stack_vtable *vtable;
 } Stack;
 struct _stack_vtable {
-  container_vtable container;
+  mutable_container_vtable container;
   void (*push)(Stack *, void *);
   void *(*pop)(Stack *);
   const void *(*peek)(const Stack *);
@@ -40,7 +40,7 @@ void *stack_pop(Stack *s);
  */
 const void *stack_peek(const Stack *s);
 
-void _stack_insert(Container *c, void *x);
+void _stack_insert(MutableContainer *c, void *x);
 
 void _stack_free(Object *o);
 

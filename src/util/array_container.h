@@ -1,7 +1,7 @@
 #ifndef ARRAY_CONTAINER_H
 #define ARRAY_CONTAINER_H
 
-#include "container.h"
+#include "mutable_container.h"
 
 #include <stddef.h>
 
@@ -15,6 +15,6 @@
  *
  * @param max the maximum integer that can be inserted.
  */
-Container *array_container_new(size_t max);
+MutableContainer *array_container_new(size_t max);
 
 #endif /* ARRAY_CONTAINER_H */

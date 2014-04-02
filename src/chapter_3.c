@@ -118,12 +118,12 @@ void test_red_black_tree(void) {
 
 void test_hashtable(void) {
   puts("test_hashtable");
-  Container *c = hashtable_new(hash_int_pointer);
-  test_container(c, test_values, test_values_length);
+  MutableContainer *c = hashtable_new(hash_int_pointer);
+  test_mutable_container(c, test_values, test_values_length);
   object_free((Object *)c);
 
   c = hashtable_new(hash_int_pointer);
-  test_container(c, test_values_extended, test_values_extended_length);
+  test_mutable_container(c, test_values_extended, test_values_extended_length);
   object_free((Object *)c);
 }
 
@@ -149,27 +149,27 @@ void question_3_2(void) {
 void question_3_3(void) {
   puts("test_question_3_3");
   ArrayList *a = array_list_new();
-  test_container((Container *)a, test_values, test_values_length);
+  test_mutable_container((MutableContainer *)a, test_values, test_values_length);
   object_free((Object *)a);
 
   a = array_list_new();
-  test_container((Container *)a, test_values_extended,
+  test_mutable_container((MutableContainer *)a, test_values_extended,
                  test_values_extended_length);
   object_free((Object *)a);
 }
 
 void question_3_4(void) {
   puts("test_question_3_4");
-  Container *c = (Container *)array_container_new(
+  MutableContainer *m = (MutableContainer *)array_container_new(
       reduce_int(test_values, test_values_length, max, 0));
-  test_container(c, test_values, test_values_length);
-  object_free((Object *)c);
-  c = (Container *)array_container_new(
+  test_mutable_container(m, test_values, test_values_length);
+  object_free((Object *)m);
+  m = (MutableContainer *)array_container_new(
       reduce_int(test_values_extended_positive,
                  test_values_extended_positive_length, max, 0));
-  test_container(c, test_values_extended_positive,
+  test_mutable_container(m, test_values_extended_positive,
                  test_values_extended_positive_length);
-  object_free((Object *)c);
+  object_free((Object *)m);
 }
 
 void question_3_7(void) {
@@ -205,9 +205,9 @@ void question_3_9(void) {
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < 10; i++)
-    container_insert((Container *)a, INT_TO_POINTER(i));
+    mutable_container_insert((MutableContainer *)a, INT_TO_POINTER(i));
   for (i; i < 20; i++)
-    container_insert((Container *)b, INT_TO_POINTER(i));
+    mutable_container_insert((MutableContainer *)b, INT_TO_POINTER(i));
   BinaryTree *concat = binary_tree_concat(a, b);
   for (i = 0; i < 20; i++)
     assert_equals(POINTER_TO_INT(
@@ -225,7 +225,7 @@ size_t bin_packing(const double *weights, size_t length,
   BinaryTree *b = binary_tree_new(compare_double);
   size_t i;
   for (i = 0; i < length; i++)
-    container_insert((Container *)b, (void *)&weights[i]);
+    mutable_container_insert((MutableContainer *)b, (void *)&weights[i]);
 
   size_t bins = 0;
   double bin = 0;
@@ -236,7 +236,7 @@ size_t bin_packing(const double *weights, size_t length,
       bins++;
     } else {
       bin += next;
-      container_delete((Container *)b, &next);
+      mutable_container_delete((MutableContainer *)b, &next);
     }
   }
   object_free((Object *)b);
@@ -325,19 +325,19 @@ void question_3_14(void) {
 
 void question_3_15(void) {
   puts("test_question_3_15");
-  Container *c =
+  MutableContainer *m =
       sparse_array_new(reduce_int(test_values, test_values_length, max, 0) + 1,
                        test_values_length);
-  test_container(c, test_values, test_values_length);
-  object_free((Object *)c);
+  test_mutable_container(m, test_values, test_values_length);
+  object_free((Object *)m);
 
-  c = sparse_array_new(
+  m = sparse_array_new(
       reduce_int(test_values_extended_positive,
                  test_values_extended_positive_length, max, 0) + 1,
       test_values_extended_positive_length);
-  test_container(c, test_values_extended_positive,
+  test_mutable_container(m, test_values_extended_positive,
                  test_values_extended_positive_length);
-  object_free((Object *)c);
+  object_free((Object *)m);
 }
 
 void question_3_20(void) {
@@ -351,12 +351,12 @@ void question_3_21(void) {
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < test_values_length - 1; i++) {
-    container_insert((Container *)a, INT_TO_POINTER(test_values[i]));
-    container_insert((Container *)b, INT_TO_POINTER(test_values[i]));
+    mutable_container_insert((MutableContainer *)a, INT_TO_POINTER(test_values[i]));
+    mutable_container_insert((MutableContainer *)b, INT_TO_POINTER(test_values[i]));
   }
   assert_true(binary_tree_compare(a, b));
 
-  container_insert((Container *)a, INT_TO_POINTER(test_values[i]));
+  mutable_container_insert((MutableContainer *)a, INT_TO_POINTER(test_values[i]));
   assert_false(binary_tree_compare(a, b));
 
   object_free((Object *)a);
@@ -368,7 +368,7 @@ void question_3_22(void) {
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < test_values_length; i++)
-    container_insert((Container *)b, INT_TO_POINTER(test_values[i]));
+    mutable_container_insert((MutableContainer *)b, INT_TO_POINTER(test_values[i]));
 
   LinkedStack *l = tree_to_linked_stack((Tree *)b);
 

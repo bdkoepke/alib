@@ -32,7 +32,7 @@ static size_t _array_list_size(const ArrayList *a) {
   return ((const _ArrayList *)a)->size;
 }
 
-static void _array_list_insert(Container *_a, void *x) {
+static void _array_list_insert(MutableContainer *_a, void *x) {
   _ArrayList *a = (_ArrayList *)_a;
   if (array_list_size((ArrayList *)a) >= a->capacity) {
     size_t new_size =
@@ -45,7 +45,7 @@ static void _array_list_insert(Container *_a, void *x) {
   array_list_set((ArrayList *)a, size, x);
 }
 
-static void array_list_delete(Container *c, const void *x) {
+static void array_list_delete(MutableContainer *c, const void *x) {
   inline void shift_right(void * *a, size_t length, size_t offset, size_t x) {
     size_t i;
     for (i = offset; i < (length - x); i++)
@@ -80,9 +80,12 @@ static void array_list_free(Object *a) {
 
 ArrayList *array_list_new() {
   static array_list_vtable vtable = {
-    { {.free = array_list_free },
-          .search = _array_list_search, .insert = _array_list_insert,
-          .delete = array_list_delete, .empty = _array_list_empty },
+    { { {.free = array_list_free },
+          .search = _array_list_search,
+					.empty = _array_list_empty },
+					.insert = _array_list_insert,
+          .delete = array_list_delete,
+},
         .set = _array_list_set, .get = _array_list_get, .size = _array_list_size
   };
 

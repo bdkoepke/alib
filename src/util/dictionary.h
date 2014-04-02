@@ -1,14 +1,14 @@
 #ifndef DICTIONARY_H
 #define DICTIONARY_H
 
-#include "container.h"
+#include "mutable_container.h"
 
 typedef struct _dictionary_vtable dictionary_vtable;
 typedef struct Dictionary {
   dictionary_vtable *vtable;
 } Dictionary;
 struct _dictionary_vtable {
-  container_vtable container;
+  mutable_container_vtable container;
   void *(*max)(const Dictionary *);
   void *(*min)(const Dictionary *);
   void *(*predecessor)(const Dictionary *, const void *);

@@ -31,10 +31,6 @@ static void *linked_queue_head(const Queue *q) {
   return ((const LinkedQueue *)q)->head->x;
 }
 
-void linked_queue_insert(Container *c, void *x) {
-  queue_enqueue((Queue *)c, x);
-}
-
 static bool linked_queue_empty(const Container *c) {
   return node_empty(((LinkedQueue *)c)->head);
 }
@@ -43,8 +39,8 @@ static void *linked_queue_search(const Container *c, const void *x) {
   return node_search(((const LinkedQueue *)c)->head, x);
 }
 
-static void linked_queue_delete(Container *c, const void *x) {
-  LinkedQueue *q = (LinkedQueue *)c;
+static void linked_queue_delete(MutableContainer *m, const void *x) {
+  LinkedQueue *q = (LinkedQueue *)m;
   if (q->head->x != x) {
     Node *node;
     Node *next = q->head->n;
@@ -66,9 +62,9 @@ static void linked_queue_delete(Container *c, const void *x) {
 
 Queue *linked_queue_new() {
   static queue_vtable vtable = {
-    { {.free = _queue_free },
-          .insert = linked_queue_insert, .search = linked_queue_search,
-          .empty = linked_queue_empty, .delete = linked_queue_delete },
+    { { {.free = _queue_free },
+          .empty = linked_queue_empty, .search = linked_queue_search },
+          .insert = _queue_insert, .delete = linked_queue_delete },
         .enqueue = linked_queue_enqueue, .dequeue = linked_queue_dequeue,
         .head = linked_queue_head
   };

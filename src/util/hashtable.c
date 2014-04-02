@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 typedef struct {
-  container_vtable *vtable;
+  mutable_container_vtable *vtable;
   Hash h;
   Node **array;
   size_t capacity;
@@ -33,7 +33,7 @@ static void *hashtable_search(const Container *c, const void *x) {
   return (h->array[hash] == NULL) ? NULL : node_search(h->array[hash], x);
 }
 
-static void hashtable_insert(Container *c, void *x) {
+static void hashtable_insert(MutableContainer *c, void *x) {
   inline void hashtable_resize(Hashtable * h, size_t capacity) {
     contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
     Node **array = h->array;
@@ -63,7 +63,7 @@ static void hashtable_insert(Container *c, void *x) {
   _hashtable_insert(h, x);
 }
 
-static void hashtable_delete(Container *c, const void *x) {
+static void hashtable_delete(MutableContainer *c, const void *x) {
   Hashtable *h = (Hashtable *)c;
   h->size--;
   size_t hash = h->h(x) % h->capacity;
@@ -75,11 +75,11 @@ static bool hashtable_empty(const Container *c) {
   return ((Hashtable *)c)->size == 0;
 }
 
-Container *hashtable_new(Hash hash) {
-  static container_vtable vtable = {
-    {.free = hashtable_free },
-        .search = hashtable_search, .insert = hashtable_insert,
-        .delete = hashtable_delete, .empty = hashtable_empty
+MutableContainer *hashtable_new(Hash hash) {
+  static mutable_container_vtable vtable = {
+    { {.free = hashtable_free },
+        .search = hashtable_search, .empty = hashtable_empty },
+        .delete = hashtable_delete, .insert = hashtable_insert
   };
 
   static const float DEFAULT_FACTOR = 0.75;
@@ -92,5 +92,5 @@ Container *hashtable_new(Hash hash) {
   h->array = calloc(h->capacity, sizeof(Node *));
   h->size = 0;
   h->factor = DEFAULT_FACTOR;
-  return (Container *)h;
+  return (MutableContainer *)h;
 }

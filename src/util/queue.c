@@ -20,6 +20,10 @@ void *queue_head(const Queue *q) {
   return q->vtable->head(q);
 }
 
+void _queue_insert(MutableContainer *m, void *x) {
+	queue_enqueue((Queue *)m, x);
+}
+
 void _queue_free(Object *o) {
   while (!container_empty((Container *)o))
     queue_dequeue((Queue *)o);

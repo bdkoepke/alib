@@ -19,7 +19,7 @@ const void *stack_peek(const Stack *s) {
   return s->vtable->peek(s);
 }
 
-void _stack_insert(Container *c, void *x) { stack_push((Stack *)c, x); }
+void _stack_insert(MutableContainer *c, void *x) { stack_push((Stack *)c, x); }
 
 void _stack_free(Object *o) {
   Stack *s = (Stack *)o;

@@ -20,12 +20,12 @@ static int *sort_int(const int *values, size_t length) {
 }
 
 void test_array_list(ArrayList *a, const int *values, size_t length) {
-  test_container((Container *)a, values, length);
+  test_mutable_container((MutableContainer *)a, values, length);
   assert_true(container_empty((Container *)a));
   size_t i;
   for (i = 0; i < length; i++) {
     assert_equals(array_list_size(a), i);
-    container_insert((Container *)a, INT_TO_POINTER(values[i]));
+    mutable_container_insert((MutableContainer *)a, INT_TO_POINTER(values[i]));
     assert_equals(POINTER_TO_INT(container_search((Container *)a,
                                                   INT_TO_POINTER(values[i]))),
                   values[i]);
@@ -37,22 +37,23 @@ void test_array_list(ArrayList *a, const int *values, size_t length) {
   for (i = 0; i < length; i++)
     assert_equals(POINTER_TO_INT(array_list_get(a, i)), POINTER_TO_INT(NULL));
   for (i = 0; i < length; i++)
-    container_delete((Container *)a, NULL);
+    mutable_container_delete((MutableContainer *)a, NULL);
   assert_true(container_empty((Container *)a));
 }
 
-void test_container(Container *c, const int *values, size_t length) {
+void test_mutable_container(MutableContainer *m, const int *values, size_t length) {
+	Container *c = (Container *)m;
   assert_true(container_empty(c));
   size_t i;
   for (i = 0; i < length; i++) {
-    container_insert(c, INT_TO_POINTER(values[i]));
+    mutable_container_insert(m, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))),
         values[i]);
   }
   assert_false(container_empty(c));
   for (i = 0; i < length; i++) {
-    container_delete(c, INT_TO_POINTER(values[i]));
+    mutable_container_delete(m, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))), 0);
   }
@@ -60,12 +61,12 @@ void test_container(Container *c, const int *values, size_t length) {
 }
 
 void test_dictionary(Dictionary *d, const int *values, size_t length) {
-  test_container((Container *)d, values, length);
+  test_mutable_container((MutableContainer *)d, values, length);
   int *sorted = sort_int(values, length);
 
   size_t i;
   for (i = 0; i < length; i++)
-    container_insert((Container *)d, INT_TO_POINTER(values[i]));
+    mutable_container_insert((MutableContainer *)d, INT_TO_POINTER(values[i]));
 
   assert_equals(POINTER_TO_INT(dictionary_min(d)), sorted[0]);
   assert_equals(POINTER_TO_INT(dictionary_max(d)), sorted[length - 1]);
@@ -86,7 +87,7 @@ void test_dictionary(Dictionary *d, const int *values, size_t length) {
   }
 
   while (!container_empty((Container *)d))
-    container_delete((Container *)d, dictionary_min(d));
+    mutable_container_delete((MutableContainer *)d, dictionary_min(d));
 
   free(sorted);
 }
@@ -94,7 +95,7 @@ void test_dictionary(Dictionary *d, const int *values, size_t length) {
 void test_priority_queue(PriorityQueue *p, const int *values, size_t length) {}
 
 void test_queue(Queue *q, const int *values, size_t length) {
-  test_container((Container *)q, values, length);
+  test_mutable_container((MutableContainer *)q, values, length);
 }
 
 void test_sorted_set(SortedSet *s, const int *values, size_t length) {
@@ -124,7 +125,7 @@ void test_stack(Stack *s, const int *values, size_t length) {
   assert_true(container_empty(c));
   size_t i;
   for (i = 0; i < length; i++) {
-    container_insert(c, INT_TO_POINTER(values[i]));
+    mutable_container_insert((MutableContainer *)c, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))),
         values[i]);
@@ -143,7 +144,7 @@ void test_linked_stack(LinkedStack *l, const int *values, size_t length) {
   assert_true(container_empty(c));
   size_t i;
   for (i = 0; i < length; i++) {
-    container_insert(c, INT_TO_POINTER(values[i]));
+    mutable_container_insert((MutableContainer *)c, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))),
         values[i]);
@@ -184,7 +185,7 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
 
   size_t i;
   for (i = 0; i < length; i++)
-    container_insert((Container *)t, INT_TO_POINTER(values[i]));
+    mutable_container_insert((MutableContainer *)t, INT_TO_POINTER(values[i]));
 
   OrderVisitor *o = order_visitor_new(pre_order);
   tree_pre_order(t, order_visitor_visit, o);

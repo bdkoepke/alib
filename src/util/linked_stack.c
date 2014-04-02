@@ -31,7 +31,7 @@ static void *linked_stack_search(const Container *c, const void *x) {
   return node_search(((const LinkedStack *)c)->head, x);
 }
 
-static void linked_stack_delete(Container *c, const void *x) {
+static void linked_stack_delete(MutableContainer *c, const void *x) {
   node_delete(&((LinkedStack *)c)->head, x);
 }
 
@@ -62,9 +62,9 @@ size_t linked_stack_middle(const LinkedStack *l) {
 
 LinkedStack *linked_stack_new() {
   static stack_vtable vtable = {
-    { {.free = _stack_free },
-          .insert = _stack_insert, .search = linked_stack_search,
-          .delete = linked_stack_delete, .empty = linked_stack_empty },
+    { { {.free = _stack_free },
+          .empty = linked_stack_empty, .search = linked_stack_search },
+          .delete = linked_stack_delete, .insert = _stack_insert },
         .push = linked_stack_push, .pop = linked_stack_pop,
         .peek = linked_stack_peek
   };

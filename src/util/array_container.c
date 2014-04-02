@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 typedef struct {
-  container_vtable *vtable;
+  mutable_container_vtable *vtable;
   void **array;
   size_t length;
   size_t size;
@@ -16,11 +16,11 @@ static void array_container_free(Object *o) {
   free(o);
 }
 
-static void array_container_insert(Container *c, void *x) {
+static void array_container_insert(MutableContainer *c, void *x) {
   ArrayContainer *a = (ArrayContainer *)c;
   size_t _x = POINTER_TO_INT(x);
   contract_requires(x != NULL && _x <= a->length);
-  contract_weak_requires(container_search(c, x) == INT_TO_POINTER(false));
+  contract_weak_requires(container_search((Container *)c, x) == INT_TO_POINTER(false));
   a->array[_x - 1] = x;
   a->size++;
 }
@@ -31,7 +31,7 @@ static void *array_container_search(const Container *c, const void *x) {
   return _x <= a->length ? a->array[_x - 1] : NULL;
 }
 
-static void array_container_delete(Container *c, const void *x) {
+static void array_container_delete(MutableContainer *c, const void *x) {
   ArrayContainer *a = (ArrayContainer *)c;
   size_t _x = POINTER_TO_INT(x);
   contract_requires(x != NULL && _x <= a->length);
@@ -43,11 +43,13 @@ static bool array_container_empty(const Container *c) {
   return ((ArrayContainer *)c)->size == 0;
 }
 
-Container *array_container_new(size_t length) {
-  static container_vtable vtable = {
-    {.free = array_container_free },
-        .insert = array_container_insert, .search = array_container_search,
-        .delete = array_container_delete, .empty = array_container_empty
+MutableContainer *array_container_new(size_t length) {
+  static mutable_container_vtable vtable = {
+    { {.free = array_container_free },
+			.search = array_container_search,
+			.empty = array_container_empty },
+      .insert = array_container_insert,
+			.delete = array_container_delete,
   };
 
   // TODO: should be possible to create a lower bound to, so you could have an
@@ -57,5 +59,5 @@ Container *array_container_new(size_t length) {
   array->array = calloc(length, sizeof(void *));
   array->length = length;
   array->size = 0;
-  return (Container *)array;
+  return (MutableContainer *)array;
 }
