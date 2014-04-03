@@ -22,12 +22,12 @@ static void *binary_tree_search(const Container *c, const void *x) {
                             ((const BinaryTree *)c)->c, x);
 }
 
-static void binary_tree_insert(MutableContainer *c, void *x) {
+static void binary_tree_insert(Container *c, void *x) {
   BinaryTree *t = (BinaryTree *)c;
   binary_node_insert(t->root, &(t->root), t->c, x);
 }
 
-static void binary_tree_delete(MutableContainer *c, const void *x) {
+static void binary_tree_delete(Container *c, const void *x) {
   BinaryTree *t = (BinaryTree *)c;
   binary_node_delete(t->root, &(t->root), t->c, x);
 }
@@ -76,8 +76,8 @@ static void binary_tree_level_order(const Tree *t, Visitor v, void *user_data) {
 
 BinaryTree *binary_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { { {.free = binary_tree_free },
-            .search = binary_tree_search, .empty = binary_tree_empty, },
+    { { { {.free = binary_tree_free }, .iterator = NULL },
+              .search = binary_tree_search, .empty = binary_tree_empty,
             .delete = binary_tree_delete, .insert = binary_tree_insert },
           .max = binary_tree_max, .min = binary_tree_min,
           .predecessor = binary_tree_predecessor, .successor =
@@ -102,7 +102,7 @@ typedef struct {
   void *max;
 } MinMaxBinaryTree;
 
-static void min_max_binary_tree_insert(MutableContainer *c, void *x) {
+static void min_max_binary_tree_insert(Container *c, void *x) {
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)c;
   if (container_empty((Container *)c)) {
     m->min = x;
@@ -117,7 +117,7 @@ static void min_max_binary_tree_insert(MutableContainer *c, void *x) {
   binary_tree_insert(c, x);
 }
 
-static void min_max_binary_tree_delete(MutableContainer *c, const void *x) {
+static void min_max_binary_tree_delete(Container *c, const void *x) {
   binary_tree_delete(c, x);
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)c;
   if (container_empty((Container *)c)) {
@@ -142,10 +142,9 @@ static void *min_max_binary_tree_max(const Dictionary *d) {
 
 BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   static tree_vtable vtable = {
-    { { { {.free = binary_tree_free },
-            .search = binary_tree_search,
-						.empty = binary_tree_empty },
-						.insert = min_max_binary_tree_insert,
+    { { { {.free = binary_tree_free }, .iterator = NULL },
+              .search = binary_tree_search, .empty = binary_tree_empty,
+            .insert = min_max_binary_tree_insert,
             .delete = min_max_binary_tree_delete },
           .max = min_max_binary_tree_max, .min = min_max_binary_tree_min,
           .predecessor = binary_tree_predecessor, .successor =

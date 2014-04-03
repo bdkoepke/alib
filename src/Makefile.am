@@ -36,13 +36,15 @@ alib_SOURCES =\
   util/compare.c\
   util/container.c\
   util/dictionary.c\
+	util/edge_node.c\
 	util/graph.c\
   util/hashtable.c\
   util/heap.c\
+  util/iterable.c\
+  util/iterator.c\
 	util/linked_graph.c\
   util/linked_queue.c\
   util/linked_stack.c\
-  util/mutable_container.c\
   util/node.c\
   util/partial_sum.c\
   util/priority_queue.c\

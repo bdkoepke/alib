@@ -10,7 +10,8 @@ typedef struct {
 } _PriorityQueue;
 
 void _priority_queue_insert(PriorityQueue *p, void *x) {
-  mutable_container_insert((MutableContainer *)((_PriorityQueue *)p)->dictionary, x);
+  container_insert(
+      (Container *)((_PriorityQueue *)p)->dictionary, x);
 }
 
 void *_priority_queue_find_minimum(const PriorityQueue *p) {
@@ -22,13 +23,15 @@ void *_priority_queue_find_maximum(const PriorityQueue *p) {
 }
 
 void _priority_queue_delete_minimum(PriorityQueue *p) {
-  mutable_container_delete((MutableContainer *)((_PriorityQueue *)p)->dictionary,
-                   priority_queue_find_minimum(p));
+  container_delete(
+      (Container *)((_PriorityQueue *)p)->dictionary,
+      priority_queue_find_minimum(p));
 }
 
 void _priority_queue_delete_maximum(PriorityQueue *p) {
-  mutable_container_delete((MutableContainer *)((_PriorityQueue *)p)->dictionary,
-                   priority_queue_find_maximum(p));
+  container_delete(
+      (Container *)((_PriorityQueue *)p)->dictionary,
+      priority_queue_find_maximum(p));
 }
 
 bool _priority_queue_empty(const PriorityQueue *p) {

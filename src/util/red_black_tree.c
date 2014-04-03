@@ -46,21 +46,22 @@ static void red_black_tree_free(Object *o) {
 }
 
 static bool red_black_tree_is_valid(RedBlackTree *r) {
-	puts("red_black_tree_is_valid");
+  puts("red_black_tree_is_valid");
   bool red_black_node_is_valid(RedBlackNode * n) {
     if (n == NULL)
       return true;
-		if (n->left != NULL && n->left->parent != n) {
-			if (n->left->parent == NULL)
-				printf("n: %d n->left: %d n->left->parent: NULL\n", n->x, n->left->x);
-			else
-				printf("n: %d n->left: %d n->left->parent: %d\n", n->x, n->left->x, n->left->parent->x);
-			return puts("invalid left parent"), false;
-		}
-		if (n->right != NULL && n->right->parent != n)
-			return puts("invalid right parent"), false;
-		if (n->parent != NULL && n->parent->c == n->c)
-			return puts("invalid parent"), false;
+    if (n->left != NULL && n->left->parent != n) {
+      if (n->left->parent == NULL)
+        printf("n: %d n->left: %d n->left->parent: NULL\n", n->x, n->left->x);
+      else
+        printf("n: %d n->left: %d n->left->parent: %d\n", n->x, n->left->x,
+               n->left->parent->x);
+      return puts("invalid left parent"), false;
+    }
+    if (n->right != NULL && n->right->parent != n)
+      return puts("invalid right parent"), false;
+    if (n->parent != NULL && n->parent->c == n->c)
+      return puts("invalid parent"), false;
     return red_black_node_is_valid(n->left) &&
            red_black_node_is_valid(n->right);
   }
@@ -87,40 +88,40 @@ static RedBlackNode *sibling(RedBlackNode *n) {
 static void rotate_right(RedBlackNode *n, RedBlackTree *r) {
   //contract_requires(n->parent != NULL);
   //contract_requires(grandparent(n) != NULL);
-  assert (n->c == Red);
-	assert (n->parent->c == Black);
-	assert (grandparent(n)->c == Red);
-	assert (uncle(n) == NULL || uncle(n)->c == Black);
+  assert(n->c == Red);
+  assert(n->parent->c == Black);
+  assert(grandparent(n)->c == Red);
+  assert(uncle(n) == NULL || uncle(n)->c == Black);
   RedBlackNode *g = grandparent(n), *p = n->parent;
-  if (g->parent == NULL) 
-		p->parent = NULL, r->root = p;
+  if (g->parent == NULL)
+    p->parent = NULL, r->root = p;
   else {
-		assert (false);
+    assert(false);
     RedBlackNode **gp =
         g->parent->left == g ? &(g->parent->left) : &(g->parent->right);
     p->parent = *gp, *gp = p;
   }
   p->right = g, g->parent = p;
 
-  assert (n->c == Red);
-	assert (n->parent->c == Black);
-	assert (sibling(n)->c == Red);
-	assert (sibling(n)->right == NULL || sibling(n)->right->c == Black);
-	assert (r->root->c == Black && r->root == p);
+  assert(n->c == Red);
+  assert(n->parent->c == Black);
+  assert(sibling(n)->c == Red);
+  assert(sibling(n)->right == NULL || sibling(n)->right->c == Black);
+  assert(r->root->c == Black && r->root == p);
 
-	p = n->parent;
-	g = p->right;
-	assert(n->parent == p);
-	assert(p->parent == NULL);
-	assert(p->left == n);
-	assert(p->right == g);
-	assert(g->parent == p);
-	assert(r->root == p);
-	puts("rotate right contracts fulfilled");
+  p = n->parent;
+  g = p->right;
+  assert(n->parent == p);
+  assert(p->parent == NULL);
+  assert(p->left == n);
+  assert(p->right == g);
+  assert(g->parent == p);
+  assert(r->root == p);
+  puts("rotate right contracts fulfilled");
 }
 
 static void rotate_left(RedBlackNode *n, RedBlackTree *r) {
-	assert (false);
+  assert(false);
   contract_requires(n->parent != NULL);
   contract_requires(grandparent(n) != NULL);
   RedBlackNode *g = grandparent(n), *p = n->parent;
@@ -134,8 +135,8 @@ static void rotate_left(RedBlackNode *n, RedBlackTree *r) {
   p->left = g, g->parent = p;
 }
 
-static void red_black_tree_insert(MutableContainer *m, void *x) {
-	RedBlackTree *r = (RedBlackTree *)m;
+static void red_black_tree_insert(Container *c, void *x) {
+  RedBlackTree *r = (RedBlackTree *)c;
   void red_black_node_insert(RedBlackNode * n, RedBlackNode * p, Compare c,
                              void * x) {
     void red_black_node_insert_case_1(RedBlackNode * n) {
@@ -149,24 +150,24 @@ static void red_black_tree_insert(MutableContainer *m, void *x) {
             }
             RedBlackNode *g = grandparent(n);
             if (n == n->parent->right && n->parent == g->left) {
-							puts("case4: n->parent->right");
+              puts("case4: n->parent->right");
               rotate_left(n->parent, r);
               n = n->left;
             } else if (n == n->parent->left && n->parent == g->right) {
-							puts("case4: n->parent->left");
+              puts("case4: n->parent->left");
               rotate_right(n->parent, r);
               n = n->right;
             }
             red_black_node_insert_case_5(n);
           }
           RedBlackNode *u = uncle(n);
-					if (u != NULL && u->c == Red) {
-						n->parent->c = u->c = Black;
-						RedBlackNode *g = grandparent(n);
-						g->c = Red;
-						red_black_node_insert_case_1(g);
-					} else
-						red_black_node_insert_case_4(n);
+          if (u != NULL && u->c == Red) {
+            n->parent->c = u->c = Black;
+            RedBlackNode *g = grandparent(n);
+            g->c = Red;
+            red_black_node_insert_case_1(g);
+          } else
+            red_black_node_insert_case_4(n);
         }
         if (n->parent->c == Red)
           red_black_node_insert_case_3(n);
@@ -196,8 +197,8 @@ static void red_black_tree_insert(MutableContainer *m, void *x) {
   contract_invariant(red_black_tree_is_valid(r));
 }
 
-static void red_black_tree_delete(MutableContainer *m, const void *x) {
-  RedBlackTree *r = (RedBlackTree *)m;
+static void red_black_tree_delete(Container *c, const void *x) {
+  RedBlackTree *r = (RedBlackTree *)c;
   void red_black_node_delete(RedBlackNode * n, RedBlackNode * *p, Compare c,
                              const void * x) {
     void red_black_node_delete_case_1(RedBlackNode * n, Compare c,
@@ -343,8 +344,8 @@ static void red_black_tree_level_order(const Tree *t, Visitor v,
 
 Tree *red_black_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { { {.free = red_black_tree_free },
-            .search = red_black_tree_search, .empty = red_black_tree_empty },
+    { { { {.free = red_black_tree_free }, .iterator = NULL },
+              .search = red_black_tree_search, .empty = red_black_tree_empty,
             .delete = red_black_tree_delete, .insert = red_black_tree_insert },
           .max = red_black_tree_max, .min = red_black_tree_min,
           .predecessor = red_black_tree_predecessor,

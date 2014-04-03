@@ -7,13 +7,64 @@
 #include <stdlib.h>
 
 typedef struct {
-  mutable_container_vtable *vtable;
+  container_vtable *vtable;
   Hash h;
   Node **array;
   size_t capacity;
   size_t size;
   float factor;
 } Hashtable;
+
+typedef struct {
+  iterator_vtable *vtable;
+  Hashtable *h;
+  size_t i;
+} HashtableIterator;
+
+static void *hashtable_iterator_current(const Iterator *i) {
+  HashtableIterator *h = (HashtableIterator *)i;
+  return h->h->array[h->i];
+}
+
+static bool hashtable_iterator_move_next(Iterator *_i) {
+  HashtableIterator *i = (HashtableIterator *)_i;
+  Hashtable *h = (Hashtable *)i->h;
+  for (; h->array[i->i] == NULL && i->i < h->capacity; i->i++)
+    continue;
+  if (h->array[i->i] == NULL) {
+    i->vtable = &iterator_vtable_invalid_state;
+    return false;
+  }
+  return true;
+}
+
+static bool hashtable_iterator_move_next_init(Iterator *i) {
+  static iterator_vtable vtable = {
+    {.free = _object_free }, .current = hashtable_iterator_current,
+                                 .move_next = hashtable_iterator_move_next
+  };
+
+  HashtableIterator *h = (HashtableIterator *)i;
+  if (container_empty((Container *)h->h)) {
+    i->vtable = &iterator_vtable_invalid_state;
+    return false;
+  }
+  i->vtable = &vtable;
+  return hashtable_iterator_move_next(i);
+}
+
+static Iterator *hashtable_iterator(const Iterable *i) {
+  static iterator_vtable vtable = {
+    {.free = _object_free }, .current = _iterator_current_invalid_state,
+                                 .move_next = hashtable_iterator_move_next_init
+  };
+
+  HashtableIterator *h = malloc(sizeof(HashtableIterator));
+  h->vtable = &vtable;
+  h->h = (Hashtable *)i;
+  h->i = 0;
+  return (Iterator *)h;
+}
 
 static inline void _hashtable_insert(Hashtable *h, void *x) {
   size_t hash = h->h(x) % h->capacity;
@@ -33,7 +84,7 @@ static void *hashtable_search(const Container *c, const void *x) {
   return (h->array[hash] == NULL) ? NULL : node_search(h->array[hash], x);
 }
 
-static void hashtable_insert(MutableContainer *c, void *x) {
+static void hashtable_insert(Container *c, void *x) {
   inline void hashtable_resize(Hashtable * h, size_t capacity) {
     contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
     Node **array = h->array;
@@ -63,7 +114,7 @@ static void hashtable_insert(MutableContainer *c, void *x) {
   _hashtable_insert(h, x);
 }
 
-static void hashtable_delete(MutableContainer *c, const void *x) {
+static void hashtable_delete(Container *c, const void *x) {
   Hashtable *h = (Hashtable *)c;
   h->size--;
   size_t hash = h->h(x) % h->capacity;
@@ -75,10 +126,10 @@ static bool hashtable_empty(const Container *c) {
   return ((Hashtable *)c)->size == 0;
 }
 
-MutableContainer *hashtable_new(Hash hash) {
-  static mutable_container_vtable vtable = {
-    { {.free = hashtable_free },
-        .search = hashtable_search, .empty = hashtable_empty },
+Container *hashtable_new(Hash hash) {
+  static container_vtable vtable = {
+    { {.free = hashtable_free }, .iterator = hashtable_iterator },
+          .search = hashtable_search, .empty = hashtable_empty,
         .delete = hashtable_delete, .insert = hashtable_insert
   };
 
@@ -92,5 +143,5 @@ MutableContainer *hashtable_new(Hash hash) {
   h->array = calloc(h->capacity, sizeof(Node *));
   h->size = 0;
   h->factor = DEFAULT_FACTOR;
-  return (MutableContainer *)h;
+  return (Container *)h;
 }

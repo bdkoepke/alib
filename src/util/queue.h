@@ -1,14 +1,14 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "mutable_container.h"
+#include "container.h"
 
 typedef struct _queue_vtable queue_vtable;
 typedef struct Queue {
   queue_vtable *vtable;
 } Queue;
 struct _queue_vtable {
-  mutable_container_vtable container;
+  container_vtable container;
   void (*enqueue)(Queue *, void *);
   void *(*dequeue)(Queue *);
   void *(*head)(const Queue *);
@@ -18,7 +18,7 @@ void queue_enqueue(Queue *, void *);
 void *queue_dequeue(Queue *);
 void *queue_head(const Queue *);
 
-void _queue_insert(MutableContainer *, void *);
+void _queue_insert(Container *, void *);
 
 void _queue_free(Object *);
 

@@ -13,7 +13,54 @@ typedef struct {
   size_t size;
 } _ArrayList;
 
+typedef struct {
+  iterator_vtable *vtable;
+  ArrayList *a;
+  size_t i;
+} ArrayListIterator;
+
 static const int DEFAULT_CAPACITY = 11;
+
+static void *array_list_iterator_current(const Iterator *i) {
+  const ArrayListIterator *a = (const ArrayListIterator *)i;
+  return array_list_get(a->a, a->i);
+}
+
+static bool array_list_iterator_move_next(Iterator *i) {
+  ArrayListIterator *a = (ArrayListIterator *)i;
+  a->i++;
+  if (a->i < array_list_size(a->a))
+    return true;
+  i->vtable = &iterator_vtable_invalid_state;
+  return false;
+}
+
+static bool array_list_iterator_move_next_init(Iterator *i) {
+  static iterator_vtable vtable = {
+    {.free = _object_free }, .move_next = array_list_iterator_move_next,
+                                 .current = array_list_iterator_current
+  };
+
+  ArrayListIterator *a = (ArrayListIterator *)i;
+  if (container_empty((Container *)a->a)) {
+    a->vtable = &iterator_vtable_invalid_state;
+    return false;
+  }
+  a->vtable = &vtable;
+  return true;
+}
+
+Iterator *array_list_iterator(const Iterable *i) {
+  static iterator_vtable vtable = {
+    {.free = _object_free }, .move_next = array_list_iterator_move_next_init,
+                                 .current = _iterator_current_invalid_state
+  };
+  ArrayListIterator *a = malloc(sizeof(ArrayListIterator));
+  a->vtable = &vtable;
+  a->a = (ArrayList *)i;
+  a->i = 0;
+  return (Iterator *)a;
+}
 
 static inline void array_list_resize(_ArrayList *a, size_t capacity) {
   contract_requires(a->size < capacity);
@@ -32,7 +79,7 @@ static size_t _array_list_size(const ArrayList *a) {
   return ((const _ArrayList *)a)->size;
 }
 
-static void _array_list_insert(MutableContainer *_a, void *x) {
+static void _array_list_insert(Container *_a, void *x) {
   _ArrayList *a = (_ArrayList *)_a;
   if (array_list_size((ArrayList *)a) >= a->capacity) {
     size_t new_size =
@@ -45,7 +92,7 @@ static void _array_list_insert(MutableContainer *_a, void *x) {
   array_list_set((ArrayList *)a, size, x);
 }
 
-static void array_list_delete(MutableContainer *c, const void *x) {
+static void array_list_delete(Container *c, const void *x) {
   inline void shift_right(void * *a, size_t length, size_t offset, size_t x) {
     size_t i;
     for (i = offset; i < (length - x); i++)
@@ -80,12 +127,9 @@ static void array_list_free(Object *a) {
 
 ArrayList *array_list_new() {
   static array_list_vtable vtable = {
-    { { {.free = array_list_free },
-          .search = _array_list_search,
-					.empty = _array_list_empty },
-					.insert = _array_list_insert,
-          .delete = array_list_delete,
-},
+    { { {.free = array_list_free }, .iterator = array_list_iterator },
+            .search = _array_list_search, .empty = _array_list_empty,
+          .insert = _array_list_insert, .delete = array_list_delete },
         .set = _array_list_set, .get = _array_list_get, .size = _array_list_size
   };
 

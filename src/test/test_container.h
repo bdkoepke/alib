@@ -2,7 +2,7 @@
 #define TEST_CONTAINER_H
 
 #include "../util/array_list.h"
-#include "../util/mutable_container.h"
+#include "../util/container.h"
 #include "../util/dictionary.h"
 #include "../util/graph.h"
 #include "../util/heap.h"
@@ -16,7 +16,7 @@
 #include "../util/tree.h"
 
 void test_array_list(ArrayList *, const int *, size_t);
-void test_mutable_container(MutableContainer *, const int *, size_t);
+void test_container(Container *, const int *, size_t);
 void test_dictionary(Dictionary *, const int *, size_t);
 void test_graph(Graph *, const int *, size_t);
 void test_heap_empty(Heap *, const int *, size_t);

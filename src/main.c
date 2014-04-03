@@ -74,8 +74,13 @@ void chapter_4(void) {
   question_4_46();
 }
 
+void chapter_5(void) {
+	test_linked_graph();
+}
+
 int main(void) {
   chapter_2();
   chapter_3();
   chapter_4();
+	chapter_5();
 }

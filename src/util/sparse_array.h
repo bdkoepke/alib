@@ -1,7 +1,7 @@
 #ifndef SPARSE_ARRAY_H
 #define SPARSE_ARRAY_H
 
-#include "mutable_container.h"
+#include "container.h"
 
 /**
  * Creates a new sparse array.
@@ -11,6 +11,6 @@
  * 	into the array.
  * @return a new empty sparse array.
  */
-MutableContainer *sparse_array_new(unsigned int n, unsigned int m);
+Container *sparse_array_new(unsigned int n, unsigned int m);
 
 #endif /* SPARSE_ARRAY_H */

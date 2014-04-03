@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 typedef struct {
-  mutable_container_vtable *vtable;
+  container_vtable *vtable;
   unsigned int n;
   unsigned int m;
   unsigned int size;
@@ -21,11 +21,12 @@ static void sparse_array_free(Object *o) {
   free(o);
 }
 
-static void sparse_array_insert(MutableContainer *m, void *x) {
-  SparseArray *s = (SparseArray *)m;
+static void sparse_array_insert(Container *c, void *x) {
+  SparseArray *s = (SparseArray *)c;
   unsigned int _x = POINTER_TO_INT(x);
   contract_requires(_x < s->n && s->size < UINT_MAX && s->size < s->m);
-  contract_weak_requires(container_search((Container *)m, x) == INT_TO_POINTER(false));
+  contract_weak_requires(container_search((Container *)c, x) ==
+                         INT_TO_POINTER(false));
   s->size++;
   s->A[_x] = s->size;
   s->B[s->A[_x] - 1] = _x;
@@ -40,8 +41,8 @@ static void *sparse_array_search(const Container *c, const void *x) {
              : NULL;
 }
 
-static void sparse_array_delete(MutableContainer *m, const void *x) {
-  SparseArray *s = (SparseArray *)m;
+static void sparse_array_delete(Container *c, const void *x) {
+  SparseArray *s = (SparseArray *)c;
   unsigned int _x = POINTER_TO_INT(x);
   contract_requires(x != NULL && _x < s->n);
   s->B[s->A[_x] - 1] = POINTER_TO_INT(NULL);
@@ -53,10 +54,10 @@ static bool sparse_array_empty(const Container *c) {
   return ((SparseArray *)c)->size == 0;
 }
 
-MutableContainer *sparse_array_new(unsigned int n, unsigned int m) {
-  static mutable_container_vtable vtable = {
-    { {.free = sparse_array_free },
-        .empty = sparse_array_empty, .search = sparse_array_search },
+Container *sparse_array_new(unsigned int n, unsigned int m) {
+  static container_vtable vtable = {
+    { {.free = sparse_array_free }, .iterator = NULL },
+          .empty = sparse_array_empty, .search = sparse_array_search,
         .delete = sparse_array_delete, .insert = sparse_array_insert
   };
 
@@ -67,5 +68,5 @@ MutableContainer *sparse_array_new(unsigned int n, unsigned int m) {
   s->m = m;
   s->A = malloc(sizeof(unsigned int) * s->n);
   s->B = malloc(sizeof(unsigned int) * s->m);
-  return (MutableContainer *)s;
+  return (Container *)s;
 }

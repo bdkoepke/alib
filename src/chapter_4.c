@@ -610,7 +610,7 @@ void binary_tree_sort(int a[], size_t length) {
   for (i = 0; i < length; i++) {
     Pair *p = container_search((Container *)b, &a[i]);
     if (p == NULL)
-      mutable_container_insert((MutableContainer *)b, pair_new(a[i], 1));
+      container_insert((Container *)b, pair_new(a[i], 1));
     else
       p->count++;
   }
@@ -624,7 +624,7 @@ void binary_tree_sort(int a[], size_t length) {
 
   while (!container_empty((Container *)b)) {
     Pair *p = dictionary_min((Dictionary *)b);
-    mutable_container_delete((MutableContainer *)b, p);
+    container_delete((Container *)b, p);
     free(p);
   }
   assert_true(container_empty((Container *)b));
