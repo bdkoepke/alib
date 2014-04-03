@@ -77,7 +77,7 @@ static void binary_tree_level_order(const Tree *t, Visitor v, void *user_data) {
 BinaryTree *binary_tree_new(Compare c) {
   static tree_vtable vtable = {
     { { { {.free = binary_tree_free }, .iterator = NULL },
-              .search = binary_tree_search, .empty = binary_tree_empty,
+            .search = binary_tree_search, .empty = binary_tree_empty,
             .delete = binary_tree_delete, .insert = binary_tree_insert },
           .max = binary_tree_max, .min = binary_tree_min,
           .predecessor = binary_tree_predecessor, .successor =
@@ -143,7 +143,7 @@ static void *min_max_binary_tree_max(const Dictionary *d) {
 BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   static tree_vtable vtable = {
     { { { {.free = binary_tree_free }, .iterator = NULL },
-              .search = binary_tree_search, .empty = binary_tree_empty,
+            .search = binary_tree_search, .empty = binary_tree_empty,
             .insert = min_max_binary_tree_insert,
             .delete = min_max_binary_tree_delete },
           .max = min_max_binary_tree_max, .min = min_max_binary_tree_min,

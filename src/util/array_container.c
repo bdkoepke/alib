@@ -99,7 +99,7 @@ static bool array_container_empty(const Container *c) {
 Container *array_container_new(size_t length) {
   static container_vtable vtable = {
     { {.free = array_container_free }, .iterator = array_container_iterator },
-          .search = array_container_search, .empty = array_container_empty,
+        .search = array_container_search, .empty = array_container_empty,
         .insert = array_container_insert, .delete = array_container_delete
   };
 

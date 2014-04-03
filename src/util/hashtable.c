@@ -129,7 +129,7 @@ static bool hashtable_empty(const Container *c) {
 Container *hashtable_new(Hash hash) {
   static container_vtable vtable = {
     { {.free = hashtable_free }, .iterator = hashtable_iterator },
-          .search = hashtable_search, .empty = hashtable_empty,
+        .search = hashtable_search, .empty = hashtable_empty,
         .delete = hashtable_delete, .insert = hashtable_insert
   };
 

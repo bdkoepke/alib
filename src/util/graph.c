@@ -21,9 +21,9 @@ void graph_insert_edge(Graph *g, void *x, void *y) {
 
 void graph_delete_edge(Graph *g, const void *x, const void *y) {
   contract_requires(g != NULL && x != NULL && y != NULL);
-	contract_weak_requires(graph_adjacent(g, x, y));
+  contract_weak_requires(graph_adjacent(g, x, y));
   g->vtable->delete_edge(g, x, y);
-	contract_weak_requires(! graph_adjacent(g, x, y));
+  contract_weak_requires(!graph_adjacent(g, x, y));
 }
 
 /* void *graph_node_value(const Graph *g, const void *x) {

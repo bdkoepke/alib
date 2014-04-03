@@ -57,7 +57,7 @@ static bool sparse_array_empty(const Container *c) {
 Container *sparse_array_new(unsigned int n, unsigned int m) {
   static container_vtable vtable = {
     { {.free = sparse_array_free }, .iterator = NULL },
-          .empty = sparse_array_empty, .search = sparse_array_search,
+        .empty = sparse_array_empty, .search = sparse_array_search,
         .delete = sparse_array_delete, .insert = sparse_array_insert
   };
 

@@ -13,7 +13,7 @@ struct _container_vtable {
   iterable_vtable iterable;
   void *(*search)(const Container *, const void *);
   void (*insert)(Container *, void *);
-	void (*delete)(Container *, const void *);
+  void (*delete)(Container *, const void *);
   bool (*empty)(const Container *);
 };
 

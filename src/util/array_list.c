@@ -128,7 +128,7 @@ static void array_list_free(Object *a) {
 ArrayList *array_list_new() {
   static array_list_vtable vtable = {
     { { {.free = array_list_free }, .iterator = array_list_iterator },
-            .search = _array_list_search, .empty = _array_list_empty,
+          .search = _array_list_search, .empty = _array_list_empty,
           .insert = _array_list_insert, .delete = array_list_delete },
         .set = _array_list_set, .get = _array_list_get, .size = _array_list_size
   };

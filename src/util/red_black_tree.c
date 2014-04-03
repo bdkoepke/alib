@@ -345,7 +345,7 @@ static void red_black_tree_level_order(const Tree *t, Visitor v,
 Tree *red_black_tree_new(Compare c) {
   static tree_vtable vtable = {
     { { { {.free = red_black_tree_free }, .iterator = NULL },
-              .search = red_black_tree_search, .empty = red_black_tree_empty,
+            .search = red_black_tree_search, .empty = red_black_tree_empty,
             .delete = red_black_tree_delete, .insert = red_black_tree_insert },
           .max = red_black_tree_max, .min = red_black_tree_min,
           .predecessor = red_black_tree_predecessor,
