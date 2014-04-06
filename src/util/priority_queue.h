@@ -2,6 +2,7 @@
 #define PRIORITY_QUEUE_H
 
 #include "../lang/object.h"
+#include "sorted_dictionary.h"
 
 #include <stdbool.h>
 
@@ -26,7 +27,7 @@ struct _priority_queue_vtable {
  * @param d the dictionary to use.
  * @return a new priority queue backed by the specified dictionary.
  */
-PriorityQueue *priority_queue_new(Dictionary *d);
+PriorityQueue *priority_queue_new(SortedDictionary *d);
 
 /**
  * Inserts the specified object into the priority queue.

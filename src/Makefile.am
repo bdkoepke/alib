@@ -40,8 +40,10 @@ alib_SOURCES =\
 	util/graph.c\
   util/hashtable.c\
   util/heap.c\
+  util/hnode.c\
   util/iterable.c\
   util/iterator.c\
+	util/key_value_pair.c\
 	util/linked_graph.c\
   util/linked_queue.c\
   util/linked_stack.c\
@@ -50,7 +52,7 @@ alib_SOURCES =\
   util/priority_queue.c\
   util/queue.c\
   util/range_container.c\
-  util/red_black_tree.c\
+  util/sorted_dictionary.c\
   util/sorted_set.c\
   util/sparse_array.c\
   util/stack.c\

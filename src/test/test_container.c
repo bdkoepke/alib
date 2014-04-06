@@ -59,34 +59,34 @@ void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
 }
 
-void test_dictionary(Dictionary *d, const int *values, size_t length) {
-  test_container((Container *)d, values, length);
+void test_sorted_dictionary(SortedDictionary *m, const int *values, size_t length) {
+  test_container((Container *)m, values, length);
   int *sorted = sort_int(values, length);
 
   size_t i;
   for (i = 0; i < length; i++)
-    container_insert((Container *)d, INT_TO_POINTER(values[i]));
+    container_insert((Container *)m, INT_TO_POINTER(values[i]));
 
-  assert_equals(POINTER_TO_INT(dictionary_min(d)), sorted[0]);
-  assert_equals(POINTER_TO_INT(dictionary_max(d)), sorted[length - 1]);
+  assert_equals(POINTER_TO_INT(sorted_dictionary_min(m)), sorted[0]);
+  assert_equals(POINTER_TO_INT(sorted_dictionary_max(m)), sorted[length - 1]);
 
   for (i = 0; i < length; i++) {
     int j = binary_search(&values[i], sorted, length, sizeof(int), compare_int);
     int predecessor = (j == 0 ? 0 : sorted[j - 1]);
     assert_equals(
-        POINTER_TO_INT(dictionary_predecessor(d, INT_TO_POINTER(values[i]))),
+        POINTER_TO_INT(sorted_dictionary_predecessor(m, INT_TO_POINTER(values[i]))),
         predecessor);
   }
   for (i = 0; i < length; i++) {
     int j = binary_search(&values[i], sorted, length, sizeof(int), compare_int);
     int successor = (j == (length - 1) ? 0 : sorted[j + 1]);
     assert_equals(
-        POINTER_TO_INT(dictionary_successor(d, INT_TO_POINTER(values[i]))),
+        POINTER_TO_INT(sorted_dictionary_successor(m, INT_TO_POINTER(values[i]))),
         successor);
   }
 
-  while (!container_empty((Container *)d))
-    container_delete((Container *)d, dictionary_min(d));
+  while (!container_empty((Container *)m))
+    container_delete((Container *)m, sorted_dictionary_min(m));
 
   free(sorted);
 }
@@ -179,7 +179,7 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
     assert_equals(POINTER_TO_INT(x), o->order[o->i++]);
   }
 
-  test_dictionary((Dictionary *)t, values, length);
+  test_sorted_dictionary((SortedDictionary *)t, values, length);
   assert_true(container_empty((Container *)t));
 
   size_t i;

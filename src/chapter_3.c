@@ -95,7 +95,7 @@ void test_binary_tree(void) {
   object_free((Object *)b);
 
   b = binary_tree_new(compare_int_pointer);
-  test_dictionary((Dictionary *)b, test_values_extended,
+  test_sorted_dictionary((SortedDictionary *)b, test_values_extended,
                   test_values_extended_length);
   object_free((Object *)b);
 }
@@ -110,7 +110,7 @@ void test_red_black_tree(void) {
    object_free((Object *)r);
  
    r = red_black_tree_new(compare_int_pointer);
-   test_dictionary((Dictionary *)r, test_values_extended,
+   test_sorted_dictionary((SortedDictionary *)r, test_values_extended,
                    test_values_extended_length);
    object_free((Object *)r);
  	*/
@@ -118,11 +118,11 @@ void test_red_black_tree(void) {
 
 void test_hashtable(void) {
   puts("test_hashtable");
-  Container *c = hashtable_new(hash_int_pointer);
+  Container *c = (Container *)hashtable_new(hash_int_pointer);
   test_container(c, test_values, test_values_length);
   object_free((Object *)c);
 
-  c = hashtable_new(hash_int_pointer);
+  c = (Container *)hashtable_new(hash_int_pointer);
   test_container(c, test_values_extended, test_values_extended_length);
   object_free((Object *)c);
 }
@@ -181,7 +181,7 @@ void question_3_7(void) {
   object_free((Object *)b);
 
   b = binary_tree_new_fast_min_max(compare_int_pointer);
-  test_dictionary((Dictionary *)b, test_values_extended,
+  test_sorted_dictionary((SortedDictionary *)b, test_values_extended,
                   test_values_extended_length);
   object_free((Object *)b);
 }
@@ -204,12 +204,12 @@ void question_3_9(void) {
   BinaryTree *a = binary_tree_new(compare_int_pointer);
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
-  for (i = 0; i < 10; i++)
+  for (i = 1; i <= 10; i++)
     container_insert((Container *)a, INT_TO_POINTER(i));
-  for (i; i < 20; i++)
+  for (i; i <= 20; i++)
     container_insert((Container *)b, INT_TO_POINTER(i));
   BinaryTree *concat = binary_tree_concat(a, b);
-  for (i = 0; i < 20; i++)
+  for (i = 1; i <= 20; i++)
     assert_equals(POINTER_TO_INT(
                       container_search((Container *)concat, INT_TO_POINTER(i))),
                   i);
@@ -217,7 +217,7 @@ void question_3_9(void) {
 }
 
 size_t bin_packing(const double *weights, size_t length,
-                   bool (*f)(const Dictionary *, double, double *)) {
+                   bool (*f)(const SortedDictionary *, double, double *)) {
   bool validate_weight(double weight) { return weight > 0.0 && weight <= 1.0; }
   contract_requires(weights != NULL);
   contract_weak_requires(all_double(weights, length, validate_weight));
@@ -231,7 +231,7 @@ size_t bin_packing(const double *weights, size_t length,
   double bin = 0;
   while (!container_empty((Container *)b)) {
     double next;
-    if (f((Dictionary *)b, bin, &next)) {
+    if (f((SortedDictionary *)b, bin, &next)) {
       bin = 0;
       bins++;
     } else {
@@ -244,20 +244,20 @@ size_t bin_packing(const double *weights, size_t length,
 }
 
 size_t bin_packing_best_fit(const double *weights, size_t length) {
-  bool bin_packing_best_fit_heuristic(const Dictionary * d, double bin,
+  bool bin_packing_best_fit_heuristic(const SortedDictionary * d, double bin,
                                       double * out_next) {
     contract_requires(d != NULL && out_next != NULL);
-    *out_next = *(double *)dictionary_predecessor(d, &bin);
+    *out_next = *(double *)sorted_dictionary_predecessor(d, &bin);
     return out_next == NULL;
   }
   return bin_packing(weights, length, bin_packing_best_fit_heuristic);
 }
 
 size_t bin_packing_worst_fit(const double *weights, size_t length) {
-  bool bin_packing_worst_fit_heuristic(const Dictionary * d, double bin,
+  bool bin_packing_worst_fit_heuristic(const SortedDictionary * d, double bin,
                                        double * out_next) {
     contract_requires(d != NULL && out_next != NULL);
-    return (*out_next = *(double *)dictionary_min(d)) > (1 - bin);
+    return (*out_next = *(double *)sorted_dictionary_min(d)) > (1 - bin);
   }
   return bin_packing(weights, length, bin_packing_worst_fit_heuristic);
 }

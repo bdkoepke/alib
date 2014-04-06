@@ -1,15 +1,15 @@
 #include "../diag/contract.h"
 #include "../lang/math_extended.h"
 #include "hashtable.h"
-#include "node.h"
+#include "hnode.h"
 
 #include <stdint.h>
 #include <stdlib.h>
 
 typedef struct {
-  container_vtable *vtable;
+  dictionary_vtable *vtable;
   Hash h;
-  Node **array;
+  HNode **array;
   size_t capacity;
   size_t size;
   float factor;
@@ -23,7 +23,7 @@ typedef struct {
 
 static void *hashtable_iterator_current(const Iterator *i) {
   HashtableIterator *h = (HashtableIterator *)i;
-  return h->h->array[h->i];
+  return h->h->array[h->i]->p.v;
 }
 
 static bool hashtable_iterator_move_next(Iterator *_i) {
@@ -66,11 +66,6 @@ static Iterator *hashtable_iterator(const Iterable *i) {
   return (Iterator *)h;
 }
 
-static inline void _hashtable_insert(Hashtable *h, void *x) {
-  size_t hash = h->h(x) % h->capacity;
-  node_insert(&h->array[hash], x);
-}
-
 static void hashtable_free(Object *o) {
   free(((Hashtable *)o)->array);
   free(o);
@@ -78,59 +73,73 @@ static void hashtable_free(Object *o) {
 
 static void *hashtable_search(const Container *c, const void *x) {
   contract_requires(x != NULL);
-
   Hashtable *h = (Hashtable *)c;
   size_t hash = h->h(x) % h->capacity;
-  return (h->array[hash] == NULL) ? NULL : node_search(h->array[hash], x);
+	if (h->array[hash] == NULL)
+		return NULL;
+	KeyValuePair *p = hnode_search(h->array[hash], x);
+	return p == NULL ? NULL : p->v;
 }
 
-static void hashtable_insert(Container *c, void *x) {
+static void hashtable_insert(Dictionary *d, const void *k, void *v) {
+	inline void _hashtable_insert(Hashtable *h, const void *k, void *v) {
+		size_t hash = h->h(k) % h->capacity;
+		hnode_insert(&(h->array[hash]), k, v);
+	}
   inline void hashtable_resize(Hashtable * h, size_t capacity) {
     contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
-    Node **array = h->array;
+    HNode **array = h->array;
     size_t _capacity = h->capacity;
     h->capacity = capacity;
-    h->array = calloc(capacity, sizeof(Node *));
+    h->array = calloc(capacity, sizeof(HNode *));
     size_t i;
     for (i = 0; i < _capacity; i++)
       if (array[i] != NULL) {
-        Node *n;
+        HNode *n;
         for (n = array[i]; n != NULL; n = n->n)
-          _hashtable_insert(h, n->x);
-        node_free_r(n);
+          _hashtable_insert(h, n->p.k, n->p.v);
+        hnode_free_r(n);
       }
     free(array);
   }
-
-  Hashtable *h = (Hashtable *)c;
-  contract_requires(x != NULL && h->size < SIZE_MAX);
-
+  Hashtable *h = (Hashtable *)d;
+  contract_requires(k != NULL && h->size < SIZE_MAX);
   if (h->size >= h->capacity) {
     size_t capacity = checked_product(h->capacity, 2, SIZE_MAX);
     hashtable_resize(h, capacity);
     h->capacity = capacity;
   }
   h->size++;
-  _hashtable_insert(h, x);
+  _hashtable_insert(h, k, v);
 }
 
-static void hashtable_delete(Container *c, const void *x) {
+static void *hashtable_reassign(Dictionary *d, const void *k, void *v) {
+	Hashtable *h = (Hashtable *)d;
+	size_t hash = h->h(k) % h->capacity;
+	KeyValuePair *p = hnode_search(h->array[hash], k);
+	void *_v = p->v;
+	p->v = v;
+	return _v;
+}
+
+static void hashtable_delete(Container *c, const void *k) {
   Hashtable *h = (Hashtable *)c;
   h->size--;
-  size_t hash = h->h(x) % h->capacity;
+  size_t hash = h->h(k) % h->capacity;
   contract_weak_requires(h->array[hash]);
-  node_delete(&(h->array[hash]), x);
+  hnode_delete(&(h->array[hash]), k);
 }
 
 static bool hashtable_empty(const Container *c) {
   return ((Hashtable *)c)->size == 0;
 }
 
-Container *hashtable_new(Hash hash) {
-  static container_vtable vtable = {
-    { {.free = hashtable_free }, .iterator = hashtable_iterator },
+Dictionary *hashtable_new(Hash hash) {
+  static dictionary_vtable vtable = {
+    { { {.free = hashtable_free }, .iterator = hashtable_iterator },
         .search = hashtable_search, .empty = hashtable_empty,
-        .delete = hashtable_delete, .insert = hashtable_insert
+        .delete = hashtable_delete, .insert = _container_insert },
+			.insert = hashtable_insert, .reassign = hashtable_reassign
   };
 
   static const float DEFAULT_FACTOR = 0.75;
@@ -140,8 +149,8 @@ Container *hashtable_new(Hash hash) {
   h->vtable = &vtable;
   h->h = hash;
   h->capacity = DEFAULT_CAPACITY;
-  h->array = calloc(h->capacity, sizeof(Node *));
+  h->array = calloc(h->capacity, sizeof(HNode *));
   h->size = 0;
   h->factor = DEFAULT_FACTOR;
-  return (Container *)h;
+  return (Dictionary *)h;
 }

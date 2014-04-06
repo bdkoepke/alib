@@ -1,12 +1,11 @@
 #include "../diag/contract.h"
-#include "dictionary.h"
 #include "priority_queue.h"
 
 #include <stdlib.h>
 
 typedef struct {
   priority_queue_vtable *vtable;
-  Dictionary *dictionary;
+  SortedDictionary *dictionary;
 } _PriorityQueue;
 
 void _priority_queue_insert(PriorityQueue *p, void *x) {
@@ -14,11 +13,11 @@ void _priority_queue_insert(PriorityQueue *p, void *x) {
 }
 
 void *_priority_queue_find_minimum(const PriorityQueue *p) {
-  return dictionary_min(((_PriorityQueue *)p)->dictionary);
+  return sorted_dictionary_min(((_PriorityQueue *)p)->dictionary);
 }
 
 void *_priority_queue_find_maximum(const PriorityQueue *p) {
-  return dictionary_max(((_PriorityQueue *)p)->dictionary);
+  return sorted_dictionary_max(((_PriorityQueue *)p)->dictionary);
 }
 
 void _priority_queue_delete_minimum(PriorityQueue *p) {
@@ -40,7 +39,7 @@ void _priority_queue_free(Object *o) {
   free(o);
 }
 
-PriorityQueue *priority_queue_new(Dictionary *dictionary) {
+PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
   static priority_queue_vtable vtable = {
     {.free = _priority_queue_free },
         .insert = _priority_queue_insert, .find_minimum =

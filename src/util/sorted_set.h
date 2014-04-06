@@ -62,7 +62,7 @@ void *sorted_set_delete(SortedSet *s, size_t k);
  * @param s the set to determine the emptiness of.
  * @return true if the set is empty, false otherwise.
  */
-bool sorted_set_empty(const SortedSet *);
+bool sorted_set_empty(const SortedSet *s);
 
 /**
  * Gets the size of the sorted set.

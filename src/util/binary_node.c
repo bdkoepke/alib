@@ -4,16 +4,16 @@
 
 #include <stdlib.h>
 
-BinaryNode *binary_node_new(void *x, BinaryNode *left, BinaryNode *right) {
-  BinaryNode *_n = malloc(sizeof(BinaryNode));
-  _n->x = x;
-  _n->left = left;
-  _n->right = right;
-  return _n;
+BinaryNode *binary_node_new(const void *k, void *v, BinaryNode *left, BinaryNode *right) {
+  BinaryNode *n = malloc(sizeof(BinaryNode));
+  n->p.k = k, n->p.v = v;
+  n->left = left;
+  n->right = right;
+  return n;
 }
 
-BinaryNode *binary_node_new_leaf(void *x) {
-  return binary_node_new(x, NULL, NULL);
+BinaryNode *binary_node_new_leaf(const void *k, void *v) {
+  return binary_node_new(k, v, NULL, NULL);
 }
 
 bool binary_node_is_leaf(const BinaryNode *n) {
@@ -32,38 +32,49 @@ void binary_node_free_r(BinaryNode *n) {
   }
 }
 
-void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, void *x) {
+void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, const void *k, void *v) {
   if (n == NULL)
-    *p = binary_node_new_leaf(x);
+    *p = binary_node_new_leaf(k, v);
   else {
-    int r = c(x, n->x);
+    int r = c(k, n->p.k);
     BinaryNode **_p = r < 0 ? &(n->left) : &(n->right);
-    binary_node_insert(*_p, _p, c, x);
+    binary_node_insert(*_p, _p, c, k, v);
   }
 }
 
-void *binary_node_search(const BinaryNode *n, Compare c, const void *x) {
+void *binary_node_reassign(BinaryNode *n, Compare c, const void *k, void *v) {
+	contract_requires(n != NULL);
+	int r = c(k, n->p.k);
+	if (r == 0) {
+		void *o = n->p.v;
+		n->p.v = v;
+		return o;
+	}
+	else
+		return binary_node_reassign(r < 0 ? n->left : n->right, c, k, v);
+}
+
+KeyValuePair const *binary_node_search(const BinaryNode *n, Compare c, const void *k) {
   if (n == NULL)
     return NULL;
-  int r = c(x, n->x);
+  int r = c(k, n->p.k);
   if (r == 0)
-    return n->x;
-  return r < 0 ? binary_node_search(n->left, c, x)
-               : binary_node_search(n->right, c, x);
+    return &(n->p);
+  return r < 0 ? binary_node_search(n->left, c, k)
+               : binary_node_search(n->right, c, k);
 }
 
 void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
-                        const void *x) {
-  int r = c(x, n->x);
+                        const void *k) {
+  int r = c(k, n->p.k);
   if (r < 0)
-    binary_node_delete(n->left, &(n->left), c, x);
+    binary_node_delete(n->left, &(n->left), c, k);
   else if (r > 0)
-    binary_node_delete(n->right, &(n->right), c, x);
+    binary_node_delete(n->right, &(n->right), c, k);
   else {
     if (binary_node_is_branch(n)) {
-      void *min = binary_node_min(n->right);
-      n->x = min;
-      binary_node_delete(n->right, &(n->right), c, min);
+      n->p = *binary_node_min(n->right);
+      binary_node_delete(n->right, &(n->right), c, n->p.k);
     } else {
       *p = (n->left != NULL) ? n->left : n->right;
       free(n);
@@ -73,51 +84,51 @@ void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
 
 bool binary_node_empty(const BinaryNode *n) { return n == NULL; }
 
-void *binary_node_min(const BinaryNode *root) {
+KeyValuePair const *binary_node_min(const BinaryNode *root) {
   BinaryNode *n;
   for (n = (BinaryNode *)root; n->left != NULL; n = n->left)
     continue;
-  return n->x;
+  return &(n->p);
 }
 
-void *binary_node_max(const BinaryNode *root) {
+KeyValuePair const *binary_node_max(const BinaryNode *root) {
   BinaryNode *n;
   for (n = (BinaryNode *)root; n->right != NULL; n = n->right)
     continue;
-  return n->x;
+  return &(n->p);
 }
 
-void *binary_node_predecessor(const BinaryNode *n, Compare c, const void *x) {
+const KeyValuePair *binary_node_predecessor(const BinaryNode *n, Compare c, const void *k) {
   if (n == NULL)
     return NULL;
-  int r = c(x, n->x);
+  int r = c(k, n->p.k);
   if (r == 0)
     return n->left == NULL ? NULL : binary_node_max(n->left);
   if (r < 0)
-    return binary_node_predecessor(n->left, c, x);
+    return binary_node_predecessor(n->left, c, k);
   else {
-    void *predecessor = binary_node_predecessor(n->right, c, x);
-    return predecessor == NULL ? n->x : predecessor;
+    KeyValuePair const *predecessor = binary_node_predecessor(n->right, c, k);
+    return predecessor == NULL ? &(n->p) : predecessor;
   }
 }
 
-void *binary_node_successor(const BinaryNode *n, Compare c, const void *x) {
+const KeyValuePair *binary_node_successor(const BinaryNode *n, Compare c, const void *k) {
   if (n == NULL)
     return NULL;
-  int r = c(x, n->x);
+  int r = c(k, n->p.k);
   if (r == 0)
     return n->right == NULL ? NULL : binary_node_min(n->right);
   if (r > 0)
-    return binary_node_successor(n->right, c, x);
+    return binary_node_successor(n->right, c, k);
   else {
-    void *successor = binary_node_successor(n->left, c, x);
-    return successor == NULL ? n->x : successor;
+    KeyValuePair const *successor = binary_node_successor(n->left, c, k);
+    return successor == NULL ? &(n->p) : successor;
   }
 }
 
 void binary_node_pre_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
-    v(user_data, n->x);
+    v(user_data, n->p.v);
     binary_node_pre_order(n->left, v, user_data);
     binary_node_pre_order(n->right, v, user_data);
   }
@@ -126,7 +137,7 @@ void binary_node_pre_order(const BinaryNode *n, Visitor v, void *user_data) {
 void binary_node_in_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
     binary_node_in_order(n->left, v, user_data);
-    v(user_data, n->x);
+    v(user_data, n->p.v);
     binary_node_in_order(n->right, v, user_data);
   }
 }
@@ -135,7 +146,7 @@ void binary_node_post_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
     binary_node_post_order(n->left, v, user_data);
     binary_node_post_order(n->right, v, user_data);
-    v(user_data, n->x);
+    v(user_data, n->p.v);
   }
 }
 
@@ -150,7 +161,7 @@ void binary_node_level_order(const BinaryNode *root, Visitor v,
   queue_enqueue(q, (BinaryNode *)root);
   while (!container_empty((Container *)q)) {
     BinaryNode *n = queue_dequeue(q);
-    v(user_data, n->x);
+    v(user_data, n->p.v);
     queue_enqueue_non_null(q, n->left);
     queue_enqueue_non_null(q, n->right);
   }

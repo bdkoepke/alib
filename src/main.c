@@ -1,6 +1,7 @@
 #include "chapter_2.h"
 #include "chapter_3.h"
 #include "chapter_4.h"
+#include "chapter_5.h"
 
 void chapter_2(void) {
   test_selectionsort();

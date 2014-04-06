@@ -9,44 +9,39 @@ typedef struct Dictionary {
 } Dictionary;
 struct _dictionary_vtable {
   container_vtable container;
-  void *(*max)(const Dictionary *);
-  void *(*min)(const Dictionary *);
-  void *(*predecessor)(const Dictionary *, const void *);
-  void *(*successor)(const Dictionary *, const void *);
+  void (*insert)(Dictionary *, const void *, void *);
+  void *(*reassign)(Dictionary *, const void *, void *);
 };
 
 /**
- * Gets the maximum object from the dictionary.
+ * Inserts the specified key and value into the dictionary.
  *
- * @param d the dictionary to get the maximum from.
- * @return the maximum object.
+ * @param d the dictionary to insert the key value pair into.
+ * @param k the key to associate with the value.
+ * @param v the value to be indexed by the key.
  */
-void *dictionary_max(const Dictionary *d);
+void dictionary_insert(Dictionary *d, const void *k, void *v);
 
 /**
- * Gets the minimum object from the dictionary.
+ * Replaces the value of the specified key with the specified
+ * value.
  *
- * @param d the dictionary to get the minimum from.
- * @return the minimum object.
+ * @param d the dictionary to replace the value in.
+ * @param k the key to associate with the value.
+ * @param v the new value that is associated with the key.
+ * @return the original value associated with k.
  */
-void *dictionary_min(const Dictionary *d);
+void *dictionary_reassign(Dictionary *d, const void *k, void *v);
 
 /**
- * Gets the predecessor of the specified object from the dictionary.
+ * Deletes the specified key from the dictionary.
  *
- * @param d the dictionary to get the predecessor of.
- * @param x the largest object that is less than x.
- * @return the predecessor if it exists, NULL otherwise.
+ * @param d the dictionary to delete the key from.
+ * @param k the key to delete.
+ * @return the value associated with the key.
  */
-void *dictionary_predecessor(const Dictionary *d, const void *x);
+void *dictionary_delete(Dictionary *d, const void *k);
 
-/**
- * Gets the successor of the specified object from the dictionary.
- *
- * @param d the dictionary to get the successor of.
- * @param x the smallest object that is greater than x.
- * @return the successor if it exists, NULL otherwise.
- */
-void *dictionary_successor(const Dictionary *d, const void *x);
+void _container_insert(Container *c, void *k);
 
 #endif /* DICTIONARY_H */

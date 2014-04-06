@@ -6,35 +6,38 @@
 
 #include <stdlib.h>
 
+typedef Container *(*container_factory)();
+
 typedef struct {
   graph_vtable *vtable;
-  Container *h;
+  Dictionary *d;
   size_t e, v;
+	container_factory f;
 } LinkedGraph;
 
 void linked_graph_free(Object *o) {
   LinkedGraph *l = (LinkedGraph *)o;
-  object_free((Object *)l->h);
+	puts("memory leak in dictionary");
+  object_free((Object *)l->d);
   free(l);
 }
 
 static bool linked_graph_adjacent(const Graph *g, const void *x,
                                   const void *y) {
-  EdgeNode *e = container_search(((LinkedGraph *)g)->h, &x);
-  contract_requires(e);
-  return e == NULL ? false : container_search((Container *)e, y);
+  Container *c = container_search((Container *)((LinkedGraph *)g)->d, x);
+  return c == NULL ? false : container_search(c, y);
 }
 
 static const Container *linked_graph_neighbors(const Graph *g, const void *x) {
-  return container_search(((LinkedGraph *)g)->h, x);
+  return container_search((Container *)((LinkedGraph *)g)->d, x);
 }
 
 static void linked_graph_insert_edge_directed(Graph *g, void *x, void *y) {
   LinkedGraph *l = (LinkedGraph *)g;
-  EdgeNode *e = container_search(l->h, &x);
-  if (e == NULL)
-    container_insert(l->h, e = edge_node_new(x));
-  container_insert((Container *)e, y);
+  Container *c = container_search((Container *)l->d, x);
+  if (c == NULL)
+    dictionary_insert(l->d, x, c = l->f());
+  container_insert(c, y);
 }
 
 static void linked_graph_insert_edge_undirected(Graph *g, void *x, void *y) {
@@ -44,10 +47,10 @@ static void linked_graph_insert_edge_undirected(Graph *g, void *x, void *y) {
 
 static void linked_graph_delete_edge(Graph *g, const void *x, const void *y) {
   LinkedGraph *l = (LinkedGraph *)g;
-  EdgeNode *e = container_search(l->h, &x);
-  container_delete((Container *)e, y);
-  if (container_empty((Container *)e))
-    container_delete(l->h, e), free(e);
+  Container *c = container_search((Container *)l->d, x);
+  container_delete(c, y);
+  if (container_empty(c))
+    container_delete((Container *)l->d, c), object_free((Object *)c);
 }
 
 /*
@@ -64,12 +67,13 @@ static void linked_graph_set_edge_value(Graph *g, void *x, void *y, void *a) {}
 Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
   contract_requires(h != NULL);
   static const size_t DEFAULT_CAPACITY = 11;
-  LinkedGraph *g = malloc(sizeof(LinkedGraph));
-  g->vtable = vtable;
-  g->e = 0;
-  g->v = 0;
-  g->h = hashtable_new(h);
-  return (Graph *)g;
+  LinkedGraph *l = malloc(sizeof(LinkedGraph));
+  l->vtable = vtable;
+  l->e = 0;
+  l->v = 0;
+  l->d = (Dictionary *)hashtable_new(h);
+	l->f = (container_factory)linked_stack_new;
+  return (Graph *)l;
 }
 
 Graph *linked_graph_new_undirected(Hash h) {

@@ -1,16 +1,16 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include "linked_stack.h"
-#include "dictionary.h"
 #include "../lang/visitor.h"
+#include "linked_stack.h"
+#include "sorted_dictionary.h"
 
 typedef struct _tree_vtable tree_vtable;
 typedef struct Tree {
   tree_vtable *vtable;
 } Tree;
 struct _tree_vtable {
-  dictionary_vtable dictionary;
+  sorted_dictionary_vtable sorted_dictionary;
   void (*pre_order)(const Tree *, Visitor, void *);
   void (*in_order)(const Tree *, Visitor, void *);
   void (*post_order)(const Tree *, Visitor, void *);

@@ -5,8 +5,8 @@
 #include <stddef.h>
 
 typedef struct Node {
-  void *x;
   struct Node *n;
+  void *x;
 } Node;
 
 Node *node_new_leaf(void *);

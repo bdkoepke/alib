@@ -3,22 +3,29 @@
 
 #include <stdlib.h>
 
-void *dictionary_max(const Dictionary *d) {
-  contract_requires(d != NULL && !container_empty((Container *)d));
-  return d->vtable->max(d);
+inline void dictionary_insert(Dictionary *d, const void *k, void *v) {
+	contract_requires(d != NULL && k != NULL && v != NULL);
+	contract_weak_requires(container_search((Container *)d, k) == NULL);
+	d->vtable->insert(d, k, v);
+	contract_ensures(container_search((Container *)d, k) == v);
 }
 
-void *dictionary_min(const Dictionary *d) {
-  contract_requires(d != NULL && !container_empty((Container *)d));
-  return d->vtable->min(d);
+void *dictionary_reassign(Dictionary *d, const void *k, void *v) {
+	contract_requires(d != NULL && k != NULL && v != NULL);
+	contract_weak_requires(container_search((Container *)d, k) != NULL);
+	void *_v = d->vtable->reassign(d, k, v);
+	contract_ensures(container_search((Container *)d, k) == v);
+	return _v;
 }
 
-void *dictionary_predecessor(const Dictionary *d, const void *x) {
-  contract_requires(d != NULL && x != NULL && !container_empty((Container *)d));
-  return d->vtable->predecessor(d, x);
+void *dictionary_delete(Dictionary *d, const void *k) {
+	contract_requires(d != NULL && k != NULL);
+	void *v = container_search((Container *)d, v);
+	contract_invariant(v);
+	container_delete((Container *)d, k);
+	return v;
 }
 
-void *dictionary_successor(const Dictionary *d, const void *x) {
-  contract_requires(d != NULL && x != NULL && !container_empty((Container *)d));
-  return d->vtable->successor(d, x);
+void _container_insert(Container *d, void *k) {
+	dictionary_insert((Dictionary *)d, k, k);
 }

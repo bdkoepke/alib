@@ -3,7 +3,7 @@
 
 #include "../util/array_list.h"
 #include "../util/container.h"
-#include "../util/dictionary.h"
+#include "../util/sorted_dictionary.h"
 #include "../util/graph.h"
 #include "../util/heap.h"
 #include "../util/linked_stack.h"
@@ -17,7 +17,7 @@
 
 void test_array_list(ArrayList *, const int *, size_t);
 void test_container(Container *, const int *, size_t);
-void test_dictionary(Dictionary *, const int *, size_t);
+void test_sorted_dictionary(SortedDictionary *, const int *, size_t);
 void test_graph(Graph *, const int *, size_t);
 void test_heap_empty(Heap *, const int *, size_t);
 void test_heap(Heap *, const int *, size_t);

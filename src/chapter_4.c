@@ -623,7 +623,7 @@ void binary_tree_sort(int a[], size_t length) {
   tree_in_order((Tree *)b, pair_visitor, NULL);
 
   while (!container_empty((Container *)b)) {
-    Pair *p = dictionary_min((Dictionary *)b);
+    Pair *p = sorted_dictionary_min((SortedDictionary *)b);
     container_delete((Container *)b, p);
     free(p);
   }
