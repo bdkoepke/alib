@@ -23,7 +23,7 @@ KeyValuePair *hnode_search(const HNode *n, const void *k) {
   return NULL;
 }
 
-void hnode_delete(HNode **n, const void *k) {
+void *hnode_delete(HNode **n, const void *k) {
   if ((*n)->p.k != k) {
     HNode *node;
     HNode *next = (*n)->n;
@@ -31,13 +31,17 @@ void hnode_delete(HNode **n, const void *k) {
       next = node->n;
       if (next->p.k == k) {
         node->n = next->n;
-        return;
+				void *o = next->p.v;
+				free(next);
+        return o;
       }
     }
   } else {
     HNode *head = *n;
     *n = head->n;
+		void *o = head->p.v;
     free(head);
+		return o;
   }
 }
 

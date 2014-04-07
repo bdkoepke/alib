@@ -39,7 +39,7 @@ static void *linked_queue_search(const Container *c, const void *x) {
   return node_search(((const LinkedQueue *)c)->head, x);
 }
 
-static void linked_queue_delete(Container *c, const void *x) {
+static void *linked_queue_delete(Container *c, const void *x) {
   LinkedQueue *q = (LinkedQueue *)c;
   if (q->head->x != x) {
     Node *node;
@@ -50,7 +50,9 @@ static void linked_queue_delete(Container *c, const void *x) {
         node->n = next->n;
         if (node->n == NULL)
           q->tail = node;
-        return;
+				void *o = next->x;
+				free(next);
+        return o;
       }
     }
   } else {

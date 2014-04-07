@@ -69,7 +69,7 @@ void *node_search(const Node *n, const void *x) {
   return NULL;
 }
 
-void node_delete(Node **n, const void *x) {
+void *node_delete(Node **n, const void *x) {
   if ((*n)->x != x) {
     Node *node;
     Node *next = (*n)->n;
@@ -77,13 +77,17 @@ void node_delete(Node **n, const void *x) {
       next = node->n;
       if (next->x == x) {
         node->n = next->n;
-        return;
+				void *o = next->x;
+				free(next);
+        return o;
       }
     }
   } else {
     Node *head = *n;
     *n = head->n;
+		void *o = head->x;
     free(head);
+		return o;
   }
 }
 

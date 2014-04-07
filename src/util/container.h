@@ -13,7 +13,7 @@ struct _container_vtable {
   iterable_vtable iterable;
   void *(*search)(const Container *, const void *);
   void (*insert)(Container *, void *);
-  void (*delete)(Container *, const void *);
+  void *(*delete)(Container *, const void *);
   bool (*empty)(const Container *);
 };
 
@@ -47,7 +47,8 @@ void container_insert(Container *c, void *x);
  *
  * @param c the container to delete the object from.
  * @param x the object to delete from the container.
+ * @return a pointer to the element that was deleted.
  */
-void container_delete(Container *c, const void *x);
+void *container_delete(Container *c, const void *x);
 
 #endif /* CONTAINER_H */

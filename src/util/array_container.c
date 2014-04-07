@@ -84,12 +84,14 @@ static void *array_container_search(const Container *c, const void *x) {
   return _x <= a->length ? a->array[_x - 1] : NULL;
 }
 
-static void array_container_delete(Container *c, const void *x) {
+static void *array_container_delete(Container *c, const void *x) {
   ArrayContainer *a = (ArrayContainer *)c;
   size_t _x = POINTER_TO_INT(x);
   contract_requires(x != NULL && _x <= a->length);
   a->size--;
+	void *o = a->array[_x - 1];
   a->array[_x - 1] = NULL;
+	return o;
 }
 
 static bool array_container_empty(const Container *c) {

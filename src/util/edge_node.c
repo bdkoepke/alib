@@ -28,8 +28,8 @@ static void *edge_node_search(const Container *c, const void *x) {
   return container_search((Container *)((_EdgeNode *)c)->s, x);
 }
 
-static void edge_node_delete(Container *c, const void *x) {
-  container_delete((Container *)((_EdgeNode *)c)->s, x);
+static void *edge_node_delete(Container *c, const void *x) {
+  return container_delete((Container *)((_EdgeNode *)c)->s, x);
 }
 
 static bool edge_node_empty(const Container *c) {

@@ -33,9 +33,9 @@ static void *binary_tree_reassign(Dictionary *s, const void *k, void *v) {
   return binary_node_reassign(((BinaryTree *)s)->root, ((BinaryTree *)s)->c, k, v);
 }
 
-static void binary_tree_delete(Container *c, const void *x) {
+static void *binary_tree_delete(Container *c, const void *x) {
   BinaryTree *t = (BinaryTree *)c;
-  binary_node_delete(t->root, &(t->root), t->c, x);
+  return binary_node_delete(t->root, &(t->root), t->c, x);
 }
 
 static bool binary_tree_empty(const Container *c) {
@@ -131,8 +131,8 @@ static void min_max_binary_tree_insert(Dictionary *d, const void *k, void *v) {
   binary_tree_insert(d, k, v);
 }
 
-static void min_max_binary_tree_delete(Container *c, const void *x) {
-  binary_tree_delete(c, x);
+static void *min_max_binary_tree_delete(Container *c, const void *x) {
+  void *o = binary_tree_delete(c, x);
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)c;
   if (container_empty((Container *)c)) {
     m->min.k = m->min.v = NULL;
@@ -144,6 +144,7 @@ static void min_max_binary_tree_delete(Container *c, const void *x) {
     if (_c(x, m->max.k) == 0)
       m->max = *binary_node_max(m->super.root);
   }
+	return o;
 }
 
 static void *min_max_binary_tree_min(const SortedDictionary *d) {

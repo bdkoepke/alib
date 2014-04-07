@@ -16,7 +16,7 @@ HNode *hnode_new(const void *k, void *v, HNode *n);
 
 bool hnode_empty(const HNode *n);
 KeyValuePair *hnode_search(const HNode *n, const void *k);
-void hnode_delete(HNode **p, const void *k);
+void *hnode_delete(HNode **p, const void *k);
 void hnode_insert(HNode **p, const void *k, void *v);
 
 void hnode_free_r(HNode *n);

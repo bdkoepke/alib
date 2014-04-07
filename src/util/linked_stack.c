@@ -31,8 +31,8 @@ static void *linked_stack_search(const Container *c, const void *x) {
   return node_search(((const LinkedStack *)c)->head, x);
 }
 
-static void linked_stack_delete(Container *c, const void *x) {
-  node_delete(&((LinkedStack *)c)->head, x);
+static void *linked_stack_delete(Container *c, const void *x) {
+  return node_delete(&((LinkedStack *)c)->head, x);
 }
 
 static bool linked_stack_empty(const Container *c) {

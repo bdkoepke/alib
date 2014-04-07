@@ -19,10 +19,9 @@ void *dictionary_reassign(Dictionary *d, const void *k, void *v) {
 }
 
 void *dictionary_delete(Dictionary *d, const void *k) {
-	contract_requires(d != NULL && k != NULL);
-	void *v = container_search((Container *)d, v);
-	contract_invariant(v);
-	container_delete((Container *)d, k);
+	Container *c = (Container *)d;
+	void *v = container_search(c, k);
+	container_delete(c, k);
 	return v;
 }
 

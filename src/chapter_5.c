@@ -24,7 +24,11 @@ void test_linked_graph(void) {
     for (j = 1; j <= 6 && graph[i - 1][j - 1]; j++)
 			assert_equals(POINTER_TO_INT(container_search(c, INT_TO_POINTER(graph[i - 1][j - 1]))), graph[i - 1][j - 1]);
 	}
-
+  for (i = 1; i <= 6; i++)
+    for (j = 1; j <= 6 && graph[i - 1][j]; j++) {
+			graph_delete_edge(g, INT_TO_POINTER(i), INT_TO_POINTER(graph[i - 1][j - 1]));
+			assert_false(graph_adjacent(g, INT_TO_POINTER(i), INT_TO_POINTER(graph[i - 1][j - 1])));
+		}
   object_free((Object *)g);
 }
 

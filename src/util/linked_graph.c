@@ -17,7 +17,10 @@ typedef struct {
 
 void linked_graph_free(Object *o) {
   LinkedGraph *l = (LinkedGraph *)o;
-	puts("memory leak in dictionary");
+	Iterator *i = iterable_iterator((Iterable *)l->d);
+	while (iterator_move_next(i))
+		object_free((Object *)dictionary_delete((Dictionary *)l->d, iterator_current(i)));
+	puts("memory leak");
   object_free((Object *)l->d);
   free(l);
 }
@@ -45,12 +48,17 @@ static void linked_graph_insert_edge_undirected(Graph *g, void *x, void *y) {
   linked_graph_insert_edge_directed(g, y, x);
 }
 
-static void linked_graph_delete_edge(Graph *g, const void *x, const void *y) {
+static void linked_graph_delete_edge_directed(Graph *g, const void *x, const void *y) {
   LinkedGraph *l = (LinkedGraph *)g;
   Container *c = container_search((Container *)l->d, x);
   container_delete(c, y);
   if (container_empty(c))
     container_delete((Container *)l->d, c), object_free((Object *)c);
+}
+
+static void linked_graph_delete_edge_undirected(Graph *g, const void *x, const void *y) {
+	linked_graph_delete_edge_directed(g, x, y);
+	linked_graph_delete_edge_directed(g, y, x);
 }
 
 /*
@@ -60,7 +68,6 @@ static void linked_graph_set_node_value(Graph *g, void *x, void *a) {}
 
 static void *linked_graph_edge_value(const Graph *g, const void *x,
                                      const void *y) {}
-
 static void linked_graph_set_edge_value(Graph *g, void *x, void *y, void *a) {}
 */
 
@@ -81,7 +88,7 @@ Graph *linked_graph_new_undirected(Hash h) {
     {.free = linked_graph_free },
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .insert_edge = linked_graph_insert_edge_undirected,
-        .delete_edge = linked_graph_delete_edge,
+        .delete_edge = linked_graph_delete_edge_undirected,
     /* .node_value = linked_graph_node_value, .set_node_value =
                                                linked_graph_set_node_value,
     .edge_value = linked_graph_edge_value, .set_edge_value =
@@ -95,7 +102,7 @@ Graph *linked_graph_new_directed(Hash h) {
     {.free = linked_graph_free },
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .insert_edge = linked_graph_insert_edge_directed,
-        .delete_edge = linked_graph_delete_edge,
+        .delete_edge = linked_graph_delete_edge_directed,
     /* .node_value = linked_graph_node_value, .set_node_value =
                                                linked_graph_set_node_value,
     .edge_value = linked_graph_edge_value, .set_edge_value =

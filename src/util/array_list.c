@@ -92,7 +92,7 @@ static void _array_list_insert(Container *_a, void *x) {
   array_list_set((ArrayList *)a, size, x);
 }
 
-static void array_list_delete(Container *c, const void *x) {
+static void *array_list_delete(Container *c, const void *x) {
   inline void shift_right(void * *a, size_t length, size_t offset, size_t x) {
     size_t i;
     for (i = offset; i < (length - x); i++)
@@ -116,8 +116,11 @@ static void array_list_delete(Container *c, const void *x) {
     _a->capacity = _capacity;
   }
   void **array = _a->array;
-  shift_right(array, size, array_list_indexof(a, x), 1);
+	size_t i = array_list_indexof(a, x);
+	void *o = array[i];
+  shift_right(array, size, i, 1);
   _a->size--;
+	return o;
 }
 
 static void array_list_free(Object *a) {

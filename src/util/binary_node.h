@@ -21,7 +21,7 @@ bool binary_node_is_branch(const BinaryNode *);
 void binary_node_free_r(BinaryNode *);
 
 const KeyValuePair * binary_node_search(const BinaryNode *, Compare, const void *k);
-void binary_node_delete(BinaryNode *, BinaryNode **root, Compare, const void *k);
+void *binary_node_delete(BinaryNode *, BinaryNode **root, Compare, const void *k);
 bool binary_node_empty(const BinaryNode *);
 
 void binary_node_insert(BinaryNode *, BinaryNode **root, Compare, const void *k, void *v);

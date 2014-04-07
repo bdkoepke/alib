@@ -122,12 +122,12 @@ static void *hashtable_reassign(Dictionary *d, const void *k, void *v) {
 	return _v;
 }
 
-static void hashtable_delete(Container *c, const void *k) {
+static void *hashtable_delete(Container *c, const void *k) {
   Hashtable *h = (Hashtable *)c;
   h->size--;
   size_t hash = h->h(k) % h->capacity;
   contract_weak_requires(h->array[hash]);
-  hnode_delete(&(h->array[hash]), k);
+  return hnode_delete(&(h->array[hash]), k);
 }
 
 static bool hashtable_empty(const Container *c) {

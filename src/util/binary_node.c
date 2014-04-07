@@ -64,20 +64,22 @@ KeyValuePair const *binary_node_search(const BinaryNode *n, Compare c, const voi
                : binary_node_search(n->right, c, k);
 }
 
-void binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
+void *binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
                         const void *k) {
   int r = c(k, n->p.k);
   if (r < 0)
-    binary_node_delete(n->left, &(n->left), c, k);
+    return binary_node_delete(n->left, &(n->left), c, k);
   else if (r > 0)
-    binary_node_delete(n->right, &(n->right), c, k);
+    return binary_node_delete(n->right, &(n->right), c, k);
   else {
     if (binary_node_is_branch(n)) {
       n->p = *binary_node_min(n->right);
-      binary_node_delete(n->right, &(n->right), c, n->p.k);
+      return binary_node_delete(n->right, &(n->right), c, n->p.k);
     } else {
       *p = (n->left != NULL) ? n->left : n->right;
+			void *o = n->p.v;
       free(n);
+			return o;
     }
   }
 }
