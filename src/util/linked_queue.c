@@ -50,8 +50,8 @@ static void *linked_queue_delete(Container *c, const void *x) {
         node->n = next->n;
         if (node->n == NULL)
           q->tail = node;
-				void *o = next->x;
-				free(next);
+        void *o = next->x;
+        free(next);
         return o;
       }
     }

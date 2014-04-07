@@ -61,7 +61,7 @@ size_t linked_stack_middle(const LinkedStack *l) {
 }
 
 static Iterator *linked_stack_iterator(const Iterable *i) {
-	return node_iterator(((const LinkedStack *)i)->head);
+  return node_iterator(((const LinkedStack *)i)->head);
 }
 
 LinkedStack *linked_stack_new() {

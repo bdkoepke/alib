@@ -8,7 +8,7 @@
 
 typedef struct HNode {
   struct HNode *n;
-	KeyValuePair p;
+  KeyValuePair p;
 } HNode;
 
 HNode *hnode_new_leaf(const void *k, void *v);

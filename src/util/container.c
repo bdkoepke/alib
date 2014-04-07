@@ -24,5 +24,5 @@ void *container_delete(Container *c, const void *x) {
   contract_weak_requires(container_search(c, x) == x);
   void *o = c->vtable->delete (c, x);
   contract_weak_requires(container_search(c, x) == NULL);
-	return o;
+  return o;
 }

@@ -4,7 +4,8 @@
 
 #include <stdlib.h>
 
-BinaryNode *binary_node_new(const void *k, void *v, BinaryNode *left, BinaryNode *right) {
+BinaryNode *binary_node_new(const void *k, void *v, BinaryNode *left,
+                            BinaryNode *right) {
   BinaryNode *n = malloc(sizeof(BinaryNode));
   n->p.k = k, n->p.v = v;
   n->left = left;
@@ -32,7 +33,8 @@ void binary_node_free_r(BinaryNode *n) {
   }
 }
 
-void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, const void *k, void *v) {
+void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, const void *k,
+                        void *v) {
   if (n == NULL)
     *p = binary_node_new_leaf(k, v);
   else {
@@ -43,18 +45,18 @@ void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, const void *k,
 }
 
 void *binary_node_reassign(BinaryNode *n, Compare c, const void *k, void *v) {
-	contract_requires(n != NULL);
-	int r = c(k, n->p.k);
-	if (r == 0) {
-		void *o = n->p.v;
-		n->p.v = v;
-		return o;
-	}
-	else
-		return binary_node_reassign(r < 0 ? n->left : n->right, c, k, v);
+  contract_requires(n != NULL);
+  int r = c(k, n->p.k);
+  if (r == 0) {
+    void *o = n->p.v;
+    n->p.v = v;
+    return o;
+  } else
+    return binary_node_reassign(r < 0 ? n->left : n->right, c, k, v);
 }
 
-KeyValuePair const *binary_node_search(const BinaryNode *n, Compare c, const void *k) {
+KeyValuePair const *binary_node_search(const BinaryNode *n, Compare c,
+                                       const void *k) {
   if (n == NULL)
     return NULL;
   int r = c(k, n->p.k);
@@ -65,7 +67,7 @@ KeyValuePair const *binary_node_search(const BinaryNode *n, Compare c, const voi
 }
 
 void *binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
-                        const void *k) {
+                         const void *k) {
   int r = c(k, n->p.k);
   if (r < 0)
     return binary_node_delete(n->left, &(n->left), c, k);
@@ -77,9 +79,9 @@ void *binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
       return binary_node_delete(n->right, &(n->right), c, n->p.k);
     } else {
       *p = (n->left != NULL) ? n->left : n->right;
-			void *o = n->p.v;
+      void *o = n->p.v;
       free(n);
-			return o;
+      return o;
     }
   }
 }
@@ -100,7 +102,8 @@ KeyValuePair const *binary_node_max(const BinaryNode *root) {
   return &(n->p);
 }
 
-const KeyValuePair *binary_node_predecessor(const BinaryNode *n, Compare c, const void *k) {
+const KeyValuePair *binary_node_predecessor(const BinaryNode *n, Compare c,
+                                            const void *k) {
   if (n == NULL)
     return NULL;
   int r = c(k, n->p.k);
@@ -114,7 +117,8 @@ const KeyValuePair *binary_node_predecessor(const BinaryNode *n, Compare c, cons
   }
 }
 
-const KeyValuePair *binary_node_successor(const BinaryNode *n, Compare c, const void *k) {
+const KeyValuePair *binary_node_successor(const BinaryNode *n, Compare c,
+                                          const void *k) {
   if (n == NULL)
     return NULL;
   int r = c(k, n->p.k);

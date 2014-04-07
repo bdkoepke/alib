@@ -116,11 +116,11 @@ static void *array_list_delete(Container *c, const void *x) {
     _a->capacity = _capacity;
   }
   void **array = _a->array;
-	size_t i = array_list_indexof(a, x);
-	void *o = array[i];
+  size_t i = array_list_indexof(a, x);
+  void *o = array[i];
   shift_right(array, size, i, 1);
   _a->size--;
-	return o;
+  return o;
 }
 
 static void array_list_free(Object *a) {

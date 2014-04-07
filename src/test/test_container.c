@@ -59,7 +59,8 @@ void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
 }
 
-void test_sorted_dictionary(SortedDictionary *m, const int *values, size_t length) {
+void test_sorted_dictionary(SortedDictionary *m, const int *values,
+                            size_t length) {
   test_container((Container *)m, values, length);
   int *sorted = sort_int(values, length);
 
@@ -73,16 +74,16 @@ void test_sorted_dictionary(SortedDictionary *m, const int *values, size_t lengt
   for (i = 0; i < length; i++) {
     int j = binary_search(&values[i], sorted, length, sizeof(int), compare_int);
     int predecessor = (j == 0 ? 0 : sorted[j - 1]);
-    assert_equals(
-        POINTER_TO_INT(sorted_dictionary_predecessor(m, INT_TO_POINTER(values[i]))),
-        predecessor);
+    assert_equals(POINTER_TO_INT(sorted_dictionary_predecessor(
+                      m, INT_TO_POINTER(values[i]))),
+                  predecessor);
   }
   for (i = 0; i < length; i++) {
     int j = binary_search(&values[i], sorted, length, sizeof(int), compare_int);
     int successor = (j == (length - 1) ? 0 : sorted[j + 1]);
-    assert_equals(
-        POINTER_TO_INT(sorted_dictionary_successor(m, INT_TO_POINTER(values[i]))),
-        successor);
+    assert_equals(POINTER_TO_INT(sorted_dictionary_successor(
+                      m, INT_TO_POINTER(values[i]))),
+                  successor);
   }
 
   while (!container_empty((Container *)m))

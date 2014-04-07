@@ -96,7 +96,7 @@ void test_binary_tree(void) {
 
   b = binary_tree_new(compare_int_pointer);
   test_sorted_dictionary((SortedDictionary *)b, test_values_extended,
-                  test_values_extended_length);
+                         test_values_extended_length);
   object_free((Object *)b);
 }
 
@@ -182,7 +182,7 @@ void question_3_7(void) {
 
   b = binary_tree_new_fast_min_max(compare_int_pointer);
   test_sorted_dictionary((SortedDictionary *)b, test_values_extended,
-                  test_values_extended_length);
+                         test_values_extended_length);
   object_free((Object *)b);
 }
 

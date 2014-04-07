@@ -48,7 +48,7 @@ static void *sparse_array_delete(Container *c, const void *x) {
   s->B[s->A[_x] - 1] = POINTER_TO_INT(NULL);
   s->A[_x] = POINTER_TO_INT(NULL);
   s->size--;
-	return INT_TO_POINTER(x);
+  return INT_TO_POINTER(x);
 }
 
 static bool sparse_array_empty(const Container *c) {

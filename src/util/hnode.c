@@ -6,7 +6,7 @@
 
 HNode *hnode_new(const void *k, void *v, HNode *next) {
   HNode *n = malloc(sizeof(HNode));
-	n->p.k = k, n->p.v = v;
+  n->p.k = k, n->p.v = v;
   n->n = next;
   return n;
 }
@@ -31,17 +31,17 @@ void *hnode_delete(HNode **n, const void *k) {
       next = node->n;
       if (next->p.k == k) {
         node->n = next->n;
-				void *o = next->p.v;
-				free(next);
+        void *o = next->p.v;
+        free(next);
         return o;
       }
     }
   } else {
     HNode *head = *n;
     *n = head->n;
-		void *o = head->p.v;
+    void *o = head->p.v;
     free(head);
-		return o;
+    return o;
   }
 }
 

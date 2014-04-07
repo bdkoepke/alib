@@ -8,7 +8,7 @@ typedef struct SortedDictionary {
   sorted_dictionary_vtable *vtable;
 } SortedDictionary;
 struct _sorted_dictionary_vtable {
-	dictionary_vtable dictionary;
+  dictionary_vtable dictionary;
   void *(*max)(const SortedDictionary *);
   void *(*min)(const SortedDictionary *);
   void *(*predecessor)(const SortedDictionary *, const void *);

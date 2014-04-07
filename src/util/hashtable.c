@@ -75,17 +75,17 @@ static void *hashtable_search(const Container *c, const void *x) {
   contract_requires(x != NULL);
   Hashtable *h = (Hashtable *)c;
   size_t hash = h->h(x) % h->capacity;
-	if (h->array[hash] == NULL)
-		return NULL;
-	KeyValuePair *p = hnode_search(h->array[hash], x);
-	return p == NULL ? NULL : p->v;
+  if (h->array[hash] == NULL)
+    return NULL;
+  KeyValuePair *p = hnode_search(h->array[hash], x);
+  return p == NULL ? NULL : p->v;
 }
 
 static void hashtable_insert(Dictionary *d, const void *k, void *v) {
-	inline void _hashtable_insert(Hashtable *h, const void *k, void *v) {
-		size_t hash = h->h(k) % h->capacity;
-		hnode_insert(&(h->array[hash]), k, v);
-	}
+  inline void _hashtable_insert(Hashtable * h, const void * k, void * v) {
+    size_t hash = h->h(k) % h->capacity;
+    hnode_insert(&(h->array[hash]), k, v);
+  }
   inline void hashtable_resize(Hashtable * h, size_t capacity) {
     contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
     HNode **array = h->array;
@@ -114,12 +114,12 @@ static void hashtable_insert(Dictionary *d, const void *k, void *v) {
 }
 
 static void *hashtable_reassign(Dictionary *d, const void *k, void *v) {
-	Hashtable *h = (Hashtable *)d;
-	size_t hash = h->h(k) % h->capacity;
-	KeyValuePair *p = hnode_search(h->array[hash], k);
-	void *_v = p->v;
-	p->v = v;
-	return _v;
+  Hashtable *h = (Hashtable *)d;
+  size_t hash = h->h(k) % h->capacity;
+  KeyValuePair *p = hnode_search(h->array[hash], k);
+  void *_v = p->v;
+  p->v = v;
+  return _v;
 }
 
 static void *hashtable_delete(Container *c, const void *k) {
@@ -137,9 +137,9 @@ static bool hashtable_empty(const Container *c) {
 Dictionary *hashtable_new(Hash hash) {
   static dictionary_vtable vtable = {
     { { {.free = hashtable_free }, .iterator = hashtable_iterator },
-        .search = hashtable_search, .empty = hashtable_empty,
-        .delete = hashtable_delete, .insert = _container_insert },
-			.insert = hashtable_insert, .reassign = hashtable_reassign
+          .search = hashtable_search, .empty = hashtable_empty,
+          .delete = hashtable_delete, .insert = _container_insert },
+        .insert = hashtable_insert, .reassign = hashtable_reassign
   };
 
   static const float DEFAULT_FACTOR = 0.75;
