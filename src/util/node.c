@@ -4,6 +4,52 @@
 #include <assert.h>
 #include <stdlib.h>
 
+typedef struct {
+	iterator_vtable *vtable;
+	Node *n;
+} NodeIterator;
+
+static iterator_vtable vtable_invalid_state = {
+	{ .free = _object_free },
+	.current = _iterator_current_invalid_state,
+	.move_next = _iterator_move_next_invalid_state
+};
+
+static void *node_iterator_current(const Iterator *i) {
+	return ((NodeIterator *)i)->n->x;
+}
+
+static bool node_iterator_move_next(Iterator *i) {
+	NodeIterator *n = (NodeIterator *)i;
+	return (n->n = n->n->n) == NULL ? i->vtable = &vtable_invalid_state, false : true;
+}
+
+static bool node_iterator_move_next_init(Iterator *i) {
+	static iterator_vtable vtable = {
+		{ .free = _object_free },
+		.current = node_iterator_current,
+		.move_next = node_iterator_move_next
+	};
+	if (node_iterator_move_next(i)) {
+		i->vtable = &vtable;
+		return true;
+	}
+	return false;
+}
+
+Iterator *node_iterator(Node *n) {
+	static iterator_vtable vtable = {
+		{ .free = _object_free },
+		.current = _iterator_current_invalid_state,
+		.move_next = node_iterator_move_next_init
+	};
+
+	NodeIterator *i = malloc(sizeof(NodeIterator));
+	i->vtable = n == NULL ? &vtable_invalid_state : &vtable;
+	i->n = n;
+	return (Iterator *)i;
+}
+
 Node *node_new(void *x, Node *n) {
   Node *_n = malloc(sizeof(Node));
   _n->x = x;

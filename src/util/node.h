@@ -1,6 +1,8 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include "iterator.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -8,6 +10,8 @@ typedef struct Node {
   struct Node *n;
   void *x;
 } Node;
+
+Iterator *node_iterator(Node *n);
 
 Node *node_new_leaf(void *);
 Node *node_new(void *, Node *);

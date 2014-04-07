@@ -3,27 +3,28 @@
 #include "lang/type.h"
 #include "util/linked_graph.h"
 #include "util/matrix_graph.h"
+#include "test/test.h"
 
 void test_linked_graph(void) {
   puts("test_linked_graph");
   Graph *g = linked_graph_new_undirected(hash_int_pointer);
-  int graph[][7] = { { 2, 5 }, { 1, 3, 5 }, { 2, 4 }, { 3, 5, 6 }, { 1, 2, 4 },
+  int graph[][6] = { { 2, 5 }, { 1, 3, 5 }, { 2, 4 }, { 3, 5, 6 }, { 1, 2, 4 },
                      { 4 } };
   int i, j;
+  for (i = 1; i <= 6; i++)
+    for (j = 1; j <= 6 && graph[i - 1][j - 1]; j++) {
+      graph_insert_edge(g, INT_TO_POINTER(i), INT_TO_POINTER(graph[i - 1][j - 1]));
+			assert_true(graph_adjacent(g, INT_TO_POINTER(i), INT_TO_POINTER(graph[i - 1][j - 1])));
+		}
+  for (i = 1; i <= 6; i++)
+    for (j = 1; j <= 6 && graph[i - 1][j]; j++)
+			assert_true(graph_adjacent(g, INT_TO_POINTER(i), INT_TO_POINTER(graph[i - 1][j - 1])));
   for (i = 1; i <= 6; i++) {
-    printf("vertex %d\n", i);
-    for (j = 0; j < 7 && graph[i - 1][j]; j++)
-      printf("%6s %d\n", "edge:", graph[i - 1][j]);
-  }
-  for (i = 1; i <= 6; i++) {
-    printf("vertex %d\n", i);
-    for (j = 0; j < 7 && graph[i - 1][j]; j++) {
-      printf("%6s %d\n", "edge:", graph[i - 1][j]);
-      graph_insert_edge(g, INT_TO_POINTER(i), INT_TO_POINTER(graph[i - 1][j]));
-    }
-  }
+		const Container *c = graph_neighbors(g, INT_TO_POINTER(i));
+    for (j = 1; j <= 6 && graph[i - 1][j - 1]; j++)
+			assert_equals(POINTER_TO_INT(container_search(c, INT_TO_POINTER(graph[i - 1][j - 1]))), graph[i - 1][j - 1]);
+	}
 
-  puts("");
   object_free((Object *)g);
 }
 
