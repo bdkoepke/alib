@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 typedef struct {
-  container_vtable *vtable;
+  vector_vtable *vtable;
   unsigned int n;
   unsigned int m;
   unsigned int size;
@@ -52,17 +52,31 @@ static void *sparse_array_delete(Container *c, const void *x) {
   return INT_TO_POINTER(x);
 }
 
-static bool sparse_array_empty(const Container *c) {
-  return ((SparseArray *)c)->size == 0;
+static size_t sparse_array_size(const Vector *v) {
+  return ((SparseArray *)v)->size;
 }
 
-Container *sparse_array_new(unsigned int n, unsigned int m) {
-  static container_vtable vtable = {
-    { {.free = sparse_array_free }, .iterator = NULL },
-        .empty = sparse_array_empty, .search = sparse_array_search,
-        .delete = sparse_array_delete, .insert = sparse_array_insert
-  };
+static void sparse_array_set(Vector *v, size_t i, void *x) {
+  contract_requires(i == POINTER_TO_INT(x));
+  container_insert((Container *)v, x);
+}
 
+static void *sparse_array_get(const Vector *v, size_t i) {
+  SparseArray *s = (SparseArray *)v;
+  return (i < s->n && s->A[i] != POINTER_TO_INT(NULL) && (s->A[i] - 1) < s->m &&
+          s->B[s->A[i] - 1] == i)
+             ? INT_TO_POINTER(i)
+             : NULL;
+}
+
+Vector *sparse_array_new(unsigned int n, unsigned int m) {
+  static vector_vtable vtable = {
+    { { {.free = sparse_array_free }, .iterator = _vector_iterator },
+          .empty = _vector_empty, .search = sparse_array_search,
+          .delete = sparse_array_delete, .insert = sparse_array_insert },
+        .set = sparse_array_set, .get = sparse_array_get, .size =
+                                                              sparse_array_size
+  };
   SparseArray *s = malloc(sizeof(SparseArray));
   s->vtable = &vtable;
   s->size = 0;
@@ -70,5 +84,5 @@ Container *sparse_array_new(unsigned int n, unsigned int m) {
   s->m = m;
   s->A = malloc(sizeof(unsigned int) * s->n);
   s->B = malloc(sizeof(unsigned int) * s->m);
-  return (Container *)s;
+  return (Vector *)s;
 }

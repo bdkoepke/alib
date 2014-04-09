@@ -325,19 +325,19 @@ void question_3_14(void) {
 
 void question_3_15(void) {
   puts("test_question_3_15");
-  Container *c =
+  Vector *v =
       sparse_array_new(reduce_int(test_values, test_values_length, max, 0) + 1,
                        test_values_length);
-  test_container(c, test_values, test_values_length);
-  object_free((Object *)c);
+  test_container((Container *)v, test_values, test_values_length);
+  object_free((Object *)v);
 
-  c = sparse_array_new(
+  v = sparse_array_new(
       reduce_int(test_values_extended_positive,
                  test_values_extended_positive_length, max, 0) + 1,
       test_values_extended_positive_length);
-  test_container(c, test_values_extended_positive,
+  test_container((Container *)v, test_values_extended_positive,
                  test_values_extended_positive_length);
-  object_free((Object *)c);
+  object_free((Object *)v);
 }
 
 void question_3_20(void) {

@@ -47,7 +47,7 @@ void vector_set(Vector *v, size_t i, void *x);
  * @param i the index of the object to get.
  * @return the object.
  */
-void *vector_get(const Vector *a, size_t i);
+void *vector_get(const Vector *v, size_t i);
 
 void *_vector_search(const Container *, const void *);
 bool _vector_empty(const Container *);
