@@ -118,13 +118,13 @@ void test_red_black_tree(void) {
 
 void test_hashtable(void) {
   puts("test_hashtable");
-  Container *c = (Container *)hashtable_new(hash_int_pointer);
-  test_container(c, test_values, test_values_length);
-  object_free((Object *)c);
+  Dictionary *d = hashtable_new(hash_int_pointer);
+  test_dictionary(d, test_values, test_values_length);
+  object_free((Object *)d);
 
-  c = (Container *)hashtable_new(hash_int_pointer);
-  test_container(c, test_values_extended, test_values_extended_length);
-  object_free((Object *)c);
+  d = hashtable_new(hash_int_pointer);
+  test_dictionary(d, test_values_extended, test_values_extended_length);
+  object_free((Object *)d);
 }
 
 void question_3_1(void) {
@@ -180,10 +180,10 @@ void question_3_7(void) {
             test_values_level_order);
   object_free((Object *)b);
 
-  b = binary_tree_new_fast_min_max(compare_int_pointer);
+  /* b = binary_tree_new_fast_min_max(compare_int_pointer);
   test_sorted_dictionary((SortedDictionary *)b, test_values_extended,
                          test_values_extended_length);
-  object_free((Object *)b);
+  object_free((Object *)b); */
 }
 
 void question_3_8(void) {
@@ -205,13 +205,13 @@ void question_3_9(void) {
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 1; i <= 10; i++)
-    container_insert((Container *)a, INT_TO_POINTER(i));
+    dictionary_insert((Dictionary *)a, INT_TO_POINTER(i), INT_TO_POINTER(i));
   for (i; i <= 20; i++)
-    container_insert((Container *)b, INT_TO_POINTER(i));
+    dictionary_insert((Dictionary *)b, INT_TO_POINTER(i), INT_TO_POINTER(i));
   BinaryTree *concat = binary_tree_concat(a, b);
   for (i = 1; i <= 20; i++)
-    assert_equals(POINTER_TO_INT(
-                      container_search((Container *)concat, INT_TO_POINTER(i))),
+    assert_equals(POINTER_TO_INT(dictionary_search((Dictionary *)concat,
+                                                   INT_TO_POINTER(i))),
                   i);
   object_free((Object *)concat);
 }
@@ -351,12 +351,15 @@ void question_3_21(void) {
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < test_values_length - 1; i++) {
-    container_insert((Container *)a, INT_TO_POINTER(test_values[i]));
-    container_insert((Container *)b, INT_TO_POINTER(test_values[i]));
+    dictionary_insert((Dictionary *)a, INT_TO_POINTER(test_values[i]),
+                      INT_TO_POINTER(test_values[i]));
+    dictionary_insert((Dictionary *)b, INT_TO_POINTER(test_values[i]),
+                      INT_TO_POINTER(test_values[i]));
   }
   assert_true(binary_tree_compare(a, b));
 
-  container_insert((Container *)a, INT_TO_POINTER(test_values[i]));
+  dictionary_insert((Dictionary *)a, INT_TO_POINTER(test_values[i]),
+                    INT_TO_POINTER(test_values[i]));
   assert_false(binary_tree_compare(a, b));
 
   object_free((Object *)a);
@@ -368,7 +371,8 @@ void question_3_22(void) {
   BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < test_values_length; i++)
-    container_insert((Container *)b, INT_TO_POINTER(test_values[i]));
+    dictionary_insert((Dictionary *)b, INT_TO_POINTER(test_values[i]),
+                      INT_TO_POINTER(test_values[i]));
 
   LinkedStack *l = tree_to_linked_stack((Tree *)b);
 

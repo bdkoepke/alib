@@ -4,7 +4,8 @@
 #include <stdlib.h>
 
 int find_match(const char *pattern, const char *text, int m, int n) {
-  contract_requires(pattern != NULL && text != NULL);
+  contract_requires_non_null(pattern);
+  contract_requires_non_null(text);
   int i;
   for (i = 0; i <= (n - m); i++) {
     int j;

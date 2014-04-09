@@ -6,89 +6,88 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-struct _BinaryTree {
+typedef struct {
   tree_vtable *vtable;
   BinaryNode *root;
   Compare c;
-};
+} _BinaryTree;
 
 static void binary_tree_free(Object *o) {
-  binary_node_free_r(((BinaryTree *)o)->root);
+  binary_node_free_r(((_BinaryTree *)o)->root);
   free(o);
 }
 
-static void *binary_tree_search(const Container *c, const void *k) {
+static void *binary_tree_search(const Dictionary *d, const void *k) {
   const KeyValuePair *p =
-      binary_node_search(((BinaryTree *)c)->root, ((BinaryTree *)c)->c, k);
+      binary_node_search(((_BinaryTree *)d)->root, ((_BinaryTree *)d)->c, k);
   return p == NULL ? NULL : p->v;
 }
 
 static void binary_tree_insert(Dictionary *s, const void *k, void *v) {
-  BinaryTree *t = (BinaryTree *)s;
+  _BinaryTree *t = (_BinaryTree *)s;
   binary_node_insert(t->root, &(t->root), t->c, k, v);
 }
 
 static void *binary_tree_reassign(Dictionary *s, const void *k, void *v) {
-  contract_requires(false);
-  return binary_node_reassign(((BinaryTree *)s)->root, ((BinaryTree *)s)->c, k,
-                              v);
+  return binary_node_reassign(((_BinaryTree *)s)->root, ((_BinaryTree *)s)->c,
+                              k, v);
 }
 
-static void *binary_tree_delete(Container *c, const void *x) {
-  BinaryTree *t = (BinaryTree *)c;
+static void *binary_tree_delete(Dictionary *d, const void *x) {
+  _BinaryTree *t = (_BinaryTree *)d;
   return binary_node_delete(t->root, &(t->root), t->c, x);
 }
 
-static bool binary_tree_empty(const Container *c) {
-  return binary_node_empty(((BinaryTree *)c)->root);
+static bool binary_tree_empty(const Dictionary *d) {
+  return binary_node_empty(((_BinaryTree *)d)->root);
 }
 
 static void *binary_tree_max(const SortedDictionary *s) {
-  return container_empty((const Container *)s)
+  return dictionary_empty((Dictionary *)s)
              ? NULL
-             : binary_node_max(((const BinaryTree *)s)->root)->v;
+             : binary_node_max(((const _BinaryTree *)s)->root)->v;
 }
 
 static void *binary_tree_min(const SortedDictionary *s) {
-  return container_empty((const Container *)s)
+  return dictionary_empty((Dictionary *)s)
              ? NULL
-             : binary_node_min(((const BinaryTree *)s)->root)->v;
+             : binary_node_min(((const _BinaryTree *)s)->root)->v;
 }
 
 static void *binary_tree_predecessor(const SortedDictionary *s, const void *k) {
   const KeyValuePair *p = binary_node_predecessor(
-      ((const BinaryTree *)s)->root, ((const BinaryTree *)s)->c, k);
+      ((const _BinaryTree *)s)->root, ((const _BinaryTree *)s)->c, k);
   return p == NULL ? NULL : p->v;
 }
 
 static void *binary_tree_successor(const SortedDictionary *s, const void *x) {
-  const KeyValuePair *p = binary_node_successor(((const BinaryTree *)s)->root,
-                                                ((const BinaryTree *)s)->c, x);
+  const KeyValuePair *p = binary_node_successor(((const _BinaryTree *)s)->root,
+                                                ((const _BinaryTree *)s)->c, x);
   return p == NULL ? NULL : p->v;
 }
 
 static void binary_tree_pre_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_pre_order(((const BinaryTree *)t)->root, v, user_data);
+  return binary_node_pre_order(((const _BinaryTree *)t)->root, v, user_data);
 }
 
 static void binary_tree_in_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_in_order(((const BinaryTree *)t)->root, v, user_data);
+  return binary_node_in_order(((const _BinaryTree *)t)->root, v, user_data);
 }
 
 static void binary_tree_post_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_post_order(((const BinaryTree *)t)->root, v, user_data);
+  return binary_node_post_order(((const _BinaryTree *)t)->root, v, user_data);
 }
 
 static void binary_tree_level_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_level_order(((const BinaryTree *)t)->root, v, user_data);
+  return binary_node_level_order(((const _BinaryTree *)t)->root, v, user_data);
 }
 
 BinaryTree *binary_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { { { {.free = binary_tree_free }, .iterator = NULL },
-              .search = binary_tree_search, .empty = binary_tree_empty,
-              .delete = binary_tree_delete, .insert = _container_insert },
-            .insert = binary_tree_insert, .reassign = binary_tree_reassign },
+    { { {.free = binary_tree_free },
+            .search = binary_tree_search, .empty = binary_tree_empty,
+            .delete = binary_tree_delete, .insert = binary_tree_insert,
+            .reassign = binary_tree_reassign },
           .max = binary_tree_max, .min = binary_tree_min,
           .predecessor = binary_tree_predecessor, .successor =
                                                       binary_tree_successor },
@@ -97,29 +96,38 @@ BinaryTree *binary_tree_new(Compare c) {
                                                   binary_tree_level_order
   };
 
-  contract_requires(c != NULL);
-
-  BinaryTree *b = malloc(sizeof(BinaryTree));
+  _BinaryTree *b = malloc(sizeof(_BinaryTree));
+  b->c = contract_requires_non_null(c);
   b->vtable = &vtable;
   b->root = NULL;
-  b->c = c;
   return (BinaryTree *)b;
 }
 
 typedef struct {
-  BinaryTree super;
+  _BinaryTree super;
   KeyValuePair min;
   KeyValuePair max;
 } MinMaxBinaryTree;
 
 static void *min_max_binary_tree_reassign(Dictionary *d, const void *k,
                                           void *v) {
-  contract_requires(false);
+  MinMaxBinaryTree *m = (MinMaxBinaryTree *)d;
+  if (dictionary_empty(d)) {
+    m->min.k = k, m->min.v = v;
+    m->max.k = k, m->max.v = v;
+  } else {
+    Compare c = m->super.c;
+    if (c(k, m->min.k) < 0)
+      m->min.k = k, m->min.v = v;
+    if (c(k, m->max.k) > 0)
+      m->max.k = k, m->max.v = v;
+  }
+  return binary_tree_reassign(d, k, v);
 }
 
 static void min_max_binary_tree_insert(Dictionary *d, const void *k, void *v) {
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)d;
-  if (container_empty((Container *)m)) {
+  if (dictionary_empty(d)) {
     m->min.k = k, m->min.v = v;
     m->max.k = k, m->max.v = v;
   } else {
@@ -132,12 +140,12 @@ static void min_max_binary_tree_insert(Dictionary *d, const void *k, void *v) {
   binary_tree_insert(d, k, v);
 }
 
-static void *min_max_binary_tree_delete(Container *c, const void *x) {
-  void *o = binary_tree_delete(c, x);
-  MinMaxBinaryTree *m = (MinMaxBinaryTree *)c;
-  if (container_empty((Container *)c)) {
-    m->min.k = m->min.v = NULL;
-    m->max.k = m->max.v = NULL;
+static void *min_max_binary_tree_delete(Dictionary *d, const void *x) {
+  void *o = binary_tree_delete(d, x);
+  MinMaxBinaryTree *m = (MinMaxBinaryTree *)d;
+  if (dictionary_empty(d)) {
+    m->min.k = (m->min.v = NULL);
+    m->max.k = (m->max.v = NULL);
   } else {
     Compare _c = m->super.c;
     if (_c(x, m->min.k) == 0)
@@ -158,10 +166,9 @@ static void *min_max_binary_tree_max(const SortedDictionary *d) {
 
 BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   static tree_vtable vtable = {
-    { { { { {.free = binary_tree_free }, .iterator = NULL },
-              .search = binary_tree_search, .empty = binary_tree_empty,
-              .insert = _container_insert, .delete =
-                                               min_max_binary_tree_delete },
+    { { {.free = binary_tree_free },
+            .search = binary_tree_search, .empty = binary_tree_empty,
+            .delete = min_max_binary_tree_delete,
             .insert = min_max_binary_tree_insert,
             .reassign = min_max_binary_tree_reassign },
           .max = min_max_binary_tree_max, .min = min_max_binary_tree_min,
@@ -172,11 +179,10 @@ BinaryTree *binary_tree_new_fast_min_max(Compare c) {
                                                   binary_tree_level_order
   };
 
-  contract_requires(c != NULL);
   MinMaxBinaryTree *b = malloc(sizeof(MinMaxBinaryTree));
+  b->super.c = contract_requires_non_null(c);
   b->super.vtable = &vtable;
   b->super.root = NULL;
-  b->super.c = c;
   b->min.k = NULL, b->min.v = NULL;
   b->max.k = NULL, b->max.v = NULL;
   return (BinaryTree *)b;
@@ -189,24 +195,25 @@ BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
     *b = temp;
   }
   /*
-   contract_requires(
-       a != NULL && b != NULL && a->c == b->c &&
-       (binary_tree_min((Dictionary *)a)->k > binary_tree_max((Dictionary
- *)b)->k ||
-        binary_tree_max((Dictionary *)a) < binary_tree_min((Dictionary *)b)));
- 	*/
+     contract_requires(
+         a != NULL && b != NULL && a->c == b->c &&
+         (binary_tree_min((Dictionary *)a)->k > binary_tree_max((Dictionary
+   *)b)->k ||
+          binary_tree_max((Dictionary *)a) < binary_tree_min((Dictionary *)b)));
+  */
 
-  if (container_empty((Container *)a))
-    return container_empty((Container *)b) ? a : b;
-  else if (container_empty((Container *)b))
+  if (dictionary_empty((Dictionary *)a))
+    return dictionary_empty((Dictionary *)b) ? a : b;
+  else if (dictionary_empty((Dictionary *)b))
     return a;
 
-  if (a->c(a->root->p.k, b->root->p.k) < 0)
+  if (((_BinaryTree *)a)
+          ->c(((_BinaryTree *)a)->root->p.k, ((_BinaryTree *)b)->root->p.k) < 0)
     swap((void **)&a, (void **)&b);
   BinaryNode *n;
-  for (n = a->root; n->left != NULL; n = n->left)
+  for (n = ((_BinaryTree *)a)->root; n->left != NULL; n = n->left)
     continue;
-  n->left = b->root;
+  n->left = ((_BinaryTree *)b)->root;
   free(b);
   return a;
 }
@@ -220,5 +227,9 @@ bool binary_tree_compare(const BinaryTree *a, const BinaryTree *b) {
                                    binary_node_compare(a->left, b->left, c) &&
                                    binary_node_compare(a->right, b->right, c);
   }
-  return a->c != b->c ? false : binary_node_compare(a->root, b->root, a->c);
+  return ((_BinaryTree *)a)->c != ((_BinaryTree *)b)->c
+             ? false
+             : binary_node_compare(((_BinaryTree *)a)->root,
+                                   ((_BinaryTree *)b)->root,
+                                   ((_BinaryTree *)a)->c);
 }

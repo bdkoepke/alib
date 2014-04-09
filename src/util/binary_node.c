@@ -38,14 +38,12 @@ void binary_node_insert(BinaryNode *n, BinaryNode **p, Compare c, const void *k,
   if (n == NULL)
     *p = binary_node_new_leaf(k, v);
   else {
-    int r = c(k, n->p.k);
-    BinaryNode **_p = r < 0 ? &(n->left) : &(n->right);
-    binary_node_insert(*_p, _p, c, k, v);
+    p = c(k, n->p.k) < 0 ? &(n->left) : &(n->right);
+    binary_node_insert(*p, p, c, k, v);
   }
 }
 
 void *binary_node_reassign(BinaryNode *n, Compare c, const void *k, void *v) {
-  contract_requires(n != NULL);
   int r = c(k, n->p.k);
   if (r == 0) {
     void *o = n->p.v;
@@ -75,11 +73,13 @@ void *binary_node_delete(BinaryNode *n, BinaryNode **p, Compare c,
     return binary_node_delete(n->right, &(n->right), c, k);
   else {
     if (binary_node_is_branch(n)) {
-      n->p = *binary_node_min(n->right);
-      return binary_node_delete(n->right, &(n->right), c, n->p.k);
-    } else {
-      *p = (n->left != NULL) ? n->left : n->right;
       void *o = n->p.v;
+      n->p = *binary_node_min(n->right);
+      binary_node_delete(n->right, &(n->right), c, n->p.k);
+      return o;
+    } else {
+      void *o = n->p.v;
+      *p = (n->left != NULL) ? n->left : n->right;
       free(n);
       return o;
     }
@@ -134,7 +134,7 @@ const KeyValuePair *binary_node_successor(const BinaryNode *n, Compare c,
 
 void binary_node_pre_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
-    v(user_data, n->p.v);
+    v(user_data, &(n->p));
     binary_node_pre_order(n->left, v, user_data);
     binary_node_pre_order(n->right, v, user_data);
   }
@@ -143,7 +143,7 @@ void binary_node_pre_order(const BinaryNode *n, Visitor v, void *user_data) {
 void binary_node_in_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
     binary_node_in_order(n->left, v, user_data);
-    v(user_data, n->p.v);
+    v(user_data, &(n->p));
     binary_node_in_order(n->right, v, user_data);
   }
 }
@@ -152,7 +152,7 @@ void binary_node_post_order(const BinaryNode *n, Visitor v, void *user_data) {
   if (n != NULL) {
     binary_node_post_order(n->left, v, user_data);
     binary_node_post_order(n->right, v, user_data);
-    v(user_data, n->p.v);
+    v(user_data, &(n->p));
   }
 }
 
@@ -162,12 +162,11 @@ void binary_node_level_order(const BinaryNode *root, Visitor v,
     if (x != NULL)
       queue_enqueue(q, x);
   }
-
   Queue *q = linked_queue_new();
   queue_enqueue(q, (BinaryNode *)root);
   while (!container_empty((Container *)q)) {
     BinaryNode *n = queue_dequeue(q);
-    v(user_data, n->p.v);
+    v(user_data, &(n->p));
     queue_enqueue_non_null(q, n->left);
     queue_enqueue_non_null(q, n->right);
   }

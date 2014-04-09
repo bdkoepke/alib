@@ -8,13 +8,14 @@
 #include <stdlib.h>
 
 void swap(int *a, int *b) {
-  contract_requires(a != NULL && b != NULL);
+  contract_requires_non_null(a);
+  contract_requires_non_null(b);
   int t = *a;
   *a = *b, *b = t;
 }
 
 void selectionsort(int a[], size_t length) {
-  contract_requires(a != NULL);
+  contract_requires_non_null(a);
   int i;
   for (i = 0; i < length; i++) {
     int min = i;
@@ -28,7 +29,7 @@ void selectionsort(int a[], size_t length) {
 }
 
 void insertionsort(int a[], size_t length) {
-  contract_requires(a != NULL);
+  contract_requires_non_null(a);
   int i, j;
   for (i = 1; i < length; i++)
     for (j = i; j > 0 && a[j - 1] > a[j]; j--)
@@ -65,7 +66,6 @@ void merge(int a[], int l, int m, int h) {
 
 void mergesort(int a[], size_t length) {
   void _mergesort(int a[], int l, int h) {
-
     if (l < h) {
       size_t m = (l + h) / 2;
       _mergesort(a, l, m);
@@ -73,8 +73,7 @@ void mergesort(int a[], size_t length) {
       merge(a, l, m, h);
     }
   }
-  contract_requires(a != NULL);
-  return _mergesort(a, 0, length - 1);
+  return _mergesort(contract_requires_non_null(a), 0, length - 1);
 }
 
 static size_t partition(int a[], size_t l, size_t h) {
@@ -95,8 +94,8 @@ int quickselect(int a[], size_t length, size_t k) {
       return a[p];
     return k < p ? qs(a, l, p == 0 ? 0 : p - 1, k) : qs(a, p + 1, h, k);
   }
-  contract_requires(a != NULL && k < length);
-  return qs(a, 0, length, k);
+  contract_requires(k < length);
+  return qs(contract_requires_non_null(a), 0, length, k);
 }
 
 void quicksort(int a[], size_t length) {
@@ -107,12 +106,12 @@ void quicksort(int a[], size_t length) {
       _quicksort(a, p + 1, h);
     }
   }
-  contract_requires(a != NULL);
-  return _quicksort(a, 0, length - 1);
+  if (length > 0)
+    _quicksort(contract_requires_non_null(a), 0, length - 1);
 }
 
 int *buckets_new(int a[], size_t length, int max) {
-  contract_requires(a != NULL);
+  contract_requires_non_null(a);
   int *s = calloc(max + 1, sizeof(int));
   size_t i;
   for (i = 0; i < length; i++)
@@ -121,7 +120,7 @@ int *buckets_new(int a[], size_t length, int max) {
 }
 
 void bucketsort(int a[], size_t length, int max) {
-  contract_requires(a != NULL);
+  contract_requires_non_null(a);
   int s[max + 1];
 
   size_t i, j, k;

@@ -7,7 +7,9 @@
 
 #include <stdbool.h>
 
-typedef struct _BinaryTree BinaryTree;
+typedef struct {
+  tree_vtable *vtable;
+} BinaryTree;
 
 /**
  * Creates a new binary tree with the specified comparison function.

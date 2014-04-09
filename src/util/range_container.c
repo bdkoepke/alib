@@ -63,11 +63,11 @@ RangeContainer *array_range_container_new(Compare c) {
 }
 
 void range_container_insert(RangeContainer *r, void *x) {
-  contract_requires(r != NULL && x != NULL);
-  r->vtable->insert(r, x);
+  r->vtable
+      ->insert(contract_requires_non_null(r), contract_requires_non_null(x));
 }
 
 void *range_container_query(const RangeContainer *r, size_t i, size_t j) {
-  contract_requires(r != NULL && i <= j);
-  return r->vtable->query(r, i, j);
+  contract_requires(i <= j);
+  return r->vtable->query(contract_requires_non_null(r), i, j);
 }

@@ -52,6 +52,7 @@ alib_SOURCES =\
   util/priority_queue.c\
   util/queue.c\
   util/range_container.c\
+  util/set.c\
   util/sorted_dictionary.c\
   util/sorted_set.c\
   util/sparse_array.c\

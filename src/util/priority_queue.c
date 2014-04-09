@@ -57,32 +57,30 @@ PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
 }
 
 void priority_queue_insert(PriorityQueue *p, void *x) {
-  contract_requires(p != NULL);
-  p->vtable->insert(p, x);
+  p->vtable->insert(contract_requires_non_null(p), x);
   contract_ensures(!priority_queue_empty(p));
 }
 
 void *priority_queue_find_minimum(const PriorityQueue *p) {
-  contract_requires(p != NULL && !priority_queue_empty(p));
-  return p->vtable->find_minimum(p);
+  contract_requires(!priority_queue_empty(p));
+  return p->vtable->find_minimum(contract_requires_non_null(p));
 }
 
 void *priority_queue_find_maximum(const PriorityQueue *p) {
-  contract_requires(p != NULL && !priority_queue_empty(p));
-  return p->vtable->find_maximum(p);
+  contract_requires(!priority_queue_empty(p));
+  return p->vtable->find_maximum(contract_requires_non_null(p));
 }
 
 void priority_queue_delete_minimum(PriorityQueue *p) {
-  contract_requires(p != NULL && !priority_queue_empty(p));
-  p->vtable->delete_minimum(p);
+  contract_requires(!priority_queue_empty(p));
+  p->vtable->delete_minimum(contract_requires_non_null(p));
 }
 
 void priority_queue_delete_maximum(PriorityQueue *p) {
-  contract_requires(p != NULL && !priority_queue_empty(p));
-  p->vtable->delete_maximum(p);
+  contract_requires(!priority_queue_empty(p));
+  p->vtable->delete_maximum(contract_requires_non_null(p));
 }
 
 bool priority_queue_empty(const PriorityQueue *p) {
-  contract_requires(p != NULL);
-  return p->vtable->empty(p);
+  return p->vtable->empty(contract_requires_non_null(p));
 }

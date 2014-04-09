@@ -117,29 +117,26 @@ SortedSet *sorted_set_new(Compare c) {
 }
 
 bool sorted_set_member(const SortedSet *s, const void *x) {
-  contract_requires(s != NULL && x != NULL);
-  return s->vtable->member(s, x);
+  return s->vtable
+      ->member(contract_requires_non_null(s), contract_requires_non_null(x));
 }
 
 void sorted_set_insert(SortedSet *s, void *x) {
-  contract_requires(s != NULL && x != NULL);
   contract_weak_requires(!sorted_set_member(s, x));
-  s->vtable->insert(s, x);
-  contract_ensures(sorted_set_member(s, x));
+  s->vtable
+      ->insert(contract_requires_non_null(s), contract_requires_non_null(x));
+  contract_weak_ensures(sorted_set_member(s, x));
 }
 
 void *sorted_set_delete(SortedSet *s, size_t k) {
-  contract_requires(s != NULL && !sorted_set_empty(s) &&
-                    k <= sorted_set_size(s));
-  return s->vtable->delete (s, k);
+  contract_requires(!sorted_set_empty(s) && k <= sorted_set_size(s));
+  return s->vtable->delete (contract_requires_non_null(s), k);
 }
 
 bool sorted_set_empty(const SortedSet *s) {
-  contract_requires(s != NULL);
-  return sorted_set_size(s) == 0;
+  return sorted_set_size(contract_requires_non_null(s)) == 0;
 }
 
 size_t sorted_set_size(const SortedSet *s) {
-  contract_requires(s != NULL);
-  return s->vtable->size(s);
+  return s->vtable->size(contract_requires_non_null(s));
 }

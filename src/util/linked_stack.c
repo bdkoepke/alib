@@ -40,8 +40,7 @@ static bool linked_stack_empty(const Container *c) {
 }
 
 void linked_stack_reverse(LinkedStack *l) {
-  contract_requires(l != NULL);
-  if (container_empty((Container *)l))
+  if (container_empty((Container *)contract_requires_non_null(l)))
     return;
 
   Node *node = l->head;
@@ -56,7 +55,8 @@ void linked_stack_reverse(LinkedStack *l) {
 }
 
 size_t linked_stack_middle(const LinkedStack *l) {
-  contract_requires(l != NULL && !container_empty((Container *)l));
+  contract_requires_non_null(l);
+  contract_requires(!container_empty((Container *)l));
   return node_middle(l->head);
 }
 

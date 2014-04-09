@@ -4,6 +4,5 @@
 #include <stdio.h>
 
 Iterator *iterable_iterator(const Iterable *i) {
-  contract_requires(i != NULL);
-  return i->vtable->iterator(i);
+  return i->vtable->iterator(contract_requires_non_null(i));
 }

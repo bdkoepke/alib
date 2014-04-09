@@ -4,13 +4,11 @@
 #include <stdio.h>
 
 void *iterator_current(const Iterator *i) {
-  contract_requires(i != NULL);
-  return i->vtable->current(i);
+  return i->vtable->current(contract_requires_non_null(i));
 }
 
 bool iterator_move_next(Iterator *i) {
-  contract_requires(i != NULL);
-  return i->vtable->move_next(i);
+  return i->vtable->move_next(contract_requires_non_null(i));
 }
 
 void *_iterator_current_invalid_state(const Iterator *i) {

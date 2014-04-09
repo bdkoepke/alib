@@ -15,12 +15,13 @@ int binary_search(const void *key, const void *values, size_t length,
     return r < 0 ? _binary_search(key, values, low, middle - 1, size, c)
                  : _binary_search(key, values, middle + 1, high, size, c);
   }
-  contract_requires(values != NULL && c != NULL);
-  return _binary_search(key, values, 0, length, size, c);
+  return _binary_search(key, contract_requires_non_null(values), 0, length,
+                        size, contract_requires_non_null(c));
 }
 
 bool all_double(const double *a, size_t length, bool (*p)(double)) {
-  contract_requires(a != NULL && p != NULL);
+  contract_requires_non_null(a);
+  contract_requires_non_null(p);
   size_t i;
   for (i = 0; i < length; i++)
     if (!p(a[i]))
@@ -29,7 +30,8 @@ bool all_double(const double *a, size_t length, bool (*p)(double)) {
 }
 
 bool all_int(const int *a, size_t length, bool (*p)(int)) {
-  contract_requires(a != NULL && p != NULL);
+  contract_requires_non_null(a);
+  contract_requires_non_null(p);
   size_t i;
   for (i = 0; i < length; i++)
     if (!p(a[i]))
@@ -39,7 +41,8 @@ bool all_int(const int *a, size_t length, bool (*p)(int)) {
 
 int reduce_int(const int *a, size_t length, int (*f)(int a, int b),
                int _default) {
-  contract_requires(a != NULL && f != NULL);
+  contract_requires_non_null(a);
+  contract_requires_non_null(f);
   int reduce = _default;
   size_t i;
   for (i = 0; i < length; i++)

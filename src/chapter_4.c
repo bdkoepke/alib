@@ -592,42 +592,28 @@ void question_4_20(void) {
 }
 
 void binary_tree_sort(int a[], size_t length) {
-  typedef struct {
-    int value;
-    size_t count;
-  } Pair;
-  Pair *pair_new(int value, size_t count) {
-    Pair *p = malloc(sizeof(Pair));
-    p->value = value;
-    p->count = count;
-    return p;
-  }
-  int compare_pair(const void * a, const void * b) {
-    return ((const Pair *)a)->value - ((const Pair *)b)->value;
-  }
-  BinaryTree *b = binary_tree_new(compare_pair);
+  bool non_zero(int x) { return x != 0; }
+  contract_weak_requires(all_int(a, length, non_zero));
+  BinaryTree *b = binary_tree_new(compare_int_pointer);
   size_t i;
   for (i = 0; i < length; i++) {
-    Pair *p = container_search((Container *)b, &a[i]);
-    if (p == NULL)
-      container_insert((Container *)b, pair_new(a[i], 1));
+    int count = POINTER_TO_INT(
+        dictionary_search((Dictionary *)b, INT_TO_POINTER(a[i])));
+    if (count == POINTER_TO_INT(NULL))
+      dictionary_insert((Dictionary *)b, INT_TO_POINTER(a[i]),
+                        INT_TO_POINTER(count + 1));
     else
-      p->count++;
+      dictionary_reassign((Dictionary *)b, INT_TO_POINTER(a[i]),
+                          INT_TO_POINTER(count + 1));
   }
 
   size_t j = 0;
-  void pair_visitor(void * p, void * x) {
-    for (i = 0; i < ((Pair *)x)->count; i++)
-      a[j++] = ((Pair *)x)->value;
+  void sort_visitor(void * p, const KeyValuePair * x) {
+    for (i = 0; i < POINTER_TO_INT(x->v); i++)
+      a[j++] = POINTER_TO_INT(x->k);
   }
-  tree_in_order((Tree *)b, pair_visitor, NULL);
+  tree_in_order((Tree *)b, sort_visitor, NULL);
 
-  while (!container_empty((Container *)b)) {
-    Pair *p = sorted_dictionary_min((SortedDictionary *)b);
-    container_delete((Container *)b, p);
-    free(p);
-  }
-  assert_true(container_empty((Container *)b));
   object_free((Object *)b);
 }
 
@@ -638,32 +624,32 @@ void test_binary_tree_sort(void) {
 
 void question_4_23(void) {
   puts("question_4_23");
-  int unsorted[] = { 7, 5, 0, 7, 5, 5, 4, 6, 1, 3, 2, 0, 0, 8, 5, 7, 2, 3, 2, 5,
-                     7, 0, 7, 0, 8, 5, 8, 0, 1, 6, 0, 0, 3, 1, 1, 8, 1, 7, 4, 1,
-                     2, 7, 1, 7, 6, 0, 5, 3, 6, 2, 2, 0, 1, 2, 7, 6, 6, 3, 7, 3,
-                     2, 8, 2, 8, 7, 1, 4, 7, 0, 0, 1, 4, 0, 6, 0, 0, 6, 6, 5, 4,
-                     0, 4, 4, 6, 3, 1, 4, 1, 6, 1, 0, 0, 3, 2, 0, 1, 2, 0, 0, 8,
-                     2, 0, 3, 3, 3, 2, 1, 8, 5, 7, 4, 0, 1, 3, 2, 7, 1, 3, 3, 1,
-                     6, 0, 5, 6, 1, 4, 5, 7, 5, 0, 1, 4, 7, 7, 8, 6, 4, 1, 0, 1,
-                     5, 8, 5, 5, 7, 0, 2, 4, 7, 1, 3, 1, 6, 7, 7, 3, 4, 0, 3, 0,
-                     0, 8, 8, 0, 4, 2, 4, 5, 3, 5, 4, 5, 2, 8, 7, 4, 3, 6, 1, 5,
-                     4, 6, 7, 8, 4, 7, 1, 8, 6, 1, 0, 4, 2, 6, 3, 7, 7, 1, 8, 4,
-                     1, 3, 8, 0, 3, 3, 7, 2, 4, 6, 6, 8, 7, 1, 0, 2, 1, 6, 5, 4,
-                     2, 3, 0, 6, 4, 8, 6, 5, 1, 2, 2, 2, 0, 0, 0, 6, 5, 4, 1, 3,
-                     3, 7, 0, 8, 1, 3, 4, 1, 3, 1, 0, 2, 0, 2, 5 };
-  int sorted[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                   0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2,
+  int unsorted[] = { 7, 5, 9, 7, 5, 5, 4, 6, 1, 3, 2, 9, 9, 8, 5, 7, 2, 3, 2, 5,
+                     7, 9, 7, 9, 8, 5, 8, 9, 1, 6, 9, 9, 3, 1, 1, 8, 1, 7, 4, 1,
+                     2, 7, 1, 7, 6, 9, 5, 3, 6, 2, 2, 9, 1, 2, 7, 6, 6, 3, 7, 3,
+                     2, 8, 2, 8, 7, 1, 4, 7, 9, 9, 1, 4, 9, 6, 9, 9, 6, 6, 5, 4,
+                     9, 4, 4, 6, 3, 1, 4, 1, 6, 1, 9, 9, 3, 2, 9, 1, 2, 9, 9, 8,
+                     2, 9, 3, 3, 3, 2, 1, 8, 5, 7, 4, 9, 1, 3, 2, 7, 1, 3, 3, 1,
+                     6, 9, 5, 6, 1, 4, 5, 7, 5, 9, 1, 4, 7, 7, 8, 6, 4, 1, 9, 1,
+                     5, 8, 5, 5, 7, 9, 2, 4, 7, 1, 3, 1, 6, 7, 7, 3, 4, 9, 3, 9,
+                     9, 8, 8, 9, 4, 2, 4, 5, 3, 5, 4, 5, 2, 8, 7, 4, 3, 6, 1, 5,
+                     4, 6, 7, 8, 4, 7, 1, 8, 6, 1, 9, 4, 2, 6, 3, 7, 7, 1, 8, 4,
+                     1, 3, 8, 9, 3, 3, 7, 2, 4, 6, 6, 8, 7, 1, 9, 2, 1, 6, 5, 4,
+                     2, 3, 9, 6, 4, 8, 6, 5, 1, 2, 2, 2, 9, 9, 9, 6, 5, 4, 1, 3,
+                     3, 7, 9, 8, 1, 3, 4, 1, 3, 1, 9, 2, 9, 2, 5 };
+  int sorted[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2,
                    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-                   2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-                   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-                   4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5,
+                   2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+                   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+                   4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5,
                    5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-                   5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-                   6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-                   7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8,
-                   8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 };
+                   6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+                   6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+                   7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8,
+                   8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9,
+                   9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+                   9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 };
   binary_tree_sort(unsorted, array_size(unsorted));
   assert_memcmp(unsorted, sorted);
 }

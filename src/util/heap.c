@@ -143,26 +143,25 @@ Heap *heap_new_from_array(Compare c, void *a, size_t length) {
 }
 
 void heap_insert(Heap *h, void *x) {
-  contract_requires(h != NULL && x != NULL);
-  h->vtable->insert(h, x);
+  h->vtable
+      ->insert(contract_requires_non_null(h), contract_requires_non_null(x));
 }
 
 void *heap_extract_min(Heap *h) {
-  contract_requires(h != NULL && !heap_empty(h));
-  return h->vtable->extract_min(h);
+  contract_requires(!heap_empty(h));
+  return h->vtable->extract_min(contract_requires_non_null(h));
 }
 
 bool heap_empty(const Heap *h) {
-  contract_requires(h != NULL);
-  return heap_size(h) == 0;
+  return heap_size(contract_requires_non_null(h)) == 0;
 }
 
 size_t heap_size(const Heap *h) {
-  contract_requires(h != NULL);
-  return h->vtable->size(h);
+  return h->vtable->size(contract_requires_non_null(h));
 }
 
 bool heap_compare(const Heap *h, const void *x, size_t k) {
-  contract_requires(h != NULL && x != NULL && k < heap_size(h));
-  return h->vtable->compare(h, x, k);
+  contract_requires(k < heap_size(h));
+  return h->vtable->compare(contract_requires_non_null(h),
+                            contract_requires_non_null(x), k);
 }

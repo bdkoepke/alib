@@ -71,13 +71,12 @@ static void hashtable_free(Object *o) {
   free(o);
 }
 
-static void *hashtable_search(const Container *c, const void *x) {
-  contract_requires(x != NULL);
-  Hashtable *h = (Hashtable *)c;
-  size_t hash = h->h(x) % h->capacity;
+static void *hashtable_search(const Dictionary *d, const void *k) {
+  Hashtable *h = (Hashtable *)d;
+  size_t hash = h->h(k) % h->capacity;
   if (h->array[hash] == NULL)
     return NULL;
-  KeyValuePair *p = hnode_search(h->array[hash], x);
+  KeyValuePair *p = hnode_search(h->array[hash], k);
   return p == NULL ? NULL : p->v;
 }
 
@@ -87,7 +86,8 @@ static void hashtable_insert(Dictionary *d, const void *k, void *v) {
     hnode_insert(&(h->array[hash]), k, v);
   }
   inline void hashtable_resize(Hashtable * h, size_t capacity) {
-    contract_requires(h != NULL && h->size < capacity < SIZE_MAX);
+    contract_requires_non_null(h);
+    contract_requires(h->size < capacity < SIZE_MAX);
     HNode **array = h->array;
     size_t _capacity = h->capacity;
     h->capacity = capacity;
@@ -103,7 +103,8 @@ static void hashtable_insert(Dictionary *d, const void *k, void *v) {
     free(array);
   }
   Hashtable *h = (Hashtable *)d;
-  contract_requires(k != NULL && h->size < SIZE_MAX);
+  contract_requires_non_null(k);
+  contract_requires(h->size < SIZE_MAX);
   if (h->size >= h->capacity) {
     size_t capacity = checked_product(h->capacity, 2, SIZE_MAX);
     hashtable_resize(h, capacity);
@@ -122,24 +123,23 @@ static void *hashtable_reassign(Dictionary *d, const void *k, void *v) {
   return _v;
 }
 
-static void *hashtable_delete(Container *c, const void *k) {
-  Hashtable *h = (Hashtable *)c;
+static void *hashtable_delete(Dictionary *d, const void *k) {
+  Hashtable *h = (Hashtable *)d;
   h->size--;
   size_t hash = h->h(k) % h->capacity;
-  contract_weak_requires(h->array[hash]);
   return hnode_delete(&(h->array[hash]), k);
 }
 
-static bool hashtable_empty(const Container *c) {
-  return ((Hashtable *)c)->size == 0;
+static bool hashtable_empty(const Dictionary *d) {
+  return ((Hashtable *)d)->size == 0;
 }
 
 Dictionary *hashtable_new(Hash hash) {
   static dictionary_vtable vtable = {
-    { { {.free = hashtable_free }, .iterator = hashtable_iterator },
-          .search = hashtable_search, .empty = hashtable_empty,
-          .delete = hashtable_delete, .insert = _container_insert },
-        .insert = hashtable_insert, .reassign = hashtable_reassign
+    {.free = hashtable_free },
+        .search = hashtable_search, .empty = hashtable_empty,
+        .delete = hashtable_delete, .insert = hashtable_insert,
+        .reassign = hashtable_reassign
   };
 
   static const float DEFAULT_FACTOR = 0.75;

@@ -122,8 +122,8 @@ static void rotate_right(RedBlackNode *n, RedBlackTree *r) {
 
 static void rotate_left(RedBlackNode *n, RedBlackTree *r) {
   assert(false);
-  contract_requires(n->parent != NULL);
-  contract_requires(grandparent(n) != NULL);
+  contract_requries_non_null(n->parent);
+  contract_requires_non_null(grandparent(n));
   RedBlackNode *g = grandparent(n), *p = n->parent;
   if (g->parent == NULL)
     p->parent = NULL, r->root = p;
@@ -188,7 +188,6 @@ static void red_black_tree_insert(Container *c, void *x) {
     } else
       red_black_node_insert(c(x, n->x) < 0 ? n->left : n->right, n, c, x);
   }
-  printf("%d\n", x);
   contract_invariant(red_black_tree_is_valid(r));
   if (r->root == NULL)
     r->root = red_black_node_new_leaf(x, Black, NULL);
@@ -356,10 +355,9 @@ Tree *red_black_tree_new(Compare c) {
                                                      red_black_tree_level_order
   };
 
-  contract_requires(c != NULL);
   RedBlackTree *r = malloc(sizeof(RedBlackTree));
+  r->c = contract_requires_non_null(c);
   r->vtable = &vtable;
   r->root = NULL;
-  r->c = c;
   return (Tree *)r;
 }

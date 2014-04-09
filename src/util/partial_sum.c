@@ -31,21 +31,21 @@ PartialSum *partial_sum_new(Compare c) {
 }
 
 void partial_sum_add(PartialSum *p, void *k, void *y) {
-  contract_requires(p != NULL && k != NULL);
-  p->vtable->add(p, k, y);
+  p->vtable->add(contract_requires_non_null(p), contract_requires_non_null(k),
+                 contract_requires_non_null(y));
 }
 
 void *partial_sum_values(const PartialSum *p, const void *y) {
-  contract_requires(p != NULL && y != NULL);
-  return p->vtable->values(p, y);
+  return p->vtable
+      ->values(contract_requires_non_null(p), contract_requires_non_null(y));
 }
 
 void partial_sum_insert(PartialSum *p, void *k, void *y) {
-  contract_requires(p != NULL && k != NULL);
-  p->vtable->insert(p, k, y);
+  p->vtable
+      ->insert(contract_requires_non_null(p), contract_requires_non_null(k), y);
 }
 
 void partial_sum_delete(PartialSum *p, void *k) {
-  contract_requires(p != NULL && k != NULL);
-  p->vtable->delete (p, k);
+  p->vtable
+      ->delete (contract_requires_non_null(p), contract_requires_non_null(k));
 }

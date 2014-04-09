@@ -57,11 +57,9 @@ EdgeNode *edge_node_new(void *x) {
 }
 
 void *edge_node_get(const EdgeNode *e) {
-  contract_requires(e != NULL);
-  return e->vtable->get(e);
+  return e->vtable->get(contract_requires_non_null(e));
 }
 
 void edge_node_set(EdgeNode *e, void *x) {
-  contract_requires(e != NULL);
-  e->vtable->set(e, x);
+  e->vtable->set(contract_requires_non_null(e), x);
 }

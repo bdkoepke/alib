@@ -4,19 +4,18 @@
 #include <stdlib.h>
 
 void stack_push(Stack *s, void *x) {
-  contract_requires(s != NULL);
-  s->vtable->push(s, x);
-  contract_ensures(!container_empty((Container *)s));
+  s->vtable->push(contract_requires_non_null(s), x);
+  contract_weak_ensures(!container_empty((Container *)s));
 }
 
 void *stack_pop(Stack *s) {
-  contract_requires(s != NULL && !container_empty((Container *)s));
-  return s->vtable->pop(s);
+  contract_requires(!container_empty((Container *)s));
+  return s->vtable->pop(contract_requires_non_null(s));
 }
 
 const void *stack_peek(const Stack *s) {
-  contract_requires(s != NULL && !container_empty((Container *)s));
-  return s->vtable->peek(s);
+  contract_requires(!container_empty((Container *)s));
+  return s->vtable->peek(contract_requires_non_null(s));
 }
 
 void _stack_insert(Container *c, void *x) { stack_push((Stack *)c, x); }

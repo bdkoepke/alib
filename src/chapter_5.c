@@ -7,7 +7,7 @@
 
 void test_linked_graph(void) {
   puts("test_linked_graph");
-  Graph *g = linked_graph_new_undirected(hash_int_pointer);
+  Graph *g = linked_graph_new_directed(hash_int_pointer);
   int graph[][6] = { { 2, 5 }, { 1, 3, 5 }, { 2, 4 }, { 3, 5, 6 }, { 1, 2, 4 },
                      { 4 } };
   int i, j;

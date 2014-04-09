@@ -11,8 +11,8 @@
 #include <string.h>
 
 static int *sort_int(const int *values, size_t length) {
-  contract_requires(values != NULL && length > 0);
-
+  contract_requires_non_null(values);
+  contract_requires(length > 0);
   int *s = malloc(sizeof(int) * length);
   memcpy(s, values, sizeof(int) * length);
   quicksort(s, length);
@@ -59,35 +59,58 @@ void test_container(Container *c, const int *values, size_t length) {
   assert_true(container_empty(c));
 }
 
-void test_sorted_dictionary(SortedDictionary *m, const int *values,
+void test_dictionary(Dictionary *d, const int *keys, size_t length) {
+  const int *values = keys;
+  assert_true(dictionary_empty(d));
+  size_t i;
+  for (i = 0; i < length; i++) {
+    dictionary_insert(d, INT_TO_POINTER(keys[i]), INT_TO_POINTER(values[i]));
+    assert_equals(POINTER_TO_INT(dictionary_search(d, INT_TO_POINTER(keys[i]))),
+                  values[i]);
+  }
+  assert_false(dictionary_empty(d));
+  for (i = 0; i < length; i++) {
+    assert_equals(POINTER_TO_INT(dictionary_delete(d, INT_TO_POINTER(keys[i]))),
+                  values[i]);
+    assert_equals(
+        POINTER_TO_INT(dictionary_search(d, INT_TO_POINTER(values[i]))),
+        POINTER_TO_INT(NULL));
+  }
+  assert_true(dictionary_empty(d));
+}
+
+void test_sorted_dictionary(SortedDictionary *s, const int *keys,
                             size_t length) {
-  test_container((Container *)m, values, length);
-  int *sorted = sort_int(values, length);
+  Dictionary *d = (Dictionary *)s;
+  assert_true(dictionary_empty(d));
+  test_dictionary(d, keys, length);
+  assert_true(dictionary_empty(d));
+  int *sorted = sort_int(keys, length);
 
   size_t i;
   for (i = 0; i < length; i++)
-    container_insert((Container *)m, INT_TO_POINTER(values[i]));
+    dictionary_insert(d, INT_TO_POINTER(keys[i]), INT_TO_POINTER(keys[i]));
 
-  assert_equals(POINTER_TO_INT(sorted_dictionary_min(m)), sorted[0]);
-  assert_equals(POINTER_TO_INT(sorted_dictionary_max(m)), sorted[length - 1]);
+  assert_equals(POINTER_TO_INT(sorted_dictionary_min(s)), sorted[0]);
+  assert_equals(POINTER_TO_INT(sorted_dictionary_max(s)), sorted[length - 1]);
 
   for (i = 0; i < length; i++) {
-    int j = binary_search(&values[i], sorted, length, sizeof(int), compare_int);
+    int j = binary_search(&keys[i], sorted, length, sizeof(int), compare_int);
     int predecessor = (j == 0 ? 0 : sorted[j - 1]);
     assert_equals(POINTER_TO_INT(sorted_dictionary_predecessor(
-                      m, INT_TO_POINTER(values[i]))),
+                      s, INT_TO_POINTER(keys[i]))),
                   predecessor);
   }
   for (i = 0; i < length; i++) {
-    int j = binary_search(&values[i], sorted, length, sizeof(int), compare_int);
+    int j = binary_search(&keys[i], sorted, length, sizeof(int), compare_int);
     int successor = (j == (length - 1) ? 0 : sorted[j + 1]);
-    assert_equals(POINTER_TO_INT(sorted_dictionary_successor(
-                      m, INT_TO_POINTER(values[i]))),
-                  successor);
+    assert_equals(
+        POINTER_TO_INT(sorted_dictionary_successor(s, INT_TO_POINTER(keys[i]))),
+        successor);
   }
 
-  while (!container_empty((Container *)m))
-    container_delete((Container *)m, sorted_dictionary_min(m));
+  while (!dictionary_empty(d))
+    dictionary_delete(d, sorted_dictionary_min(s));
 
   free(sorted);
 }
@@ -175,17 +198,18 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
     o->i = 0;
     return o;
   }
-  void order_visitor_visit(void * p, void * x) {
+  void order_visitor_visit(void * p, const KeyValuePair * x) {
     OrderVisitor *o = (OrderVisitor *)p;
-    assert_equals(POINTER_TO_INT(x), o->order[o->i++]);
+    assert_equals(POINTER_TO_INT(x->v), o->order[o->i++]);
   }
 
   test_sorted_dictionary((SortedDictionary *)t, values, length);
-  assert_true(container_empty((Container *)t));
+  assert_true(dictionary_empty((Dictionary *)t));
 
   size_t i;
   for (i = 0; i < length; i++)
-    container_insert((Container *)t, INT_TO_POINTER(values[i]));
+    dictionary_insert((Dictionary *)t, INT_TO_POINTER(values[i]),
+                      INT_TO_POINTER(values[i]));
 
   OrderVisitor *o = order_visitor_new(pre_order);
   tree_pre_order(t, order_visitor_visit, o);

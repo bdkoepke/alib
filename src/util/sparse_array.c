@@ -43,8 +43,9 @@ static void *sparse_array_search(const Container *c, const void *x) {
 
 static void *sparse_array_delete(Container *c, const void *x) {
   SparseArray *s = (SparseArray *)c;
-  unsigned int _x = POINTER_TO_INT(x);
-  contract_requires(x != NULL && _x < s->n);
+  unsigned int _x;
+  contract_requires((_x = POINTER_TO_INT(contract_requires_non_null(x))) <
+                    s->n);
   s->B[s->A[_x] - 1] = POINTER_TO_INT(NULL);
   s->A[_x] = POINTER_TO_INT(NULL);
   s->size--;

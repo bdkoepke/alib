@@ -145,17 +145,16 @@ ArrayList *array_list_new() {
 }
 
 size_t array_list_size(const ArrayList *a) {
-  contract_requires(a != NULL);
-  return a->vtable->size(a);
+  return a->vtable->size(contract_requires_non_null(a));
 }
 
 void array_list_set(ArrayList *a, size_t i, void *x) {
-  contract_requires(a != NULL && i < array_list_size(a));
+  contract_requires(i < array_list_size(contract_requires_non_null(a)));
   a->vtable->set(a, i, x);
 }
 
 void *array_list_get(const ArrayList *a, size_t i) {
-  contract_requires(a != NULL && i < array_list_size(a));
+  contract_requires(i < array_list_size(contract_requires_non_null(a)));
   return a->vtable->get(a, i);
 }
 
