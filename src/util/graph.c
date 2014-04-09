@@ -9,17 +9,17 @@ bool graph_adjacent(const Graph *g, const void *x, const void *y) {
                  contract_requires_non_null(y));
 }
 
-const Container *graph_neighbors(const Graph *g, const void *x) {
+const Set *graph_neighbors(const Graph *g, const void *x) {
   return g->vtable
       ->neighbors(contract_requires_non_null(g), contract_requires_non_null(x));
 }
 
-const Container *graph_vertices(const Graph *g) {
+const Set *graph_vertices(const Graph *g) {
   return g->vtable->vertices(contract_requires_non_null(g));
 }
 
 void graph_insert_edge(Graph *g, void *x, void *y) {
-  contract_weak_requires(!graph_adjacent(g, x, y));
+  //contract_weak_requires(!graph_adjacent(g, x, y));
   g->vtable->insert_edge(contract_requires_non_null(g),
                          contract_requires_non_null(x),
                          contract_requires_non_null(y));

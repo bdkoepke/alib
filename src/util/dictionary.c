@@ -3,13 +3,21 @@
 
 #include <stdlib.h>
 
+const void *_dictionary_set_search(const Set *s, const void *x) {
+  return dictionary_search((Dictionary *)s, x) == NULL ? NULL : x;
+}
+
+void _dictionary_set_insert(Set *s, void *x) {
+  dictionary_insert((Dictionary *)s, x, x);
+}
+
+void *_dictionary_set_delete(Set *s, const void *x) {
+  return dictionary_delete((Dictionary *)s, x), (void *)x;
+}
+
 void *dictionary_search(const Dictionary *d, const void *k) {
   return d->vtable
       ->search(contract_requires_non_null(d), contract_requires_non_null(k));
-}
-
-bool dictionary_empty(const Dictionary *d) {
-  return d->vtable->empty(contract_requires_non_null(d));
 }
 
 void dictionary_insert(Dictionary *d, const void *k, void *v) {
@@ -35,9 +43,4 @@ void *dictionary_delete(Dictionary *d, const void *k) {
       contract_requires_non_null(d), contract_requires_non_null(k)));
   contract_weak_ensures_equal(dictionary_search(d, k), NULL);
   return o;
-}
-
-Set *set_from_dictionary(Dictionary *d) {
-  contract_requires_non_null(d);
-  contract_requires(dictionary_empty(d) && false);
 }

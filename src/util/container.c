@@ -17,7 +17,9 @@ void container_insert(Container *c, void *x) {
 }
 
 void *container_delete(Container *c, const void *x) {
-  contract_requires_non_null(c);
-  contract_weak_requires(container_search(c, x) == x);
-  return contract_ensures_equal(c->vtable->delete (c, x), x);
+  contract_weak_requires_equal(container_search(c, x), x);
+  void *o = contract_ensures_equal(
+      c->vtable->delete (contract_requires_non_null(c), x), x);
+  contract_weak_ensures_equal(container_search(c, x), NULL);
+  return o;
 }

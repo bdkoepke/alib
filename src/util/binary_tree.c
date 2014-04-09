@@ -38,18 +38,18 @@ static void *binary_tree_delete(Dictionary *d, const void *x) {
   return binary_node_delete(t->root, &(t->root), t->c, x);
 }
 
-static bool binary_tree_empty(const Dictionary *d) {
-  return binary_node_empty(((_BinaryTree *)d)->root);
+static bool binary_tree_empty(const Set *s) {
+  return binary_node_empty(((_BinaryTree *)s)->root);
 }
 
 static void *binary_tree_max(const SortedDictionary *s) {
-  return dictionary_empty((Dictionary *)s)
+  return set_empty((Set *)s)
              ? NULL
              : binary_node_max(((const _BinaryTree *)s)->root)->v;
 }
 
 static void *binary_tree_min(const SortedDictionary *s) {
-  return dictionary_empty((Dictionary *)s)
+  return set_empty((Set *)s)
              ? NULL
              : binary_node_min(((const _BinaryTree *)s)->root)->v;
 }
@@ -84,10 +84,12 @@ static void binary_tree_level_order(const Tree *t, Visitor v, void *user_data) {
 
 BinaryTree *binary_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { {.free = binary_tree_free },
-            .search = binary_tree_search, .empty = binary_tree_empty,
-            .delete = binary_tree_delete, .insert = binary_tree_insert,
-            .reassign = binary_tree_reassign },
+    { { { { {.free = binary_tree_free }, .iterator = NULL, },
+              .search = _dictionary_set_search, .insert =
+                                                    _dictionary_set_insert,
+              .delete = _dictionary_set_delete, .empty = binary_tree_empty },
+            .search = binary_tree_search, .delete = binary_tree_delete,
+            .insert = binary_tree_insert, .reassign = binary_tree_reassign },
           .max = binary_tree_max, .min = binary_tree_min,
           .predecessor = binary_tree_predecessor, .successor =
                                                       binary_tree_successor },
@@ -112,7 +114,7 @@ typedef struct {
 static void *min_max_binary_tree_reassign(Dictionary *d, const void *k,
                                           void *v) {
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)d;
-  if (dictionary_empty(d)) {
+  if (set_empty((Set *)d)) {
     m->min.k = k, m->min.v = v;
     m->max.k = k, m->max.v = v;
   } else {
@@ -127,7 +129,7 @@ static void *min_max_binary_tree_reassign(Dictionary *d, const void *k,
 
 static void min_max_binary_tree_insert(Dictionary *d, const void *k, void *v) {
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)d;
-  if (dictionary_empty(d)) {
+  if (set_empty((Set *)d)) {
     m->min.k = k, m->min.v = v;
     m->max.k = k, m->max.v = v;
   } else {
@@ -143,7 +145,7 @@ static void min_max_binary_tree_insert(Dictionary *d, const void *k, void *v) {
 static void *min_max_binary_tree_delete(Dictionary *d, const void *x) {
   void *o = binary_tree_delete(d, x);
   MinMaxBinaryTree *m = (MinMaxBinaryTree *)d;
-  if (dictionary_empty(d)) {
+  if (set_empty((Set *)d)) {
     m->min.k = (m->min.v = NULL);
     m->max.k = (m->max.v = NULL);
   } else {
@@ -166,9 +168,11 @@ static void *min_max_binary_tree_max(const SortedDictionary *d) {
 
 BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   static tree_vtable vtable = {
-    { { {.free = binary_tree_free },
-            .search = binary_tree_search, .empty = binary_tree_empty,
-            .delete = min_max_binary_tree_delete,
+    { { { { {.free = binary_tree_free }, .iterator = NULL },
+              .insert = _dictionary_set_insert, .search =
+                                                    _dictionary_set_search,
+              .delete = _dictionary_set_delete, .empty = binary_tree_empty },
+            .search = binary_tree_search, .delete = min_max_binary_tree_delete,
             .insert = min_max_binary_tree_insert,
             .reassign = min_max_binary_tree_reassign },
           .max = min_max_binary_tree_max, .min = min_max_binary_tree_min,
@@ -202,9 +206,9 @@ BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
           binary_tree_max((Dictionary *)a) < binary_tree_min((Dictionary *)b)));
   */
 
-  if (dictionary_empty((Dictionary *)a))
-    return dictionary_empty((Dictionary *)b) ? a : b;
-  else if (dictionary_empty((Dictionary *)b))
+  if (set_empty((Set *)a))
+    return set_empty((Set *)b) ? a : b;
+  else if (set_empty((Set *)b))
     return a;
 
   if (((_BinaryTree *)a)

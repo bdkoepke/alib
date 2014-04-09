@@ -23,11 +23,11 @@ void test_linked_graph(void) {
       assert_true(graph_adjacent(g, INT_TO_POINTER(i),
                                  INT_TO_POINTER(graph[i - 1][j - 1])));
   for (i = 1; i <= 6; i++) {
-    const Container *c = graph_neighbors(g, INT_TO_POINTER(i));
+    const Set *s = graph_neighbors(g, INT_TO_POINTER(i));
     for (j = 1; j <= 6 && graph[i - 1][j - 1]; j++)
-      assert_equals(POINTER_TO_INT(container_search(
-                        c, INT_TO_POINTER(graph[i - 1][j - 1]))),
-                    graph[i - 1][j - 1]);
+      assert_equals(
+          POINTER_TO_INT(set_search(s, INT_TO_POINTER(graph[i - 1][j - 1]))),
+          graph[i - 1][j - 1]);
   }
   for (i = 1; i <= 6; i++)
     for (j = 1; j <= 6 && graph[i - 1][j]; j++) {

@@ -20,9 +20,11 @@ void set_insert(Set *s, void *x) {
 }
 
 void *set_delete(Set *s, const void *x) {
-  contract_requires(s != NULL);
   contract_weak_requires_equal(set_search(s, x), x);
-  void *o = s->vtable->delete (contract_requires_non_null(s), x);
+  void *o =
+      contract_ensures_equal(s->vtable->delete (contract_requires_non_null(s),
+                                                contract_requires_non_null(x)),
+                             x);
   contract_weak_ensures_equal(set_search(s, x), NULL);
-  return contract_ensures_equal(o, x);
+  return o;
 }

@@ -11,6 +11,10 @@ typedef struct {
   Node *tail;
 } LinkedQueue;
 
+static Iterator *linked_queue_iterator(const Iterable *i) {
+  return node_iterator(((LinkedQueue *)i)->head);
+}
+
 static void linked_queue_enqueue(Queue *_q, void *x) {
   LinkedQueue *q = (LinkedQueue *)_q;
   Node *tail = node_new_leaf(x);
@@ -57,14 +61,16 @@ static void *linked_queue_delete(Container *c, const void *x) {
     }
   } else {
     Node *head = q->head;
+    void *o = head->x;
     q->head = head->n;
     free(head);
+    return o;
   }
 }
 
 Queue *linked_queue_new() {
   static queue_vtable vtable = {
-    { { {.free = _queue_free }, .iterator = NULL },
+    { { {.free = _queue_free }, .iterator = linked_queue_iterator },
           .empty = linked_queue_empty, .search = linked_queue_search,
           .insert = _queue_insert, .delete = linked_queue_delete },
         .enqueue = linked_queue_enqueue, .dequeue = linked_queue_dequeue,

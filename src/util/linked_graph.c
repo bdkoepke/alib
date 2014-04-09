@@ -6,13 +6,13 @@
 
 #include <stdlib.h>
 
-typedef Container *(*container_factory)();
+typedef Set *(*set_factory)();
 
 typedef struct {
   graph_vtable *vtable;
   Dictionary *d;
   size_t e, v;
-  container_factory f;
+  set_factory f;
 } LinkedGraph;
 
 void linked_graph_free(Object *o) {
@@ -30,24 +30,24 @@ void linked_graph_free(Object *o) {
 
 static bool linked_graph_adjacent(const Graph *g, const void *x,
                                   const void *y) {
-  Container *c = container_search((Container *)((LinkedGraph *)g)->d, x);
-  return c == NULL ? false : container_search(c, y);
+  Set *s = dictionary_search(((LinkedGraph *)g)->d, x);
+  return s == NULL ? false : set_search(s, y);
 }
 
-static const Container *linked_graph_neighbors(const Graph *g, const void *x) {
-  return container_search((Container *)((LinkedGraph *)g)->d, x);
+static const Set *linked_graph_neighbors(const Graph *g, const void *x) {
+  return dictionary_search(((LinkedGraph *)g)->d, x);
 }
 
-static const Container *linked_graph_vertices(const Graph *g) {
-  return (Container *)((LinkedGraph *)g)->d;
+static const Set *linked_graph_vertices(const Graph *g) {
+  return (Set *)((LinkedGraph *)g)->d;
 }
 
 static void linked_graph_insert_edge_directed(Graph *g, void *x, void *y) {
   LinkedGraph *l = (LinkedGraph *)g;
-  Container *c = container_search((Container *)l->d, x);
-  if (c == NULL)
-    dictionary_insert(l->d, x, c = l->f());
-  container_insert(c, y);
+  Set *s = dictionary_search(l->d, x);
+  if (s == NULL)
+    dictionary_insert(l->d, x, s = l->f());
+  set_insert(s, y);
 }
 
 static void linked_graph_insert_edge_undirected(Graph *g, void *x, void *y) {
@@ -58,10 +58,10 @@ static void linked_graph_insert_edge_undirected(Graph *g, void *x, void *y) {
 static void linked_graph_delete_edge_directed(Graph *g, const void *x,
                                               const void *y) {
   LinkedGraph *l = (LinkedGraph *)g;
-  Container *c = container_search((Container *)l->d, x);
-  container_delete(c, y);
-  if (container_empty(c))
-    container_delete((Container *)l->d, x), free(c);
+  Set *s = dictionary_search(l->d, x);
+  set_delete(s, y);
+  if (set_empty(s))
+    dictionary_delete(l->d, x), free(s);
 }
 
 static void linked_graph_delete_edge_undirected(Graph *g, const void *x,
@@ -77,7 +77,7 @@ Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
   l->vtable = vtable;
   l->e = 0;
   l->v = 0;
-  l->f = (container_factory) linked_stack_new;
+  l->f = (set_factory) linked_stack_new;
   return (Graph *)l;
 }
 

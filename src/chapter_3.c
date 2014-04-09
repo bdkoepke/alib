@@ -6,7 +6,6 @@
 #include "test/test.h"
 #include "test/test_container.h"
 #include "test/test_container_values.h"
-#include "util/array_list.h"
 #include "util/array_container.h"
 #include "util/binary_tree.h"
 #include "util/hashtable.h"
@@ -16,6 +15,7 @@
 #include "util/red_black_tree.h"
 #include "util/sparse_array.h"
 #include "util/stack.h"
+#include "util/vector.h"
 
 #include <assert.h>
 #include <math.h>
@@ -53,15 +53,15 @@ bool balanced_parenthesis(const char *text, size_t length, int *out_position) {
   return false;
 }
 
-void _test_array_list(void) {
-  puts("test_array_list");
-  ArrayList *a = array_list_new();
-  test_array_list(a, test_values, test_values_length);
-  object_free((Object *)a);
+void _test_vector(void) {
+  puts("test_vector");
+  Vector *v = vector_new();
+  test_vector(v, test_values, test_values_length);
+  object_free((Object *)v);
 
-  a = array_list_new();
-  test_array_list(a, test_values_extended, test_values_extended_length);
-  object_free((Object *)a);
+  v = vector_new();
+  test_vector(v, test_values_extended, test_values_extended_length);
+  object_free((Object *)v);
 }
 
 void _test_linked_stack(void) {
@@ -148,14 +148,14 @@ void question_3_2(void) {
 
 void question_3_3(void) {
   puts("test_question_3_3");
-  ArrayList *a = array_list_new();
-  test_container((Container *)a, test_values, test_values_length);
-  object_free((Object *)a);
+  Vector *v = vector_new();
+  test_container((Container *)v, test_values, test_values_length);
+  object_free((Object *)v);
 
-  a = array_list_new();
-  test_container((Container *)a, test_values_extended,
+  v = vector_new();
+  test_container((Container *)v, test_values_extended,
                  test_values_extended_length);
-  object_free((Object *)a);
+  object_free((Object *)v);
 }
 
 void question_3_4(void) {

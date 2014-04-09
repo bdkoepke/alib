@@ -22,29 +22,28 @@ alib_SOURCES =\
   lang/object.c\
   lang/sort.c\
   lang/string.c\
-	lang/tuple.c\
+  lang/tuple.c\
   main.c\
   test/test.c\
   test/test_container.c\
   test/test_container_values.c\
   test/test_sort.c\
   util/array_container.c\
-  util/array_list.c\
   util/binary_node.c\
   util/binary_tree.c\
-	util/color_array.c\
+  util/color_array.c\
   util/compare.c\
   util/container.c\
   util/dictionary.c\
-	util/edge_node.c\
-	util/graph.c\
+  util/edge_node.c\
+  util/graph.c\
   util/hashtable.c\
   util/heap.c\
   util/hnode.c\
   util/iterable.c\
   util/iterator.c\
-	util/key_value_pair.c\
-	util/linked_graph.c\
+  util/key_value_pair.c\
+  util/linked_graph.c\
   util/linked_queue.c\
   util/linked_stack.c\
   util/node.c\
@@ -57,7 +56,8 @@ alib_SOURCES =\
   util/sorted_set.c\
   util/sparse_array.c\
   util/stack.c\
-  util/tree.c
+  util/tree.c\
+  util/vector.c
 
 alib_CFLAGS = $(ALIB_CFLAGS)
 

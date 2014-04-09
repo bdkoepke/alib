@@ -130,16 +130,17 @@ static void *hashtable_delete(Dictionary *d, const void *k) {
   return hnode_delete(&(h->array[hash]), k);
 }
 
-static bool hashtable_empty(const Dictionary *d) {
-  return ((Hashtable *)d)->size == 0;
+static bool hashtable_empty(const Set *s) {
+  return ((Hashtable *)s)->size == 0;
 }
 
 Dictionary *hashtable_new(Hash hash) {
   static dictionary_vtable vtable = {
-    {.free = hashtable_free },
-        .search = hashtable_search, .empty = hashtable_empty,
-        .delete = hashtable_delete, .insert = hashtable_insert,
-        .reassign = hashtable_reassign
+    { { {.free = hashtable_free }, .iterator = hashtable_iterator },
+          .insert = _dictionary_set_insert, .search = _dictionary_set_search,
+          .delete = _dictionary_set_delete, .empty = hashtable_empty },
+        .search = hashtable_search, .delete = hashtable_delete,
+        .insert = hashtable_insert, .reassign = hashtable_reassign
   };
 
   static const float DEFAULT_FACTOR = 0.75;

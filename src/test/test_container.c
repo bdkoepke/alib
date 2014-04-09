@@ -19,26 +19,26 @@ static int *sort_int(const int *values, size_t length) {
   return s;
 }
 
-void test_array_list(ArrayList *a, const int *values, size_t length) {
-  test_container((Container *)a, values, length);
-  assert_true(container_empty((Container *)a));
+void test_vector(Vector *v, const int *values, size_t length) {
+  test_container((Container *)v, values, length);
+  assert_true(container_empty((Container *)v));
   size_t i;
   for (i = 0; i < length; i++) {
-    assert_equals(array_list_size(a), i);
-    container_insert((Container *)a, INT_TO_POINTER(values[i]));
-    assert_equals(POINTER_TO_INT(container_search((Container *)a,
+    assert_equals(vector_size(v), i);
+    container_insert((Container *)v, INT_TO_POINTER(values[i]));
+    assert_equals(POINTER_TO_INT(container_search((Container *)v,
                                                   INT_TO_POINTER(values[i]))),
                   values[i]);
-    assert_false(container_empty((Container *)a));
+    assert_false(container_empty((Container *)v));
   }
-  assert_equals(array_list_size(a), length);
+  assert_equals(vector_size(v), length);
   for (i = 0; i < length; i++)
-    array_list_set(a, i, NULL);
+    vector_set(v, i, NULL);
   for (i = 0; i < length; i++)
-    assert_equals(POINTER_TO_INT(array_list_get(a, i)), POINTER_TO_INT(NULL));
+    assert_equals(POINTER_TO_INT(vector_get(v, i)), POINTER_TO_INT(NULL));
   for (i = 0; i < length; i++)
-    container_delete((Container *)a, NULL);
-  assert_true(container_empty((Container *)a));
+    container_delete((Container *)v, NULL);
+  assert_true(container_empty((Container *)v));
 }
 
 void test_container(Container *c, const int *values, size_t length) {
@@ -61,14 +61,14 @@ void test_container(Container *c, const int *values, size_t length) {
 
 void test_dictionary(Dictionary *d, const int *keys, size_t length) {
   const int *values = keys;
-  assert_true(dictionary_empty(d));
+  assert_true(set_empty((Set *)d));
   size_t i;
   for (i = 0; i < length; i++) {
     dictionary_insert(d, INT_TO_POINTER(keys[i]), INT_TO_POINTER(values[i]));
     assert_equals(POINTER_TO_INT(dictionary_search(d, INT_TO_POINTER(keys[i]))),
                   values[i]);
   }
-  assert_false(dictionary_empty(d));
+  assert_true(!set_empty((Set *)d));
   for (i = 0; i < length; i++) {
     assert_equals(POINTER_TO_INT(dictionary_delete(d, INT_TO_POINTER(keys[i]))),
                   values[i]);
@@ -76,15 +76,15 @@ void test_dictionary(Dictionary *d, const int *keys, size_t length) {
         POINTER_TO_INT(dictionary_search(d, INT_TO_POINTER(values[i]))),
         POINTER_TO_INT(NULL));
   }
-  assert_true(dictionary_empty(d));
+  assert_true(set_empty((Set *)d));
 }
 
 void test_sorted_dictionary(SortedDictionary *s, const int *keys,
                             size_t length) {
   Dictionary *d = (Dictionary *)s;
-  assert_true(dictionary_empty(d));
+  assert_true(set_empty((Set *)d));
   test_dictionary(d, keys, length);
-  assert_true(dictionary_empty(d));
+  assert_true(set_empty((Set *)d));
   int *sorted = sort_int(keys, length);
 
   size_t i;
@@ -109,7 +109,7 @@ void test_sorted_dictionary(SortedDictionary *s, const int *keys,
         successor);
   }
 
-  while (!dictionary_empty(d))
+  while (!set_empty((Set *)d))
     dictionary_delete(d, sorted_dictionary_min(s));
 
   free(sorted);
@@ -204,7 +204,7 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
   }
 
   test_sorted_dictionary((SortedDictionary *)t, values, length);
-  assert_true(dictionary_empty((Dictionary *)t));
+  assert_true(set_empty((Set *)t));
 
   size_t i;
   for (i = 0; i < length; i++)

@@ -2,7 +2,7 @@
 #define GRAPH_H
 
 #include "../lang/object.h"
-#include "../util/container.h"
+#include "set.h"
 
 #include <stdbool.h>
 
@@ -19,8 +19,8 @@ typedef struct {
 struct _graph_vtable {
   object_vtable object;
   bool (*adjacent)(const Graph *, const void *, const void *);
-  const Container *(*neighbors)(const Graph *, const void *);
-  const Container *(*vertices)(const Graph *);
+  const Set *(*neighbors)(const Graph *, const void *);
+  const Set *(*vertices)(const Graph *);
   void (*insert_edge)(Graph *, void *, void *);
   void (*delete_edge)(Graph *, const void *, const void *);
 };
@@ -42,7 +42,7 @@ bool graph_adjacent(const Graph *g, const void *x, const void *y);
  * @param x the node to search for edges on.
  * @return all nodes y such that there is an edge from x to y.
  */
-const Container *graph_neighbors(const Graph *g, const void *x);
+const Set *graph_neighbors(const Graph *g, const void *x);
 
 /**
  * Gets all vertices x in the graph.
@@ -50,7 +50,7 @@ const Container *graph_neighbors(const Graph *g, const void *x);
  * @param g the graph to get the vertices of.
  * @return a container containing the vertices.
  */
-const Container *graph_vertices(const Graph *g);
+const Set *graph_vertices(const Graph *g);
 
 /**
  * Inserts the specified edge into the graph.
