@@ -2,7 +2,6 @@
 #include "edge_node.h"
 #include "hashtable.h"
 #include "linked_graph.h"
-#include "linked_stack.h"
 
 #include <stdlib.h>
 
@@ -60,7 +59,7 @@ static void linked_graph_delete_edge_directed(Graph *g, const void *x,
   Set *s = dictionary_search(l->d, x);
   set_delete(s, y);
   if (set_empty(s))
-    dictionary_delete(l->d, x), free(s);
+    object_free((Object *)dictionary_delete(l->d, x));
 }
 
 static void linked_graph_delete_edge_undirected(Graph *g, const void *x,

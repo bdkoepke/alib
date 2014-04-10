@@ -63,7 +63,7 @@ static Iterator *hashtable_iterator(const Iterable *i) {
 static void hashtable_free(Object *o) {
   Hashtable *h = (Hashtable *)o;
   size_t i;
-  for (i = 0; i < h->size; i++)
+  for (i = 0; i < h->capacity; i++)
     if (h->array[i] != NULL)
       hnode_free_r(h->array[i]);
   free(h->array);
@@ -88,11 +88,11 @@ static void hashtable_insert(Dictionary *d, const void *k, void *v) {
     contract_requires_non_null(h);
     contract_requires(h->size < capacity < SIZE_MAX);
     HNode **array = h->array;
-    size_t size = h->size;
-    h->capacity = capacity;
+		size_t _capacity = h->capacity;
+		h->capacity = capacity;
     h->array = calloc(capacity, sizeof(HNode *));
     size_t i;
-    for (i = 0; i < size; i++)
+    for (i = 0; i < _capacity; i++)
       if (array[i] != NULL) {
         HNode *n;
         for (n = array[i]; n != NULL; n = n->n)

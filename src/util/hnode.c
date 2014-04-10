@@ -56,4 +56,5 @@ void hnode_free_r(HNode *n) {
       free(n);
     free(n);
   }
+	else puts("node is null");
 }
