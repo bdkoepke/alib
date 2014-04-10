@@ -82,7 +82,7 @@ Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
 
 Graph *linked_graph_new_undirected(Hash h) {
   static graph_vtable vtable = {
-    {.free = linked_graph_free },
+    {.class = { .name = "linked_graph" }, .free = linked_graph_free, .to_string = _object_to_string },
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_undirected,
@@ -93,7 +93,7 @@ Graph *linked_graph_new_undirected(Hash h) {
 
 Graph *linked_graph_new_directed(Hash h) {
   static graph_vtable vtable = {
-    {.free = linked_graph_free },
+    {.class = { .name = "linked_graph" }, .free = linked_graph_free, .to_string = _object_to_string },
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_directed,

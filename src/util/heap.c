@@ -112,7 +112,7 @@ static void heap_free(Object *o) {
 
 static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
   static heap_vtable vtable = {
-    {.free = heap_free }, .insert = _heap_insert,
+    {.class = { .name = "heap" }, .free = heap_free, .to_string = _object_to_string }, .insert = _heap_insert,
                               .extract_min = _heap_extract_min,
                               .size = _heap_size, .compare = _heap_compare
   };

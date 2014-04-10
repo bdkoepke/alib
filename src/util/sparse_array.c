@@ -74,7 +74,7 @@ static void *sparse_array_get(const Vector *v, size_t i) {
 
 Vector *sparse_array_new(unsigned int n, unsigned int m) {
   static vector_vtable vtable = {
-    { { {.free = sparse_array_free }, .iterator = _vector_iterator },
+    { { {.class = { .name = "sparse_array" }, .free = sparse_array_free, .to_string = _object_to_string }, .iterator = _vector_iterator },
           .empty = _vector_empty, .search = sparse_array_search,
           .delete = sparse_array_delete, .insert = sparse_array_insert },
         .set = sparse_array_set, .get = sparse_array_get, .size =

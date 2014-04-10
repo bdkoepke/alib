@@ -96,7 +96,6 @@ static size_t _sorted_set_size(const SortedSet *s) {
 
 static void sorted_set_free(Object *o) {
   SortedSet *s = (SortedSet *)o;
-  puts("sorted_set_free implementation slow");
   while (!sorted_set_empty(s))
     sorted_set_delete(s, 0);
   free(s);
@@ -104,7 +103,7 @@ static void sorted_set_free(Object *o) {
 
 SortedSet *sorted_set_new(Compare c) {
   static sorted_set_vtable vtable = {
-    {.free = sorted_set_free },
+    {.class = { .name = "sorted_set" }, .free = sorted_set_free, .to_string = _object_to_string},
         .member = _sorted_set_member, .insert = _sorted_set_insert,
         .delete = _sorted_set_delete, .size = _sorted_set_size,
   };

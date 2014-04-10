@@ -43,12 +43,19 @@ static void *_edge_node_get(const EdgeNode *e) {
 static void _edge_node_set(EdgeNode *e, void *x) { ((_EdgeNode *)e)->x = x; }
 
 EdgeNode *edge_node_new(void *x) {
-  static edge_node_vtable vtable = {
-    { { {.free = edge_node_free }, .iterator = edge_node_iterator },
-          .insert = edge_node_insert, .search = edge_node_search,
-          .empty = edge_node_empty, .delete = edge_node_delete },
-        .get = _edge_node_get, .set = _edge_node_set
-  };
+  static edge_node_vtable vtable = { { { {.class =
+  { .name = "edge_node" }
+  , .free = edge_node_free, .to_string = _object_to_string
+}
+, .iterator = edge_node_iterator
+}
+, .insert = edge_node_insert, .search = edge_node_search,
+                                  .empty = edge_node_empty, .delete =
+                                                                edge_node_delete
+}
+, .get = _edge_node_get, .set = _edge_node_set
+  }
+  ;
   _EdgeNode *e = malloc(sizeof(_EdgeNode));
   e->x = x;
   e->s = linked_stack_new();

@@ -8,7 +8,7 @@ typedef struct {
   object_vtable *vtable;
 } Object;
 struct _object_vtable {
-  const Class *(*class)(const Object *);
+  const Class class;
   void (*free)(Object *);
   char *(*to_string)(const Object *);
 };

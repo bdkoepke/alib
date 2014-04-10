@@ -37,6 +37,5 @@ void iterator_foreach(Iterator *i, apply a, void *user_data);
 
 void *_iterator_current_invalid_state(const Iterator *i);
 bool _iterator_move_next_invalid_state(Iterator *i);
-extern iterator_vtable iterator_vtable_invalid_state;
 
 #endif /* ITERATOR_H */

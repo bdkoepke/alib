@@ -19,6 +19,14 @@ typedef struct {
   size_t i;
 } VectorIterator;
 
+static iterator_vtable vtable_invalid_state = { {.class = { .name = "vector_iterator" }
+, .free = _object_free, .to_string = _object_to_string
+}
+, .current = _iterator_current_invalid_state,
+    .move_next = _iterator_move_next_invalid_state
+}
+;
+
 static const int DEFAULT_CAPACITY = 11;
 
 static void *vector_iterator_current(const Iterator *i) {
@@ -30,19 +38,19 @@ static bool vector_iterator_move_next(Iterator *i) {
   v->i++;
   if (v->i < vector_size(v->a))
     return true;
-  v->vtable = &iterator_vtable_invalid_state;
+  v->vtable = &vtable_invalid_state;
   return false;
 }
 
 static bool vector_iterator_move_next_init(Iterator *i) {
   static iterator_vtable vtable = {
-    {.free = _object_free }, .move_next = vector_iterator_move_next,
+    {.class = { .name = "vector_iterator" }, .free = _object_free, .to_string = _object_to_string }, .move_next = vector_iterator_move_next,
                                  .current = vector_iterator_current
   };
 
   VectorIterator *v = (VectorIterator *)i;
   if (container_empty((Container *)v->a)) {
-    v->vtable = &iterator_vtable_invalid_state;
+    v->vtable = &vtable_invalid_state;
     return false;
   }
   v->vtable = &vtable;
@@ -51,7 +59,7 @@ static bool vector_iterator_move_next_init(Iterator *i) {
 
 Iterator *_vector_iterator(const Iterable *i) {
   static iterator_vtable vtable = {
-    {.free = _object_free }, .move_next = vector_iterator_move_next_init,
+    {.class = { .name = "vector_iterator" }, .free = _object_free, .to_string = _object_to_string }, .move_next = vector_iterator_move_next_init,
                                  .current = _iterator_current_invalid_state
   };
   VectorIterator *v = malloc(sizeof(VectorIterator));
@@ -129,7 +137,7 @@ static void vector_free(Object *o) {
 
 Vector *vector_new() {
   static vector_vtable vtable = {
-    { { {.free = vector_free }, .iterator = _vector_iterator },
+    { { {.class = { .name = "vector" }, .free = vector_free, .to_string = _object_to_string }, .iterator = _vector_iterator },
           .search = _vector_search, .empty = _vector_empty,
           .insert = _vector_insert, .delete = vector_delete },
         .set = _vector_set, .get = _vector_get, .size = _vector_size

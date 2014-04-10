@@ -10,7 +10,8 @@ void _object_free(Object *o) { free(o); }
 void object_free(Object *o) { o->vtable->free(contract_requires_non_null(o)); }
 
 const Class *object_class(const Object *o) {
-  return o->vtable->class(contract_requires_non_null(o));
+	contract_requires_non_null(o);
+  return &o->vtable->class;
 }
 
 char *object_to_string(const Object *o) {

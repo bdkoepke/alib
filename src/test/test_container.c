@@ -206,36 +206,34 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
   test_sorted_dictionary((SortedDictionary *)t, values, length);
   assert_true(set_empty((Set *)t));
 
-  {
-    size_t i;
-    for (i = 0; i < length; i++)
-      dictionary_insert((Dictionary *)t, INT_TO_POINTER(values[i]),
-                        INT_TO_POINTER(values[i]));
-  }
+  size_t i;
+  for (i = 0; i < length; i++)
+    dictionary_insert((Dictionary *)t, INT_TO_POINTER(values[i]),
+                      INT_TO_POINTER(values[i]));
 
   OrderVisitor *o = order_visitor_new(pre_order);
-  Iterator *i = tree_pre_order(t);
-  iterator_foreach(i, order_visitor_visit, o);
+  Iterator *it = tree_pre_order(t);
+  iterator_foreach(it, order_visitor_visit, o);
   object_free((Object *)o);
-  object_free((Object *)i);
+  object_free((Object *)it);
 
   o = order_visitor_new(in_order);
-  i = tree_in_order(t);
-  iterator_foreach(i, order_visitor_visit, o);
+  it = tree_in_order(t);
+  iterator_foreach(it, order_visitor_visit, o);
   object_free((Object *)o);
-  object_free((Object *)i);
+  object_free((Object *)it);
 
   o = order_visitor_new(post_order);
-  i = tree_post_order(t);
-  iterator_foreach(i, order_visitor_visit, o);
+  it = tree_post_order(t);
+  iterator_foreach(it, order_visitor_visit, o);
   object_free((Object *)o);
-  object_free((Object *)i);
+  object_free((Object *)it);
 
   o = order_visitor_new(level_order);
-  i = tree_level_order(t);
-  iterator_foreach(i, order_visitor_visit, o);
+  it = tree_level_order(t);
+  iterator_foreach(it, order_visitor_visit, o);
   object_free((Object *)o);
-  object_free((Object *)i);
+  object_free((Object *)it);
 }
 
 void test_partial_sum(PartialSum *p, const int *values, const size_t length) {}

@@ -10,7 +10,8 @@ typedef struct {
 } NodeIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  {.free = _object_free }, .current = _iterator_current_invalid_state,
+  {.class = { .name = "node_iterator" }, .free = _object_free, .to_string = _object_to_string },
+	.current = _iterator_current_invalid_state,
                                .move_next = _iterator_move_next_invalid_state
 };
 
@@ -26,7 +27,8 @@ static bool node_iterator_move_next(Iterator *i) {
 
 static bool node_iterator_move_next_init(Iterator *i) {
   static iterator_vtable vtable = {
-    {.free = _object_free }, .current = node_iterator_current,
+  {.class = { .name = "node_iterator" }, .free = _object_free, .to_string = _object_to_string },
+.current = node_iterator_current,
                                  .move_next = node_iterator_move_next
   };
   if (node_iterator_move_next(i)) {
@@ -38,7 +40,8 @@ static bool node_iterator_move_next_init(Iterator *i) {
 
 Iterator *node_iterator(Node *n) {
   static iterator_vtable vtable = {
-    {.free = _object_free }, .current = _iterator_current_invalid_state,
+  {.class = { .name = "node_iterator" }, .free = _object_free, .to_string = _object_to_string },
+.current = _iterator_current_invalid_state,
                                  .move_next = node_iterator_move_next_init
   };
 
