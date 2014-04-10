@@ -198,9 +198,9 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
     o->i = 0;
     return o;
   }
-  void order_visitor_visit(void * p, const KeyValuePair * x) {
+  void order_visitor_visit(void * p, void * x) {
     OrderVisitor *o = (OrderVisitor *)p;
-    assert_equals(POINTER_TO_INT(x->v), o->order[o->i++]);
+    assert_equals(POINTER_TO_INT(((KeyValuePair *)x)->v), o->order[o->i++]);
   }
 
   test_sorted_dictionary((SortedDictionary *)t, values, length);
@@ -212,19 +212,19 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
                       INT_TO_POINTER(values[i]));
 
   OrderVisitor *o = order_visitor_new(pre_order);
-  tree_pre_order(t, order_visitor_visit, o);
+  iterator_foreach(tree_pre_order(t), order_visitor_visit, o);
   object_free((Object *)o);
 
   o = order_visitor_new(in_order);
-  tree_in_order(t, order_visitor_visit, o);
+  iterator_foreach(tree_in_order(t), order_visitor_visit, o);
   object_free((Object *)o);
 
   o = order_visitor_new(post_order);
-  tree_post_order(t, order_visitor_visit, o);
+ 	iterator_foreach(tree_post_order(t), order_visitor_visit, o);
   object_free((Object *)o);
 
   o = order_visitor_new(level_order);
-  tree_level_order(t, order_visitor_visit, o);
+  iterator_foreach(tree_level_order(t), order_visitor_visit, o);
   object_free((Object *)o);
 }
 

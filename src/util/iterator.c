@@ -25,3 +25,10 @@ iterator_vtable iterator_vtable_invalid_state = {
   {.free = _object_free }, .current = _iterator_current_invalid_state,
                                .move_next = _iterator_move_next_invalid_state
 };
+
+void iterator_foreach(Iterator *i, apply a, void *user_data) {
+  contract_requires_non_null(i);
+  contract_requires_non_null(a);
+  while (iterator_move_next(i))
+    a(user_data, iterator_current(i));
+}

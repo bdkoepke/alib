@@ -66,20 +66,20 @@ static void *binary_tree_successor(const SortedDictionary *s, const void *x) {
   return p == NULL ? NULL : p->v;
 }
 
-static void binary_tree_pre_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_pre_order(((const _BinaryTree *)t)->root, v, user_data);
+static Iterator *binary_tree_pre_order(const Tree *t) {
+  return binary_node_pre_order(((const _BinaryTree *)t)->root);
 }
 
-static void binary_tree_in_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_in_order(((const _BinaryTree *)t)->root, v, user_data);
+static Iterator *binary_tree_in_order(const Tree *t) {
+  return binary_node_in_order(((const _BinaryTree *)t)->root);
 }
 
-static void binary_tree_post_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_post_order(((const _BinaryTree *)t)->root, v, user_data);
+static Iterator *binary_tree_post_order(const Tree *t) {
+  return binary_node_post_order(((const _BinaryTree *)t)->root);
 }
 
-static void binary_tree_level_order(const Tree *t, Visitor v, void *user_data) {
-  return binary_node_level_order(((const _BinaryTree *)t)->root, v, user_data);
+static Iterator *binary_tree_level_order(const Tree *t) {
+  return binary_node_level_order(((const _BinaryTree *)t)->root);
 }
 
 BinaryTree *binary_tree_new(Compare c) {

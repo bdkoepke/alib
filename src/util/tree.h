@@ -11,47 +11,43 @@ typedef struct Tree {
 } Tree;
 struct _tree_vtable {
   sorted_dictionary_vtable sorted_dictionary;
-  void (*pre_order)(const Tree *, Visitor, void *);
-  void (*in_order)(const Tree *, Visitor, void *);
-  void (*post_order)(const Tree *, Visitor, void *);
-  void (*level_order)(const Tree *, Visitor, void *);
+  Iterator *(*pre_order)(const Tree *);
+  Iterator *(*in_order)(const Tree *);
+  Iterator *(*post_order)(const Tree *);
+  Iterator *(*level_order)(const Tree *);
 };
 
 /**
  * Pre order tree traversal.
  *
- * @param t the tree to traverse.
- * @param v the visitor function for the tree.
- * @param user_data the state for the visitor function.
+ * @param t the tree to traverse
+ * @return a pre order iterator for the tree.
  */
-void tree_pre_order(const Tree *t, Visitor v, void *user_data);
+Iterator *tree_pre_order(const Tree *t);
 
 /**
  * In order tree traversal.
  *
- * @param t the tree to traverse.
- * @param v the visitor function for the tree.
- * @param user_data the state for the visitor function.
+ * @param t the tree to traverse
+ * @return an in order iterator for the tree.
  */
-void tree_in_order(const Tree *t, Visitor v, void *user_data);
+Iterator *tree_in_order(const Tree *t);
 
 /**
  * Post order tree traversal.
  *
- * @param t the tree to traverse.
- * @param v the visitor function for the tree.
- * @param user_data the state for the visitor function.
+ * @param t the tree to traverse
+ * @return post post order iterator for the tree.
  */
-void tree_post_order(const Tree *t, Visitor v, void *user_data);
+Iterator *tree_post_order(const Tree *t);
 
 /**
  * Level order tree traversal.
  *
- * @param t the tree to traverse.
- * @param v the visitor function for the tree.
- * @param user_data the state for the visitor function.
+ * @param t the tree to traverse
+ * @return a level order iterator for the tree.
  */
-void tree_level_order(const Tree *t, Visitor v, void *user_data);
+Iterator *tree_level_order(const Tree *t);
 
 /**
  * Converts the tree to a sorted linked stack.

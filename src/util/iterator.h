@@ -32,6 +32,9 @@ void *iterator_current(const Iterator *i);
  */
 bool iterator_move_next(Iterator *i);
 
+typedef void (*apply)(void *user_data, void *x);
+void iterator_foreach(Iterator *i, apply a, void *user_data);
+
 void *_iterator_current_invalid_state(const Iterator *i);
 bool _iterator_move_next_invalid_state(Iterator *i);
 extern iterator_vtable iterator_vtable_invalid_state;

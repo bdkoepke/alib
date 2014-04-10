@@ -4,6 +4,12 @@
 #include <stdbool.h>
 
 /**
+ * Specifies a state that should never be reached. These should be left
+ * in production since they will only be reached if there is a major
+ * contract violation that results in an invalid state.
+ */
+#define contract_fail() _contract_fail(__FILE__, __LINE__, __func__)
+/**
  * Specifies a precondition that must be true before a function
  * can execute. Should not be compiled out if your deploying a
  * shared library.
@@ -133,6 +139,7 @@
 #define contract_invariant_non_null(x)                                         \
   _contract_invariant_non_null((x), #x, __FILE__, __LINE__, __func__)
 
+void _contract_fail(const char *file, int line, const char *func);
 void _contract_requires(bool expr, const char *expr_s, const char *file,
                         int line, const char *func);
 void *_contract_requires_non_null(const void *x, const char *x_s,

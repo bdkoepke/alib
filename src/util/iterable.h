@@ -20,4 +20,6 @@ struct _iterable_vtable {
  */
 Iterator *iterable_iterator(const Iterable *i);
 
+void iterable_foreach(const Iterable *i, apply a, void *user_data);
+
 #endif /* ITERABLE_H */

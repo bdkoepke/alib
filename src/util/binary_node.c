@@ -1,8 +1,19 @@
 #include "../diag/contract.h"
 #include "binary_node.h"
 #include "linked_queue.h"
+#include "linked_stack.h"
 
 #include <stdlib.h>
+
+static inline void stack_push_non_null(Stack *s, void *x) {
+  if (x != NULL)
+    stack_push(s, x);
+}
+
+static inline void queue_enqueue_non_null(Queue *q, void *x) {
+  if (x != NULL)
+    queue_enqueue(q, x);
+}
 
 BinaryNode *binary_node_new(const void *k, void *v, BinaryNode *left,
                             BinaryNode *right) {
@@ -23,6 +34,10 @@ bool binary_node_is_leaf(const BinaryNode *n) {
 
 bool binary_node_is_branch(const BinaryNode *n) {
   return n->left != NULL && n->right != NULL;
+}
+
+bool binary_node_is_child_of(const BinaryNode *n, const BinaryNode *p) {
+  return n == p->left || n == p->right;
 }
 
 void binary_node_free_r(BinaryNode *n) {
@@ -132,42 +147,176 @@ const KeyValuePair *binary_node_successor(const BinaryNode *n, Compare c,
   }
 }
 
-void binary_node_pre_order(const BinaryNode *n, Visitor v, void *user_data) {
-  if (n != NULL) {
-    v(user_data, &(n->p));
-    binary_node_pre_order(n->left, v, user_data);
-    binary_node_pre_order(n->right, v, user_data);
-  }
+typedef struct BinaryNodeIterator {
+  iterator_vtable *vtable;
+  BinaryNode *n;
+  Container *c;
+} BinaryNodeIterator;
+
+static inline Iterator *binary_node_iterator_new(BinaryNode *root, Container *c,
+                                                 iterator_vtable *vtable) {
+  BinaryNodeIterator *b = malloc(sizeof(BinaryNodeIterator));
+  b->vtable = vtable;
+  b->n = root;
+  b->c = c;
+  return (Iterator *)b;
 }
 
-void binary_node_in_order(const BinaryNode *n, Visitor v, void *user_data) {
-  if (n != NULL) {
-    binary_node_in_order(n->left, v, user_data);
-    v(user_data, &(n->p));
-    binary_node_in_order(n->right, v, user_data);
-  }
+static void binary_node_iterator_free(Object *o) {
+  BinaryNodeIterator *b = (BinaryNodeIterator *)o;
+  object_free((Object *)b->c);
+  free(o);
 }
 
-void binary_node_post_order(const BinaryNode *n, Visitor v, void *user_data) {
-  if (n != NULL) {
-    binary_node_post_order(n->left, v, user_data);
-    binary_node_post_order(n->right, v, user_data);
-    v(user_data, &(n->p));
-  }
+static void *binary_node_current(const Iterator *i) {
+  return &(((BinaryNodeIterator *)i)->n)->p;
 }
 
-void binary_node_level_order(const BinaryNode *root, Visitor v,
-                             void *user_data) {
-  inline void queue_enqueue_non_null(Queue * q, void * x) {
-    if (x != NULL)
-      queue_enqueue(q, x);
+static bool binary_node_move_next_pre_order(Iterator *i) {
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  Container *c = b->c;
+  BinaryNode *n = b->n;
+  if (n->left != NULL) {
+    stack_push_non_null((Stack *)c, n->right);
+    return b->n = n->left, true;
   }
-  Queue *q = linked_queue_new();
-  queue_enqueue(q, (BinaryNode *)root);
-  while (!container_empty((Container *)q)) {
-    BinaryNode *n = queue_dequeue(q);
-    v(user_data, &(n->p));
-    queue_enqueue_non_null(q, n->left);
-    queue_enqueue_non_null(q, n->right);
-  }
+  if (n->right != NULL)
+    return b->n = n->right, true;
+  if (container_empty(c))
+    return b->vtable = &iterator_vtable_invalid_state, false;
+  return b->n = stack_pop((Stack *)c), true;
+}
+
+static bool binary_node_move_next_pre_order_init(Iterator *i) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free },
+        .current = binary_node_current, .move_next =
+                                            binary_node_move_next_pre_order
+  };
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  if (b->n == NULL)
+    return b->vtable = &iterator_vtable_invalid_state, false;
+  return b->vtable = &vtable, true;
+}
+
+Iterator *binary_node_pre_order(BinaryNode *root) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free },
+        .current = _iterator_current_invalid_state,
+        .move_next = binary_node_move_next_pre_order_init
+  };
+  return binary_node_iterator_new(root, (Container *)linked_stack_new(),
+                                  &vtable);
+}
+
+static bool binary_node_move_next_in_order(Iterator *i) {
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  Container *c = b->c;
+  BinaryNode *n = b->n;
+  for (n = n->right; n != NULL; n = n->left)
+    stack_push((Stack *)c, n);
+  if (container_empty(c))
+    return b->vtable = &iterator_vtable_invalid_state, false;
+  return b->n = stack_pop((Stack *)c), true;
+}
+
+static bool binary_node_move_next_in_order_init(Iterator *i) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free }, .current = binary_node_current,
+                                              .move_next =
+                                                  binary_node_move_next_in_order
+  };
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  Container *c = b->c;
+  BinaryNode *n;
+  for (n = b->n; n != NULL; n = n->left)
+    stack_push((Stack *)c, n);
+  if (container_empty(c))
+    return b->vtable = &iterator_vtable_invalid_state, false;
+  b->n = stack_pop((Stack *)c);
+	return b->vtable = &vtable, true;
+}
+
+Iterator *binary_node_in_order(BinaryNode *root) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free },
+        .current = _iterator_current_invalid_state,
+        .move_next = binary_node_move_next_in_order_init
+  };
+  return binary_node_iterator_new(root, (Container *)linked_stack_new(),
+                                  &vtable);
+}
+
+static bool binary_node_move_next_post_order(Iterator *i) {
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  Container *c = b->c;
+  if (container_empty(c))
+    return b->vtable = &iterator_vtable_invalid_state, false;
+  BinaryNode *n = stack_peek((Stack *)c);
+  if (binary_node_is_leaf(n) || binary_node_is_child_of(b->n, n))
+    return b->n = stack_pop((Stack *)c), true;
+  stack_push_non_null((Stack *)c, n->right);
+  stack_push_non_null((Stack *)c, n->left);
+  return binary_node_move_next_post_order(i);
+}
+
+static bool binary_node_move_next_post_order_init(Iterator *i) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free },
+        .current = binary_node_current, .move_next =
+                                            binary_node_move_next_post_order
+  };
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  stack_push_non_null((Stack *)b->c, b->n);
+	bool move_next = binary_node_move_next_post_order(i);
+	if (move_next)
+		b->vtable = &vtable;
+	return move_next;
+}
+
+Iterator *binary_node_post_order(BinaryNode *root) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free },
+        .current = _iterator_current_invalid_state,
+        .move_next = binary_node_move_next_post_order_init
+  };
+  return binary_node_iterator_new(root, (Container *)linked_stack_new(),
+                                  &vtable);
+}
+
+static bool binary_node_move_next_level_order(Iterator *i) {
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  Container *c = b->c;
+  if (container_empty(c))
+    return b->vtable = &iterator_vtable_invalid_state, false;
+  BinaryNode *n = b->n = queue_dequeue((Queue *)b->c);
+  queue_enqueue_non_null((Queue *)c, n->left);
+  queue_enqueue_non_null((Queue *)c, n->right);
+  return true;
+}
+
+static bool binary_node_move_next_level_order_init(Iterator *i) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free },
+        .current = binary_node_current, .move_next =
+                                            binary_node_move_next_level_order
+  };
+  BinaryNodeIterator *b = (BinaryNodeIterator *)i;
+  BinaryNode *n = b->n;
+  Container *c = b->c;
+  if (n == NULL)
+    return b->vtable = &iterator_vtable_invalid_state, false;
+  queue_enqueue_non_null((Queue *)c, n->left);
+  queue_enqueue_non_null((Queue *)c, n->right);
+  return i->vtable = &vtable, true;
+}
+
+Iterator *binary_node_level_order(BinaryNode *root) {
+  static iterator_vtable vtable = {
+    {.free = binary_node_iterator_free },
+        .current = _iterator_current_invalid_state,
+        .move_next = binary_node_move_next_level_order_init
+  };
+  return binary_node_iterator_new(root, (Container *)linked_queue_new(),
+                                  &vtable);
 }

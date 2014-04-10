@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#define assert_fail() _assert_fail(__FILE__, __LINE__, __func__)
 #define assert_true(expr)                                                      \
   _assert_true((expr), #expr, __FILE__, __LINE__, __func__)
 #define assert_false(expr)                                                     \
@@ -32,6 +33,7 @@
 #define assert_memcmp_len(a, b, num)                                           \
   _assert_memcmp((a), (b), (num), #a, #b, __FILE__, __LINE__, __func__)
 
+void _assert_fail(const char *file, int line, const char *func);
 void _assert_true(bool expr, const char *expr_s, const char *file, int line,
                   const char *func);
 void _assert_false(bool expr, const char *expr_s, const char *file, int line,

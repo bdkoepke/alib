@@ -4,6 +4,7 @@
 #include "../lang/visitor.h"
 #include "compare.h"
 #include "key_value_pair.h"
+#include "iterator.h"
 
 #include <stdbool.h>
 
@@ -18,6 +19,7 @@ BinaryNode *binary_node_new(const void *k, void *v, BinaryNode *left,
                             BinaryNode *right);
 bool binary_node_is_leaf(const BinaryNode *);
 bool binary_node_is_branch(const BinaryNode *);
+bool binary_node_is_child_of(const BinaryNode *, const BinaryNode *);
 
 void binary_node_free_r(BinaryNode *);
 
@@ -38,9 +40,9 @@ const KeyValuePair *binary_node_predecessor(const BinaryNode *, Compare,
 const KeyValuePair *binary_node_successor(const BinaryNode *, Compare,
                                           const void *k);
 
-void binary_node_pre_order(const BinaryNode *, Visitor, void *k);
-void binary_node_in_order(const BinaryNode *, Visitor, void *k);
-void binary_node_post_order(const BinaryNode *, Visitor, void *k);
-void binary_node_level_order(const BinaryNode *, Visitor, void *k);
+Iterator *binary_node_pre_order(BinaryNode *);
+Iterator *binary_node_in_order(BinaryNode *);
+Iterator *binary_node_post_order(BinaryNode *);
+Iterator *binary_node_level_order(BinaryNode *);
 
 #endif /* BINARY_NODE_H */

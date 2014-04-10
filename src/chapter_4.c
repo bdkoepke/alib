@@ -608,11 +608,11 @@ void binary_tree_sort(int a[], size_t length) {
   }
 
   size_t j = 0;
-  void sort_visitor(void * p, const KeyValuePair * x) {
-    for (i = 0; i < POINTER_TO_INT(x->v); i++)
-      a[j++] = POINTER_TO_INT(x->k);
+  void sort_visitor(void * p, void * x) {
+    for (i = 0; i < POINTER_TO_INT(((KeyValuePair *)x)->v); i++)
+      a[j++] = POINTER_TO_INT(((KeyValuePair *)x)->k);
   }
-  tree_in_order((Tree *)b, sort_visitor, NULL);
+  iterator_foreach(tree_in_order((Tree *)b), sort_visitor, NULL);
 
   object_free((Object *)b);
 }

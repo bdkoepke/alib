@@ -13,7 +13,7 @@ void *stack_pop(Stack *s) {
   return s->vtable->pop(contract_requires_non_null(s));
 }
 
-const void *stack_peek(const Stack *s) {
+void *stack_peek(const Stack *s) {
   contract_requires(!container_empty((Container *)s));
   return s->vtable->peek(contract_requires_non_null(s));
 }

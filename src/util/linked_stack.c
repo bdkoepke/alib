@@ -23,7 +23,7 @@ static void *linked_stack_pop(Stack *s) {
   return x;
 }
 
-static const void *linked_stack_peek(const Stack *s) {
+static void *linked_stack_peek(const Stack *s) {
   return ((LinkedStack *)s)->head->x;
 }
 

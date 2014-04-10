@@ -13,7 +13,7 @@ struct _stack_vtable {
   container_vtable container;
   void (*push)(Stack *, void *);
   void *(*pop)(Stack *);
-  const void *(*peek)(const Stack *);
+  void *(*peek)(const Stack *);
 };
 
 /**
@@ -38,7 +38,7 @@ void *stack_pop(Stack *s);
  * @param s the stack to get the object from.
  * @return the object on the top of the stack.
  */
-const void *stack_peek(const Stack *s);
+void *stack_peek(const Stack *s);
 
 void _stack_insert(Container *c, void *x);
 
