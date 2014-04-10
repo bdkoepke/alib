@@ -34,3 +34,11 @@ void graph_delete_edge(Graph *g, const void *x, const void *y) {
                          contract_requires_non_null(y));
   contract_weak_requires(!graph_adjacent(g, x, y));
 }
+
+Iterator *graph_breadth_first(const Graph *g) {
+	return contract_ensures_non_null(g->vtable->breadth_first(contract_requires_non_null(g)));
+}
+
+Iterator *graph_depth_first(const Graph *g) {
+	return contract_ensures_non_null(g->vtable->depth_first(contract_requires_non_null(g)));
+}

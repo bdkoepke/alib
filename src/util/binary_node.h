@@ -1,7 +1,6 @@
 #ifndef BINARY_NODE_H
 #define BINARY_NODE_H
 
-#include "../lang/visitor.h"
 #include "compare.h"
 #include "key_value_pair.h"
 #include "iterator.h"

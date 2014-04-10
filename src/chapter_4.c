@@ -12,6 +12,7 @@
 #include "util/binary_tree.h"
 #include "util/color_array.h"
 #include "util/compare.h"
+#include "util/key_value_pair.h"
 #include "util/linked_queue.h"
 #include "util/linked_stack.h"
 #include "util/stack.h"

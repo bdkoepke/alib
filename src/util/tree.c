@@ -1,4 +1,6 @@
 #include "../diag/contract.h"
+#include "key_value_pair.h"
+#include "linked_stack.h"
 #include "tree.h"
 
 #include <stdlib.h>

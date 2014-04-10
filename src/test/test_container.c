@@ -3,6 +3,7 @@
 #include "../lang/string.h"
 #include "../lang/type.h"
 #include "../util/compare.h"
+#include "../util/key_value_pair.h"
 #include "test.h"
 #include "test_container.h"
 

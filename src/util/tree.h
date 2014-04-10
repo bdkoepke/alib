@@ -1,7 +1,6 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include "../lang/visitor.h"
 #include "linked_stack.h"
 #include "sorted_dictionary.h"
 

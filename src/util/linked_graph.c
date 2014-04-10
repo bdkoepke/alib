@@ -68,7 +68,7 @@ static void linked_graph_delete_edge_undirected(Graph *g, const void *x,
   linked_graph_delete_edge_directed(g, y, x);
 }
 
-Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
+static Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
   static const size_t DEFAULT_CAPACITY = 11;
   LinkedGraph *l = malloc(sizeof(LinkedGraph));
   l->d = (Dictionary *)hashtable_new(contract_requires_non_null(h));
@@ -80,13 +80,23 @@ Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
   return (Graph *)l;
 }
 
+static Iterator *linked_graph_breadth_first(const Graph *g) {
+	contract_fail();
+}
+
+static Iterator *linked_graph_depth_first(const Graph *g) {
+	contract_fail();
+}
+
 Graph *linked_graph_new_undirected(Hash h) {
   static graph_vtable vtable = {
     {.class = { .name = "linked_graph" }, .free = linked_graph_free, .to_string = _object_to_string },
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_undirected,
-        .delete_edge = linked_graph_delete_edge_undirected
+        .delete_edge = linked_graph_delete_edge_undirected,
+				.breadth_first = linked_graph_breadth_first,
+				.depth_first = linked_graph_depth_first
   };
   return linked_graph_new(h, &vtable);
 }
@@ -97,7 +107,9 @@ Graph *linked_graph_new_directed(Hash h) {
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_directed,
-        .delete_edge = linked_graph_delete_edge_directed
+        .delete_edge = linked_graph_delete_edge_directed,
+				.breadth_first = linked_graph_breadth_first,
+				.depth_first = linked_graph_depth_first
   };
   return linked_graph_new(h, &vtable);
 }

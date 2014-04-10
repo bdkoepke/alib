@@ -6,12 +6,6 @@
 
 #include <stdbool.h>
 
-typedef enum {
-  Undiscovered,
-  Discovered,
-  Processed
-} VertexState;
-
 typedef struct _graph_vtable graph_vtable;
 typedef struct {
   graph_vtable *vtable;
@@ -23,6 +17,8 @@ struct _graph_vtable {
   const Set *(*vertices)(const Graph *);
   void (*insert_edge)(Graph *, void *, void *);
   void (*delete_edge)(Graph *, const void *, const void *);
+	Iterator *(*breadth_first)(const Graph *);
+	Iterator *(*depth_first)(const Graph *);
 };
 
 /**
@@ -69,5 +65,21 @@ void graph_insert_edge(Graph *g, void *x, void *y);
  * @parm y the second point of the edge.
  */
 void graph_delete_edge(Graph *g, const void *x, const void *y);
+
+/**
+ * Breadth first iterator for a graph.
+ *
+ * @param g the graph to get an iterator for.
+ * @return a breadth first iterator.
+ */
+Iterator *graph_breadth_first(const Graph *g);
+
+/**
+ * Depth first iterator for a graph.
+ *
+ * @param g the graph to get an iterator for.
+ * @return a depth first iterator.
+ */
+Iterator *graph_depth_first(const Graph *g);
 
 #endif /* GRAPH_H */
