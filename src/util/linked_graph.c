@@ -6,24 +6,27 @@
 
 #include <stdlib.h>
 
-typedef Set *(*set_factory)();
+typedef Set *(*set_factory)(void *user_data);
 
 typedef struct {
   graph_vtable *vtable;
   Dictionary *d;
   size_t e, v;
   set_factory f;
+  void *user_data;
 } LinkedGraph;
 
-void linked_graph_free(Object *o) {
+static const Set *linked_graph_neighbors(const Graph *g, const void *x) {
+  return dictionary_search(((LinkedGraph *)g)->d, x);
+}
+
+static void linked_graph_free(Object *o) {
   LinkedGraph *l = (LinkedGraph *)o;
-  /*
-   Iterator *i = iterable_iterator((Iterable *)l->d);
-   while (iterator_move_next(i))
-     object_free(
-         (Object *)container_delete((Container *)l->d, iterator_current(i)));
- 	*/
-  puts("memory leak");
+  Graph *g = (Graph *)o;
+  Iterator *i = iterable_iterator((Iterable *)l->d);
+  while (iterator_move_next(i))
+    object_free((Object *)iterator_current(i));
+  object_free((Object *)i);
   object_free((Object *)l->d);
   free(l);
 }
@@ -34,10 +37,6 @@ static bool linked_graph_adjacent(const Graph *g, const void *x,
   return s == NULL ? false : set_search(s, y);
 }
 
-static const Set *linked_graph_neighbors(const Graph *g, const void *x) {
-  return dictionary_search(((LinkedGraph *)g)->d, x);
-}
-
 static const Set *linked_graph_vertices(const Graph *g) {
   return (Set *)((LinkedGraph *)g)->d;
 }
@@ -46,7 +45,7 @@ static void linked_graph_insert_edge_directed(Graph *g, void *x, void *y) {
   LinkedGraph *l = (LinkedGraph *)g;
   Set *s = dictionary_search(l->d, x);
   if (s == NULL)
-    dictionary_insert(l->d, x, s = l->f());
+    dictionary_insert(l->d, x, s = l->f(l->user_data));
   set_insert(s, y);
 }
 
@@ -77,7 +76,8 @@ Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
   l->vtable = vtable;
   l->e = 0;
   l->v = 0;
-  l->f = (set_factory) linked_stack_new;
+  l->f = (set_factory) hashtable_new;
+  l->user_data = h;
   return (Graph *)l;
 }
 

@@ -172,6 +172,12 @@ static void *binary_node_current(const Iterator *i) {
   return &(((BinaryNodeIterator *)i)->n)->p;
 }
 
+static iterator_vtable binary_node_iterator_vtable_invalid_state = {
+  {.free = binary_node_iterator_free },
+      .current = _iterator_current_invalid_state,
+      .move_next = _iterator_move_next_invalid_state
+};
+
 static bool binary_node_move_next_pre_order(Iterator *i) {
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   Container *c = b->c;
@@ -183,7 +189,7 @@ static bool binary_node_move_next_pre_order(Iterator *i) {
   if (n->right != NULL)
     return b->n = n->right, true;
   if (container_empty(c))
-    return b->vtable = &iterator_vtable_invalid_state, false;
+    return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   return b->n = stack_pop((Stack *)c), true;
 }
 
@@ -195,7 +201,7 @@ static bool binary_node_move_next_pre_order_init(Iterator *i) {
   };
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   if (b->n == NULL)
-    return b->vtable = &iterator_vtable_invalid_state, false;
+    return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   return b->vtable = &vtable, true;
 }
 
@@ -216,7 +222,7 @@ static bool binary_node_move_next_in_order(Iterator *i) {
   for (n = n->right; n != NULL; n = n->left)
     stack_push((Stack *)c, n);
   if (container_empty(c))
-    return b->vtable = &iterator_vtable_invalid_state, false;
+    return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   return b->n = stack_pop((Stack *)c), true;
 }
 
@@ -232,9 +238,9 @@ static bool binary_node_move_next_in_order_init(Iterator *i) {
   for (n = b->n; n != NULL; n = n->left)
     stack_push((Stack *)c, n);
   if (container_empty(c))
-    return b->vtable = &iterator_vtable_invalid_state, false;
+    return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   b->n = stack_pop((Stack *)c);
-	return b->vtable = &vtable, true;
+  return b->vtable = &vtable, true;
 }
 
 Iterator *binary_node_in_order(BinaryNode *root) {
@@ -251,7 +257,7 @@ static bool binary_node_move_next_post_order(Iterator *i) {
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   Container *c = b->c;
   if (container_empty(c))
-    return b->vtable = &iterator_vtable_invalid_state, false;
+    return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   BinaryNode *n = stack_peek((Stack *)c);
   if (binary_node_is_leaf(n) || binary_node_is_child_of(b->n, n))
     return b->n = stack_pop((Stack *)c), true;
@@ -268,10 +274,10 @@ static bool binary_node_move_next_post_order_init(Iterator *i) {
   };
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   stack_push_non_null((Stack *)b->c, b->n);
-	bool move_next = binary_node_move_next_post_order(i);
-	if (move_next)
-		b->vtable = &vtable;
-	return move_next;
+  bool move_next = binary_node_move_next_post_order(i);
+  if (move_next)
+    b->vtable = &vtable;
+  return move_next;
 }
 
 Iterator *binary_node_post_order(BinaryNode *root) {
@@ -288,7 +294,7 @@ static bool binary_node_move_next_level_order(Iterator *i) {
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   Container *c = b->c;
   if (container_empty(c))
-    return b->vtable = &iterator_vtable_invalid_state, false;
+    return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   BinaryNode *n = b->n = queue_dequeue((Queue *)b->c);
   queue_enqueue_non_null((Queue *)c, n->left);
   queue_enqueue_non_null((Queue *)c, n->right);
@@ -305,7 +311,7 @@ static bool binary_node_move_next_level_order_init(Iterator *i) {
   BinaryNode *n = b->n;
   Container *c = b->c;
   if (n == NULL)
-    return b->vtable = &iterator_vtable_invalid_state, false;
+    return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   queue_enqueue_non_null((Queue *)c, n->left);
   queue_enqueue_non_null((Queue *)c, n->right);
   return i->vtable = &vtable, true;

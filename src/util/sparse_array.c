@@ -34,6 +34,9 @@ static void sparse_array_insert(Container *c, void *x) {
 
 static void *sparse_array_search(const Container *c, const void *x) {
   SparseArray *s = (SparseArray *)c;
+  // NOTE: valgrind will issue errors here do to the nature of a sparse
+  // array, we are abusing this behavior on purpose (i.e. a conditional
+  // jump based on uninitialized memory).
   unsigned int _x = POINTER_TO_INT(x);
   return (x != NULL && _x < s->n && s->A[_x] != POINTER_TO_INT(NULL) &&
           (s->A[_x] - 1) < s->m && s->B[s->A[_x] - 1] == _x)

@@ -95,7 +95,7 @@ int quickselect(int a[], size_t length, size_t k) {
     return k < p ? qs(a, l, p == 0 ? 0 : p - 1, k) : qs(a, p + 1, h, k);
   }
   contract_requires(k < length);
-  return qs(contract_requires_non_null(a), 0, length, k);
+  return qs(contract_requires_non_null(a), 0, length - 1, k);
 }
 
 void quicksort(int a[], size_t length) {

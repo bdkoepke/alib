@@ -223,6 +223,9 @@ void question_4_3(void) {
   assert_equals(*(int *)pairs[0]->second, 9);
   assert_equals(*(int *)pairs[1]->first, 3);
   assert_equals(*(int *)pairs[1]->second, 5);
+  size_t i;
+  for (i = 0; i < numbers_length / 2; i++)
+    free(pairs[i]);
 }
 
 void question_4_4(void) {
@@ -271,6 +274,9 @@ void question_4_4(void) {
     assert_equals(sorted_pairs[i].i, expected[i].i);
     assert_equals(sorted_pairs[i].c, expected[i].c);
   }
+
+  for (i = 0; i < array_size(buckets); i++)
+    object_free((Object *)buckets[i]);
 }
 
 void test_bucketsort(void) {
@@ -330,9 +336,7 @@ void question_4_8(void) { puts("question_4_8: not implemented"); }
 
 void sorted_set_union(const int A[], const int B[], size_t A_len, size_t B_len,
                       int **U_p, size_t *U_len) {
-  // TODO: add contracts...
   int *U = malloc(sizeof(int) * (A_len + B_len));
-  *U_p = U;
 
   size_t i, j, k;
   i = j = k = 0;
@@ -348,7 +352,7 @@ void sorted_set_union(const int A[], const int B[], size_t A_len, size_t B_len,
   while (j < B_len)
     U[k++] = B[j++];
 
-  U = realloc(U, k * sizeof(int));
+  *U_p = realloc(U, k * sizeof(int));
   *U_len = k;
 }
 
@@ -612,8 +616,9 @@ void binary_tree_sort(int a[], size_t length) {
     for (i = 0; i < POINTER_TO_INT(((KeyValuePair *)x)->v); i++)
       a[j++] = POINTER_TO_INT(((KeyValuePair *)x)->k);
   }
-  iterator_foreach(tree_in_order((Tree *)b), sort_visitor, NULL);
-
+  Iterator *it = tree_in_order((Tree *)b);
+  iterator_foreach(it, sort_visitor, NULL);
+  object_free((Object *)it);
   object_free((Object *)b);
 }
 

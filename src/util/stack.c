@@ -24,5 +24,5 @@ void _stack_free(Object *o) {
   Stack *s = (Stack *)o;
   while (!container_empty((Container *)s))
     stack_pop(s);
-  free(s);
+  free(o);
 }

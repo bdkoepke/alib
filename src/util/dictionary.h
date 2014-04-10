@@ -52,7 +52,7 @@ void *dictionary_reassign(Dictionary *d, const void *k, void *v);
  * @param k the key to delete from the dictionary.
  * @return a pointer to the value that was deleted.
  */
-void *dictionary_delete(Dictionary *c, const void *k);
+void *dictionary_delete(Dictionary *d, const void *k);
 
 const void *_dictionary_set_search(const Set *s, const void *x);
 void _dictionary_set_insert(Set *s, void *x);

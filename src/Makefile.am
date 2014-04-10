@@ -17,6 +17,7 @@ alib_SOURCES =\
   diag/contract.c\
   lang/algorithm.c\
   lang/array.c\
+  lang/class.c\
   lang/hash.c\
   lang/math_extended.c\
   lang/object.c\

@@ -29,12 +29,10 @@ static void *hashtable_iterator_current(const Iterator *i) {
 static bool hashtable_iterator_move_next(Iterator *_i) {
   HashtableIterator *i = (HashtableIterator *)_i;
   Hashtable *h = (Hashtable *)i->h;
-  for (; h->array[i->i] == NULL && i->i < h->capacity; i->i++)
+  for (i->i++; i->i < h->capacity && h->array[i->i] == NULL; i->i++)
     continue;
-  if (h->array[i->i] == NULL) {
-    i->vtable = &iterator_vtable_invalid_state;
-    return false;
-  }
+  if (i->i == h->capacity || h->array[i->i] == NULL)
+    return i->vtable = &iterator_vtable_invalid_state, false;
   return true;
 }
 
@@ -43,14 +41,10 @@ static bool hashtable_iterator_move_next_init(Iterator *i) {
     {.free = _object_free }, .current = hashtable_iterator_current,
                                  .move_next = hashtable_iterator_move_next
   };
-
   HashtableIterator *h = (HashtableIterator *)i;
-  if (container_empty((Container *)h->h)) {
-    i->vtable = &iterator_vtable_invalid_state;
-    return false;
-  }
-  i->vtable = &vtable;
-  return hashtable_iterator_move_next(i);
+  if (set_empty((Set *)(Hashtable *)h->h))
+    return i->vtable = &iterator_vtable_invalid_state, false;
+  return i->vtable = &vtable, hashtable_iterator_move_next(i);
 }
 
 static Iterator *hashtable_iterator(const Iterable *i) {
@@ -67,7 +61,12 @@ static Iterator *hashtable_iterator(const Iterable *i) {
 }
 
 static void hashtable_free(Object *o) {
-  free(((Hashtable *)o)->array);
+  Hashtable *h = (Hashtable *)o;
+  size_t i;
+  for (i = 0; i < h->size; i++)
+    if (h->array[i] != NULL)
+      hnode_free_r(h->array[i]);
+  free(h->array);
   free(o);
 }
 
@@ -89,16 +88,16 @@ static void hashtable_insert(Dictionary *d, const void *k, void *v) {
     contract_requires_non_null(h);
     contract_requires(h->size < capacity < SIZE_MAX);
     HNode **array = h->array;
-    size_t _capacity = h->capacity;
+    size_t size = h->size;
     h->capacity = capacity;
     h->array = calloc(capacity, sizeof(HNode *));
     size_t i;
-    for (i = 0; i < _capacity; i++)
+    for (i = 0; i < size; i++)
       if (array[i] != NULL) {
         HNode *n;
         for (n = array[i]; n != NULL; n = n->n)
           _hashtable_insert(h, n->p.k, n->p.v);
-        hnode_free_r(n);
+        hnode_free_r(array[i]);
       }
     free(array);
   }

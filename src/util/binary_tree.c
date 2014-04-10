@@ -82,9 +82,13 @@ static Iterator *binary_tree_level_order(const Tree *t) {
   return binary_node_level_order(((const _BinaryTree *)t)->root);
 }
 
+static Iterator *binary_tree_iterator(const Iterable *i) {
+  return binary_node_post_order(((const _BinaryTree *)i)->root);
+}
+
 BinaryTree *binary_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { { { {.free = binary_tree_free }, .iterator = NULL, },
+    { { { { {.free = binary_tree_free }, .iterator = binary_tree_iterator, },
               .search = _dictionary_set_search, .insert =
                                                     _dictionary_set_insert,
               .delete = _dictionary_set_delete, .empty = binary_tree_empty },
@@ -168,7 +172,7 @@ static void *min_max_binary_tree_max(const SortedDictionary *d) {
 
 BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   static tree_vtable vtable = {
-    { { { { {.free = binary_tree_free }, .iterator = NULL },
+    { { { { {.free = binary_tree_free }, .iterator = binary_tree_iterator },
               .insert = _dictionary_set_insert, .search =
                                                     _dictionary_set_search,
               .delete = _dictionary_set_delete, .empty = binary_tree_empty },
@@ -198,14 +202,6 @@ BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
     *a = *b;
     *b = temp;
   }
-  /*
-     contract_requires(
-         a != NULL && b != NULL && a->c == b->c &&
-         (binary_tree_min((Dictionary *)a)->k > binary_tree_max((Dictionary
-   *)b)->k ||
-          binary_tree_max((Dictionary *)a) < binary_tree_min((Dictionary *)b)));
-  */
-
   if (set_empty((Set *)a))
     return set_empty((Set *)b) ? a : b;
   else if (set_empty((Set *)b))

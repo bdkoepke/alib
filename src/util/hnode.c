@@ -50,6 +50,10 @@ void hnode_insert(HNode **n, const void *k, void *v) {
 }
 
 void hnode_free_r(HNode *n) {
-  for (; n != NULL; n = n->n)
+  if (n != NULL) {
+    HNode *next;
+    for (next = n->n; next != NULL; n = next, next = next->n)
+      free(n);
     free(n);
+  }
 }

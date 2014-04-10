@@ -29,9 +29,9 @@ LinkedStack *tree_to_linked_stack(const Tree *t) {
   void linked_stack_visitor(void * p, void * x) {
     stack_push((Stack *)p, ((KeyValuePair *)x)->v);
   }
-
   LinkedStack *l = linked_stack_new();
-  iterator_foreach(tree_in_order(contract_requires_non_null(t)),
-                   linked_stack_visitor, l);
+  Iterator *i = tree_in_order(contract_requires_non_null(t));
+  iterator_foreach(i, linked_stack_visitor, l);
+  object_free((Object *)i);
   return l;
 }
