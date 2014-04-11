@@ -1,0 +1,27 @@
+digraph container {
+  node[shape = doublecircle] new, free;
+  node[shape = circle];
+	new->empty;
+
+	not_empty->not_empty;
+	not_empty->free;
+	not_empty->insert;
+	not_empty->search;
+
+	empty->empty;
+	empty->free;
+	empty->insert;
+	empty->search_empty;
+
+	delete->empty [label = "empty"]
+	delete->not_empty [ label = "!empty" ]
+
+	search->not_empty;
+	search->delete [label = "contains(x)"];
+
+	search_empty->empty;
+	search_empty->search_empty;
+
+	insert->not_empty;
+	insert->insert;
+}

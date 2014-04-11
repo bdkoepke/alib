@@ -13,7 +13,7 @@
 #include "util/linked_stack.h"
 #include "util/node.h"
 #include "util/red_black_tree.h"
-#include "util/sparse_array.h"
+#include "util/sparse_vector.h"
 #include "util/stack.h"
 #include "util/vector.h"
 
@@ -328,12 +328,12 @@ void question_3_14(void) {
 void question_3_15(void) {
   puts("test_question_3_15");
   Vector *v =
-      sparse_array_new(reduce_int(test_values, test_values_length, max, 0) + 1,
+      sparse_vector_new(reduce_int(test_values, test_values_length, max, 0) + 1,
                        test_values_length);
   test_container((Container *)v, test_values, test_values_length);
   object_free((Object *)v);
 
-  v = sparse_array_new(
+  v = sparse_vector_new(
       reduce_int(test_values_extended_positive,
                  test_values_extended_positive_length, max, 0) + 1,
       test_values_extended_positive_length);

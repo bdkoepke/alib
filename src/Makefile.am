@@ -55,7 +55,7 @@ alib_SOURCES =\
   util/set.c\
   util/sorted_dictionary.c\
   util/sorted_set.c\
-  util/sparse_array.c\
+  util/sparse_vector.c\
   util/stack.c\
   util/tree.c\
   util/vector.c

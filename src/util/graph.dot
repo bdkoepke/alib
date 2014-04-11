@@ -1,0 +1,26 @@
+digraph _graph {
+  node[shape = doublecircle] new, free;
+  node[shape = circle];
+	new->adjacent;
+
+	adjacent->adjacent;
+	adjacent->breadth_first;
+	adjacent->delete_edge [label = "adjacent(x, y)"];
+	adjacent->depth_first;
+	adjacent->free;
+	adjacent->insert_edge [label = "!adjacent(x, y)"];
+	adjacent->neighbors;
+	adjacent->vertices;
+
+	insert_edge->adjacent;
+
+	delete_edge->adjacent;
+	
+	vertices->adjacent;
+
+	neighbors->adjacent;
+
+	breadth_first->adjacent;
+
+	depth_first->adjacent;
+}

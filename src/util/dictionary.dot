@@ -1,0 +1,29 @@
+digraph dictionary {
+  node[shape = doublecircle] new, free;
+  node[shape = circle];
+	new->empty;
+
+	not_empty->not_empty;
+	not_empty->free;
+	not_empty->search;
+
+	empty->empty;
+	empty->free;
+	empty->search_empty;
+
+	delete->empty [label = "empty"]
+	delete->not_empty [label = "!empty"]
+
+	search->not_empty;
+	search->delete [label = "contains(k)"];
+	search->insert [label = "!contains(k)"];
+	search->reassign [label = "contains(k)"];
+
+	search_empty->empty;
+	search_empty->search_empty;
+	search_empty->insert;
+
+	insert->not_empty;
+
+	reassign->not_empty;
+}

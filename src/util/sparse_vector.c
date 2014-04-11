@@ -1,6 +1,6 @@
 #include "../diag/contract.h"
 #include "../lang/type.h"
-#include "sparse_array.h"
+#include "sparse_vector.h"
 
 #include <limits.h>
 #include <stdlib.h>
@@ -12,17 +12,17 @@ typedef struct {
   unsigned int size;
   unsigned int *A;
   unsigned int *B;
-} SparseArray;
+} SparseVector;
 
-static void sparse_array_free(Object *o) {
-  SparseArray *s = (SparseArray *)o;
+static void sparse_vector_free(Object *o) {
+  SparseVector *s = (SparseVector *)o;
   free(s->A);
   free(s->B);
   free(o);
 }
 
-static void sparse_array_insert(Container *c, void *x) {
-  SparseArray *s = (SparseArray *)c;
+static void sparse_vector_insert(Container *c, void *x) {
+  SparseVector *s = (SparseVector *)c;
   unsigned int _x = POINTER_TO_INT(x);
   contract_requires(_x < s->n && s->size < UINT_MAX && s->size < s->m);
   contract_weak_requires(container_search((Container *)c, x) ==
@@ -32,10 +32,10 @@ static void sparse_array_insert(Container *c, void *x) {
   s->B[s->A[_x] - 1] = _x;
 }
 
-static void *sparse_array_search(const Container *c, const void *x) {
-  SparseArray *s = (SparseArray *)c;
+static void *sparse_vector_search(const Container *c, const void *x) {
+  SparseVector *s = (SparseVector *)c;
   // NOTE: valgrind will issue errors here do to the nature of a sparse
-  // array, we are abusing this behavior on purpose (i.e. a conditional
+  // vector, we are abusing this behavior on purpose (i.e. a conditional
   // jump based on uninitialized memory).
   unsigned int _x = POINTER_TO_INT(x);
   return (x != NULL && _x < s->n && s->A[_x] != POINTER_TO_INT(NULL) &&
@@ -44,8 +44,8 @@ static void *sparse_array_search(const Container *c, const void *x) {
              : NULL;
 }
 
-static void *sparse_array_delete(Container *c, const void *x) {
-  SparseArray *s = (SparseArray *)c;
+static void *sparse_vector_delete(Container *c, const void *x) {
+  SparseVector *s = (SparseVector *)c;
   unsigned int _x;
   contract_requires((_x = POINTER_TO_INT(contract_requires_non_null(x))) <
                     s->n);
@@ -55,34 +55,34 @@ static void *sparse_array_delete(Container *c, const void *x) {
   return INT_TO_POINTER(x);
 }
 
-static size_t sparse_array_size(const Vector *v) {
-  return ((SparseArray *)v)->size;
+static size_t sparse_vector_size(const Vector *v) {
+  return ((SparseVector *)v)->size;
 }
 
-static void sparse_array_set(Vector *v, size_t i, void *x) {
+static void sparse_vector_set(Vector *v, size_t i, void *x) {
   contract_requires(i == POINTER_TO_INT(x));
   container_insert((Container *)v, x);
 }
 
-static void *sparse_array_get(const Vector *v, size_t i) {
-  SparseArray *s = (SparseArray *)v;
+static void *sparse_vector_get(const Vector *v, size_t i) {
+  SparseVector *s = (SparseVector *)v;
   return (i < s->n && s->A[i] != POINTER_TO_INT(NULL) && (s->A[i] - 1) < s->m &&
           s->B[s->A[i] - 1] == i)
              ? INT_TO_POINTER(i)
              : NULL;
 }
 
-Vector *sparse_array_new(unsigned int n, unsigned int m) {
+Vector *sparse_vector_new(unsigned int n, unsigned int m) {
   static vector_vtable vtable = {
-    { { {.class = "sparse_array", .free = sparse_array_free,
+    { { {.class = "sparse_vector", .free = sparse_vector_free,
                                       .to_string = _object_to_string },
             .iterator = _vector_iterator },
-          .empty = _vector_empty, .search = sparse_array_search,
-          .delete = sparse_array_delete, .insert = sparse_array_insert },
-        .set = sparse_array_set, .get = sparse_array_get, .size =
-                                                              sparse_array_size
+          .empty = _vector_empty, .search = sparse_vector_search,
+          .delete = sparse_vector_delete, .insert = sparse_vector_insert },
+        .set = sparse_vector_set, .get = sparse_vector_get, .size =
+                                                              sparse_vector_size
   };
-  SparseArray *s = malloc(sizeof(SparseArray));
+  SparseVector *s = malloc(sizeof(SparseVector));
   s->vtable = &vtable;
   s->size = 0;
   s->n = n;

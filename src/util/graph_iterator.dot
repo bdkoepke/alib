@@ -1,0 +1,27 @@
+digraph graph_iterator {
+  node[shape = doublecircle] new, free;
+  node[shape = circle];
+	new->free;
+  new->move_next_vertex;
+
+	move_next_vertex->current_vertex[label = "true"];
+  move_next_vertex->move_next_vertex[label = "true"];
+  move_next_vertex->move_next_vertex_false[label = "false"];
+
+	move_next_edge->current_edge[label = "true"];
+	move_next_edge->move_next_edge[label = "true"];
+	move_next_edge->move_next_edge_false[label = "false"];
+
+	move_next_edge_false->current_vertex;
+
+	move_next_vertex_false->free;
+
+	current_edge->current_edge;
+	current_edge->current_vertex;
+	current_edge->move_next_edge;
+
+	current_vertex->move_next_vertex;
+  current_vertex->current_vertex;
+  current_vertex->free;
+  current_vertex->move_next_edge;
+}
