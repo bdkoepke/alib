@@ -1,5 +1,6 @@
 #include "../diag/contract.h"
 #include "graph.h"
+#include "linked_queue.h"
 
 #include <stdlib.h>
 
@@ -35,10 +36,20 @@ void graph_delete_edge(Graph *g, const void *x, const void *y) {
   contract_weak_requires(!graph_adjacent(g, x, y));
 }
 
-Iterator *graph_breadth_first(const Graph *g) {
-	return contract_ensures_non_null(g->vtable->breadth_first(contract_requires_non_null(g)));
+GraphIterator *graph_breadth_first(const Graph *g) {
+  return contract_ensures_non_null(
+      g->vtable->breadth_first(contract_requires_non_null(g)));
 }
 
-Iterator *graph_depth_first(const Graph *g) {
-	return contract_ensures_non_null(g->vtable->depth_first(contract_requires_non_null(g)));
+GraphIterator *graph_depth_first(const Graph *g) {
+  return contract_ensures_non_null(
+      g->vtable->depth_first(contract_requires_non_null(g)));
 }
+
+GraphIterator *_directed_graph_breadth_first(const DirectedGraph *g) {}
+
+GraphIterator *_undirected_graph_breadth_first(const UndirectedGraph *g) {}
+
+GraphIterator *_directed_graph_depth_first(const DirectedGraph *g) {}
+
+GraphIterator *_undirected_graph_depth_first(const UndirectedGraph *g) {}

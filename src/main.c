@@ -27,7 +27,7 @@ void chapter_3(void) {
   question_3_10();
   question_3_11();
   question_3_14();
-  //question_3_15();
+  question_3_15();
   question_3_20();
   question_3_21();
   question_3_22();

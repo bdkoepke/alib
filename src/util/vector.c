@@ -19,13 +19,12 @@ typedef struct {
   size_t i;
 } VectorIterator;
 
-static iterator_vtable vtable_invalid_state = { {.class = { .name = "vector_iterator" }
-, .free = _object_free, .to_string = _object_to_string
-}
-, .current = _iterator_current_invalid_state,
-    .move_next = _iterator_move_next_invalid_state
-}
-;
+static iterator_vtable vtable_invalid_state = {
+  {.class = "vector_iterator", .free = _object_free, .to_string =
+                                                         _object_to_string },
+      .current = _iterator_current_invalid_state,
+      .move_next = _iterator_move_next_invalid_state
+};
 
 static const int DEFAULT_CAPACITY = 11;
 
@@ -44,8 +43,10 @@ static bool vector_iterator_move_next(Iterator *i) {
 
 static bool vector_iterator_move_next_init(Iterator *i) {
   static iterator_vtable vtable = {
-    {.class = { .name = "vector_iterator" }, .free = _object_free, .to_string = _object_to_string }, .move_next = vector_iterator_move_next,
-                                 .current = vector_iterator_current
+    {.class = "vector_iterator", .free = _object_free, .to_string =
+                                                           _object_to_string },
+        .move_next = vector_iterator_move_next, .current =
+                                                    vector_iterator_current
   };
 
   VectorIterator *v = (VectorIterator *)i;
@@ -59,8 +60,10 @@ static bool vector_iterator_move_next_init(Iterator *i) {
 
 Iterator *_vector_iterator(const Iterable *i) {
   static iterator_vtable vtable = {
-    {.class = { .name = "vector_iterator" }, .free = _object_free, .to_string = _object_to_string }, .move_next = vector_iterator_move_next_init,
-                                 .current = _iterator_current_invalid_state
+    {.class = "vector_iterator", .free = _object_free, .to_string =
+                                                           _object_to_string },
+        .move_next = vector_iterator_move_next_init,
+        .current = _iterator_current_invalid_state
   };
   VectorIterator *v = malloc(sizeof(VectorIterator));
   v->vtable = &vtable;
@@ -137,7 +140,9 @@ static void vector_free(Object *o) {
 
 Vector *vector_new() {
   static vector_vtable vtable = {
-    { { {.class = { .name = "vector" }, .free = vector_free, .to_string = _object_to_string }, .iterator = _vector_iterator },
+    { { {.class = "vector", .free = vector_free, .to_string =
+                                                     _object_to_string },
+            .iterator = _vector_iterator },
           .search = _vector_search, .empty = _vector_empty,
           .insert = _vector_insert, .delete = vector_delete },
         .set = _vector_set, .get = _vector_get, .size = _vector_size

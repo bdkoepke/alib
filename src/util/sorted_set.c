@@ -103,7 +103,8 @@ static void sorted_set_free(Object *o) {
 
 SortedSet *sorted_set_new(Compare c) {
   static sorted_set_vtable vtable = {
-    {.class = { .name = "sorted_set" }, .free = sorted_set_free, .to_string = _object_to_string},
+    {.class = "sorted_set", .free = sorted_set_free, .to_string =
+                                                         _object_to_string },
         .member = _sorted_set_member, .insert = _sorted_set_insert,
         .delete = _sorted_set_delete, .size = _sorted_set_size,
   };

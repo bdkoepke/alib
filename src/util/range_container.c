@@ -48,7 +48,8 @@ static void array_range_container_free(Object *o) { free(o); }
 
 RangeContainer *array_range_container_new(Compare c) {
   static range_container_vtable vtable = {
-    {.class = { .name = "range_container" }, .free = array_range_container_free, .to_string = _object_to_string},
+    {.class = "range_container", .free = array_range_container_free,
+                                     .to_string = _object_to_string },
         .insert = array_range_container_insert, .query =
                                                     array_range_container_query
   };

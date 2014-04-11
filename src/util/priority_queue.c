@@ -41,7 +41,8 @@ void _priority_queue_free(Object *o) {
 
 PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
   static priority_queue_vtable vtable = {
-    {.class = { .name = "priority_queue" }, .free = _priority_queue_free, .to_string = _object_to_string },
+    {.class = "priority_queue", .free = _priority_queue_free,
+                                    .to_string = _object_to_string },
         .insert = _priority_queue_insert, .find_minimum =
                                               _priority_queue_find_minimum,
         .find_maximum = _priority_queue_find_maximum,

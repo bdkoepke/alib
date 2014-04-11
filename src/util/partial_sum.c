@@ -20,7 +20,8 @@ void partial_sum_free(Object *o) {}
 
 PartialSum *partial_sum_new(Compare c) {
   static partial_sum_vtable vtable = {
-    {.class = { .name = "partial_sum" }, .free = partial_sum_free, .to_string = _object_to_string },
+    {.class = "partial_sum", .free = partial_sum_free, .to_string =
+                                                           _object_to_string },
         .add = _partial_sum_add, .values = _partial_sum_values,
         .insert = _partial_sum_insert, .delete = _partial_sum_delete
   };

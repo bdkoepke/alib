@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include "../lang/object.h"
+#include "graph_iterator.h"
 #include "set.h"
 
 #include <stdbool.h>
@@ -17,9 +18,11 @@ struct _graph_vtable {
   const Set *(*vertices)(const Graph *);
   void (*insert_edge)(Graph *, void *, void *);
   void (*delete_edge)(Graph *, const void *, const void *);
-	Iterator *(*breadth_first)(const Graph *);
-	Iterator *(*depth_first)(const Graph *);
+  GraphIterator *(*breadth_first)(const Graph *);
+  GraphIterator *(*depth_first)(const Graph *);
 };
+typedef Graph DirectedGraph;
+typedef Graph UndirectedGraph;
 
 /**
  * Tests whether there is an edge from node x to node y.
@@ -72,7 +75,7 @@ void graph_delete_edge(Graph *g, const void *x, const void *y);
  * @param g the graph to get an iterator for.
  * @return a breadth first iterator.
  */
-Iterator *graph_breadth_first(const Graph *g);
+GraphIterator *graph_breadth_first(const Graph *g);
 
 /**
  * Depth first iterator for a graph.
@@ -80,6 +83,11 @@ Iterator *graph_breadth_first(const Graph *g);
  * @param g the graph to get an iterator for.
  * @return a depth first iterator.
  */
-Iterator *graph_depth_first(const Graph *g);
+GraphIterator *graph_depth_first(const Graph *g);
+
+GraphIterator *_directed_graph_breadth_first(const DirectedGraph *g);
+GraphIterator *_undirected_graph_breadth_first(const UndirectedGraph *g);
+GraphIterator *_directed_graph_depth_first(const DirectedGraph *g);
+GraphIterator *_undirected_graph_depth_first(const UndirectedGraph *g);
 
 #endif /* GRAPH_H */

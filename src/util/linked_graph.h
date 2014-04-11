@@ -11,12 +11,13 @@
  * 
  * @return a new linked graph.
  */
-Graph *linked_graph_new_undirected(Hash);
+UndirectedGraph *undirected_linked_graph_new(Hash);
+
 /**
  * Creates a new linked graph.
  * 
  * @return a new linked graph.
  */
-Graph *linked_graph_new_directed(Hash);
+DirectedGraph *directed_linked_graph_new(Hash);
 
 #endif /* LINKED_GRAPH_H */

@@ -1,0 +1,12 @@
+digraph iterator {
+  node[shape = doublecircle];
+  new, move_next_false, free;
+  node[shape = circle];
+  new->move_next_true->free;
+  new->free;
+  move_next_true->move_next_true[label = "true"];
+  move_next_true->current->current->move_next_true;
+  move_next_true->move_next_false[label = "false"];
+  move_next_false->free;
+  current->free;
+}

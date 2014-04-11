@@ -80,36 +80,30 @@ static Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
   return (Graph *)l;
 }
 
-static Iterator *linked_graph_breadth_first(const Graph *g) {
-	contract_fail();
-}
-
-static Iterator *linked_graph_depth_first(const Graph *g) {
-	contract_fail();
-}
-
-Graph *linked_graph_new_undirected(Hash h) {
+UndirectedGraph *undirected_linked_graph_new(Hash h) {
   static graph_vtable vtable = {
-    {.class = { .name = "linked_graph" }, .free = linked_graph_free, .to_string = _object_to_string },
+    {.class = "linked_graph", .free = linked_graph_free,
+                                  .to_string = _object_to_string },
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_undirected,
         .delete_edge = linked_graph_delete_edge_undirected,
-				.breadth_first = linked_graph_breadth_first,
-				.depth_first = linked_graph_depth_first
+        .breadth_first = _undirected_graph_breadth_first,
+        .depth_first = _undirected_graph_depth_first
   };
-  return linked_graph_new(h, &vtable);
+  return (UndirectedGraph *)linked_graph_new(h, &vtable);
 }
 
-Graph *linked_graph_new_directed(Hash h) {
+DirectedGraph *directed_linked_graph_new(Hash h) {
   static graph_vtable vtable = {
-    {.class = { .name = "linked_graph" }, .free = linked_graph_free, .to_string = _object_to_string },
+    {.class = "linked_graph", .free = linked_graph_free,
+                                  .to_string = _object_to_string },
         .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_directed,
         .delete_edge = linked_graph_delete_edge_directed,
-				.breadth_first = linked_graph_breadth_first,
-				.depth_first = linked_graph_depth_first
+        .breadth_first = _directed_graph_breadth_first,
+        .depth_first = _directed_graph_depth_first
   };
-  return linked_graph_new(h, &vtable);
+  return (DirectedGraph *)linked_graph_new(h, &vtable);
 }

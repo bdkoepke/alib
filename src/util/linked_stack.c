@@ -66,7 +66,9 @@ static Iterator *linked_stack_iterator(const Iterable *i) {
 
 LinkedStack *linked_stack_new() {
   static stack_vtable vtable = {
-    { { {.class = { .name = "linked_stack" }, .free = _stack_free, .to_string = _object_to_string }, .iterator = linked_stack_iterator },
+    { { {.class = "linked_stack", .free = _stack_free, .to_string =
+                                                           _object_to_string },
+            .iterator = linked_stack_iterator },
           .empty = linked_stack_empty, .search = linked_stack_search,
           .delete = linked_stack_delete, .insert = _stack_insert },
         .push = linked_stack_push, .pop = linked_stack_pop,

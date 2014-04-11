@@ -44,3 +44,6 @@ src/.deps/
 src/alib
 src/Makefile
 nbproject/private
+
+# ignore dot svg files
+*.svg
