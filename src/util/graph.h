@@ -18,8 +18,8 @@ struct _graph_vtable {
   const Set *(*vertices)(const Graph *);
   void (*insert_edge)(Graph *, void *, void *);
   void (*delete_edge)(Graph *, const void *, const void *);
-  GraphIterator *(*breadth_first)(const Graph *);
-  GraphIterator *(*depth_first)(const Graph *);
+  GraphIterator *(*breadth_first)(const Graph *, const void *);
+  GraphIterator *(*depth_first)(const Graph *, const void *);
 };
 typedef Graph DirectedGraph;
 typedef Graph UndirectedGraph;
@@ -73,21 +73,27 @@ void graph_delete_edge(Graph *g, const void *x, const void *y);
  * Breadth first iterator for a graph.
  *
  * @param g the graph to get an iterator for.
+ * @param s the start vertex.
  * @return a breadth first iterator.
  */
-GraphIterator *graph_breadth_first(const Graph *g);
+GraphIterator *graph_breadth_first(const Graph *g, const void *s);
 
 /**
  * Depth first iterator for a graph.
  *
  * @param g the graph to get an iterator for.
+ * @param s the start vertex.
  * @return a depth first iterator.
  */
-GraphIterator *graph_depth_first(const Graph *g);
+GraphIterator *graph_depth_first(const Graph *g, const void *s);
 
-GraphIterator *_directed_graph_breadth_first(const DirectedGraph *g);
-GraphIterator *_undirected_graph_breadth_first(const UndirectedGraph *g);
-GraphIterator *_directed_graph_depth_first(const DirectedGraph *g);
-GraphIterator *_undirected_graph_depth_first(const UndirectedGraph *g);
+GraphIterator *_directed_graph_breadth_first(const DirectedGraph *g,
+                                             const void *s);
+GraphIterator *_undirected_graph_breadth_first(const UndirectedGraph *g,
+                                               const void *s);
+GraphIterator *_directed_graph_depth_first(const DirectedGraph *g,
+                                           const void *s);
+GraphIterator *_undirected_graph_depth_first(const UndirectedGraph *g,
+                                             const void *s);
 
 #endif /* GRAPH_H */

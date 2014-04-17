@@ -1,24 +1,22 @@
 digraph queue {
   node[shape = doublecircle] new, free;
   node[shape = circle];
-	new->empty;
+  new->empty;
 
-	not_empty->not_empty;
-	not_empty->free;
-	not_empty->enqueue;
-	not_empty->dequeue;
-	not_empty->head;
+  not_empty->not_empty;
+  not_empty->free;
+  not_empty->enqueue;
+  not_empty->dequeue;
+  not_empty->head;
 
-	empty->empty;
-	empty->free;
-	empty->enqueue;
+  empty->empty;
+  empty->free;
+  empty->enqueue;
 
-	dequeue->empty [label = "empty"]
-	dequeue->not_empty [ label = "!empty" ]
+  dequeue->empty[label = "empty"] dequeue->not_empty[label = "!empty"] enqueue
+      ->not_empty;
+  enqueue->enqueue;
 
-	enqueue->not_empty;
-	enqueue->enqueue;
-
-	head->head;
-	head->not_empty;
+  head->head;
+  head->not_empty;
 }

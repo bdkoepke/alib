@@ -12,12 +12,12 @@ bool iterator_move_next(Iterator *i) {
 }
 
 void *_iterator_current_invalid_state(const Iterator *i) {
-  contract_requires(false);
+  contract_fail();
   return NULL;
 }
 
 bool _iterator_move_next_invalid_state(Iterator *i) {
-  contract_requires(false);
+  contract_fail();
   return false;
 }
 

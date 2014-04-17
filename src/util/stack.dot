@@ -1,24 +1,21 @@
 digraph stack {
   node[shape = doublecircle] new, free;
   node[shape = circle];
-	new->empty;
+  new->empty;
 
-	not_empty->not_empty;
-	not_empty->free;
-	not_empty->push;
-	not_empty->pop;
-	not_empty->peek;
+  not_empty->not_empty;
+  not_empty->free;
+  not_empty->push;
+  not_empty->pop;
+  not_empty->peek;
 
-	empty->empty;
-	empty->free;
-	empty->push;
+  empty->empty;
+  empty->free;
+  empty->push;
 
-	pop->empty [label = "empty"]
-	pop->not_empty [ label = "!empty" ]
+  pop->empty[label = "empty"] pop->not_empty[label = "!empty"] push->not_empty;
+  push->push;
 
-	push->not_empty;
-	push->push;
-
-	peek->peek;
-	peek->not_empty;
+  peek->peek;
+  peek->not_empty;
 }

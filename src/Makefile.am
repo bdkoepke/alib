@@ -38,6 +38,7 @@ alib_SOURCES =\
   util/dictionary.c\
   util/edge_node.c\
   util/graph.c\
+  util/graph_iterator.c\
   util/hashtable.c\
   util/heap.c\
   util/hnode.c\

@@ -15,11 +15,6 @@ struct _graph_iterator_vtable {
   bool (*move_next_edge)(GraphIterator *);
   bool (*move_next_vertex)(GraphIterator *);
 };
-typedef enum {
-  Undiscovered,
-  Discovered,
-  Processed
-} VertexState;
 
 /**
  * Gets the current graph iterator vertex.
@@ -53,5 +48,10 @@ bool graph_iterator_move_next_vertex(GraphIterator *g);
  *   vertex, false otherwise.
  */
 bool graph_iterator_move_next_edge(GraphIterator *g);
+
+EdgeNode *_graph_iterator_current_edge_invalid_state(const GraphIterator *g);
+void *_graph_iterator_current_vertex_invalid_state(const GraphIterator *g);
+bool _graph_iterator_move_next_vertex_invalid_state(GraphIterator *g);
+bool _graph_iterator_move_next_edge_invalid_state(GraphIterator *g);
 
 #endif /* GRAPH_ITERATOR_H */

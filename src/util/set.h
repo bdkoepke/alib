@@ -27,14 +27,6 @@ struct _set_vtable {
 const void *set_search(const Set *s, const void *x);
 
 /**
- * Gets a value indicating whether the set is empty or not.
- *
- * @param s the set to check for emptiness.
- * @return true if the set is empty, false otherwise.
- */
-bool set_empty(const Set *s);
-
-/**
  * Inserts the specified object into the set.
  *
  * @param s the set to insert the object into.
@@ -50,5 +42,13 @@ void set_insert(Set *s, void *x);
  * @return a pointer to the element that was deleted.
  */
 void *set_delete(Set *s, const void *x);
+
+/**
+ * Gets a value indicating whether the set is empty or not.
+ *
+ * @param s the set to check for emptiness.
+ * @return true if the set is empty, false otherwise.
+ */
+bool set_empty(const Set *s);
 
 #endif /* SET_H */
