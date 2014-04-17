@@ -1,5 +1,6 @@
 #include "../diag/contract.h"
 #include "../lang/math_extended.h"
+#include "../lang/unsafe.h"
 #include "hashtable.h"
 #include "hnode.h"
 
@@ -30,7 +31,7 @@ static iterator_vtable vtable_invalid_state = {
 
 static void *hashtable_iterator_current(const Iterator *i) {
   HashtableIterator *h = (HashtableIterator *)i;
-  return h->h->array[h->i]->p.v;
+  return const_cast(h->h->array[h->i]->p.k);
 }
 
 static bool hashtable_iterator_move_next(Iterator *_i) {

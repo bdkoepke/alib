@@ -3,19 +3,16 @@
 
 #include "set.h"
 
-typedef const void *Key;
-typedef void *Value;
-
 typedef struct _dictionary_vtable dictionary_vtable;
 typedef struct Dictionary {
   dictionary_vtable *vtable;
 } Dictionary;
 struct _dictionary_vtable {
   set_vtable set;
-  Value (*search)(const Dictionary *, Key);
-  void (*insert)(Dictionary *, Key, Value);
-  Value (*reassign)(Dictionary *, Key, Value);
-  Value (*delete)(Dictionary *, Key);
+  void *(*search)(const Dictionary *, const void *);
+  void (*insert)(Dictionary *, const void *, void *);
+  void *(*reassign)(Dictionary *, const void *, void *);
+  void *(*delete)(Dictionary *, const void *);
 };
 
 /**
@@ -26,7 +23,7 @@ struct _dictionary_vtable {
  * @return the value v from the dictionary associated with the
  * 	key k if it exists, NULL otherwise.
  */
-Value dictionary_search(const Dictionary *d, Key k);
+void *dictionary_search(const Dictionary *d, const void *k);
 
 /**
  * Inserts the specified key and value into the dictionary.
@@ -35,7 +32,7 @@ Value dictionary_search(const Dictionary *d, Key k);
  * @param k the key to associate with the value.
  * @param v the value to be indexed by the key.
  */
-void dictionary_insert(Dictionary *d, Key k, Value v);
+void dictionary_insert(Dictionary *d, const void *k, void *v);
 
 /**
  * Replaces the value of the specified key with the specified
@@ -46,7 +43,7 @@ void dictionary_insert(Dictionary *d, Key k, Value v);
  * @param v the new value that is associated with the key.
  * @return the original value associated with k.
  */
-Value dictionary_reassign(Dictionary *d, Key k, Value v);
+void *dictionary_reassign(Dictionary *d, const void *k, void *v);
 
 /**
  * Deletes the object with the specified key from the dictionary.
@@ -55,7 +52,7 @@ Value dictionary_reassign(Dictionary *d, Key k, Value v);
  * @param k the key to delete from the dictionary.
  * @return a pointer to the value that was deleted.
  */
-Value dictionary_delete(Dictionary *d, Key k);
+void *dictionary_delete(Dictionary *d, const void *k);
 
 const void *_dictionary_set_search(const Set *s, const void *x);
 void _dictionary_set_insert(Set *s, void *x);

@@ -23,16 +23,14 @@ void *dictionary_search(const Dictionary *d, const void *k) {
 void dictionary_insert(Dictionary *d, const void *k, void *v) {
   contract_weak_requires_equal(dictionary_search(d, k), NULL);
   d->vtable
-      ->insert(contract_requires_non_null(d), contract_requires_non_null(k),
-               contract_requires_non_null(v));
+      ->insert(contract_requires_non_null(d), contract_requires_non_null(k), v);
   contract_weak_ensures_equal(dictionary_search(d, k), v);
 }
 
 void *dictionary_reassign(Dictionary *d, const void *k, void *v) {
-  contract_weak_requires_non_null(dictionary_search(d, k));
-  void *o = contract_ensures_non_null(d->vtable->reassign(
+  void *o = d->vtable->reassign(
       contract_requires_non_null(d), contract_requires_non_null(k),
-      contract_requires_non_null(v)));
+      v);
   contract_weak_ensures_equal(dictionary_search(d, k), v);
   return o;
 }

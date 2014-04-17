@@ -41,7 +41,6 @@ static const Set *linked_graph_vertices(const Graph *g) {
 }
 
 static void linked_graph_insert_edge_directed(Graph *g, void *x, void *y) {
-  printf("%d\n", x);
   LinkedGraph *l = (LinkedGraph *)g;
   Set *s = dictionary_search(l->d, x);
   if (s == NULL)

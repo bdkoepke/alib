@@ -169,7 +169,7 @@ static void binary_node_iterator_free(Object *o) {
 }
 
 static void *binary_node_current(const Iterator *i) {
-  return &(((BinaryNodeIterator *)i)->n)->p;
+  return &(((BinaryNodeIterator *)i)->n)->p.k;
 }
 
 static iterator_vtable binary_node_iterator_vtable_invalid_state = {
