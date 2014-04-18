@@ -2,7 +2,7 @@
 #define HEAP_H
 
 #include "../lang/object.h"
-#include "compare.h"
+#include "../lang/compare.h"
 
 #include <stdbool.h>
 #include <stddef.h>

@@ -1,7 +1,7 @@
 #ifndef PARTIAL_SUM_H
 #define PARTIAL_SUM_H
 
-#include "compare.h"
+#include "../lang/compare.h"
 #include "../lang/object.h"
 
 typedef struct _partial_sum_vtable partial_sum_vtable;

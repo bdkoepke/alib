@@ -1,9 +1,9 @@
 #include "chapter_4.h"
 #include "diag/contract.h"
 #include "lang/array.h"
+#include "lang/compare.h"
 #include "lang/math_extended.h"
 #include "lang/sort.h"
-#include "lang/tuple.h"
 #include "lang/type.h"
 #include "test/test.h"
 #include "test/test_container.h"
@@ -11,7 +11,6 @@
 #include "test/test_sort.h"
 #include "util/binary_tree.h"
 #include "util/color_array.h"
-#include "util/compare.h"
 #include "util/key_value_pair.h"
 #include "util/linked_queue.h"
 #include "util/linked_stack.h"
@@ -206,27 +205,28 @@ void question_4_2(void) {
   assert_equals(d, 2);
 }
 
-void min_partition_pairs(int *a, int n, Tuple **t) {
-  contract_requires(even(n));
-  quicksort(a, n);
-  size_t i;
-  for (i = 0; i < (n / 2); i++)
-    t[i] = tuple_new(&a[i], &a[n - i - 1]);
-}
-
 void question_4_3(void) {
   puts("question_4_3");
+  typedef struct {
+    int a, b;
+  } Tuple;
+  void min_partition_pairs(int * a, int n, Tuple * t) {
+    contract_requires(even(n));
+    quicksort(a, n);
+    size_t i;
+    for (i = 0; i < (n / 2); i++) {
+      Tuple u = {.a = a[i], .b = a[n - i - 1] };
+      t[i] = u;
+    }
+  }
   int numbers[] = { 1, 3, 5, 9 };
   int numbers_length = array_size(numbers);
-  Tuple *pairs[numbers_length / 2];
-  min_partition_pairs(numbers, numbers_length, pairs);
-  assert_equals(*(int *)pairs[0]->first, 1);
-  assert_equals(*(int *)pairs[0]->second, 9);
-  assert_equals(*(int *)pairs[1]->first, 3);
-  assert_equals(*(int *)pairs[1]->second, 5);
-  size_t i;
-  for (i = 0; i < numbers_length / 2; i++)
-    free(pairs[i]);
+  Tuple pairs[numbers_length / 2];
+  min_partition_pairs(numbers, numbers_length, &pairs);
+  assert_equals(pairs[0].a, 1);
+  assert_equals(pairs[0].b, 9);
+  assert_equals(pairs[1].a, 3);
+  assert_equals(pairs[1].b, 5);
 }
 
 void question_4_4(void) {

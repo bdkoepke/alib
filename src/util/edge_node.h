@@ -1,7 +1,7 @@
 #ifndef EDGE_NODE_H
 #define EDGE_NODE_H
 
-#include "compare.h"
+#include "../lang/compare.h"
 #include "container.h"
 
 typedef struct _edge_node_vtable edge_node_vtable;

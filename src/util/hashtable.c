@@ -10,9 +10,9 @@
 typedef struct {
   dictionary_vtable *vtable;
   Hash h;
+  Equals e;
   HNode **array;
-  size_t capacity;
-  size_t size;
+  size_t capacity, size;
   float factor;
 } Hashtable;
 
@@ -87,7 +87,7 @@ static void *hashtable_search(const Dictionary *d, const void *k) {
   size_t hash = h->h(k) % h->capacity;
   if (h->array[hash] == NULL)
     return NULL;
-  KeyValuePair *p = hnode_search(h->array[hash], k);
+  KeyValuePair *p = hnode_search(h->array[hash], k, h->e);
   return p == NULL ? NULL : p->v;
 }
 
@@ -128,7 +128,7 @@ static void hashtable_insert(Dictionary *d, const void *k, void *v) {
 static void *hashtable_reassign(Dictionary *d, const void *k, void *v) {
   Hashtable *h = (Hashtable *)d;
   size_t hash = h->h(k) % h->capacity;
-  KeyValuePair *p = hnode_search(h->array[hash], k);
+  KeyValuePair *p = hnode_search(h->array[hash], k, h->e);
   void *_v = p->v;
   p->v = v;
   return _v;
@@ -138,14 +138,14 @@ static void *hashtable_delete(Dictionary *d, const void *k) {
   Hashtable *h = (Hashtable *)d;
   h->size--;
   size_t hash = h->h(k) % h->capacity;
-  return hnode_delete(&(h->array[hash]), k);
+  return hnode_delete(&(h->array[hash]), k, h->e);
 }
 
 static bool hashtable_empty(const Set *s) {
   return ((Hashtable *)s)->size == 0;
 }
 
-Dictionary *hashtable_new(Hash hash) {
+Dictionary *hashtable_new(Hash hash, Equals equals) {
   static dictionary_vtable vtable = {
     { { {.class = "hashtable", .free = hashtable_free, .to_string =
                                                            _object_to_string },
@@ -160,8 +160,9 @@ Dictionary *hashtable_new(Hash hash) {
   static const size_t DEFAULT_CAPACITY = 11;
 
   Hashtable *h = malloc(sizeof(Hashtable));
+  h->h = contract_requires_non_null(hash);
+  h->e = contract_requires_non_null(equals);
   h->vtable = &vtable;
-  h->h = hash;
   h->capacity = DEFAULT_CAPACITY;
   h->array = calloc(h->capacity, sizeof(HNode *));
   h->size = 0;

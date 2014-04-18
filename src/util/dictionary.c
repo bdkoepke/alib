@@ -28,9 +28,8 @@ void dictionary_insert(Dictionary *d, const void *k, void *v) {
 }
 
 void *dictionary_reassign(Dictionary *d, const void *k, void *v) {
-  void *o = d->vtable->reassign(
-      contract_requires_non_null(d), contract_requires_non_null(k),
-      v);
+  void *o = d->vtable->reassign(contract_requires_non_null(d),
+                                contract_requires_non_null(k), v);
   contract_weak_ensures_equal(dictionary_search(d, k), v);
   return o;
 }

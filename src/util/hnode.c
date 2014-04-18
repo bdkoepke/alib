@@ -15,21 +15,23 @@ HNode *hnode_new_leaf(const void *k, void *v) { return hnode_new(k, v, NULL); }
 
 bool hnode_empty(const HNode *n) { return n == NULL; }
 
-KeyValuePair *hnode_search(const HNode *n, const void *k) {
+KeyValuePair *hnode_search(const HNode *n, const void *k, Equals e) {
+  assert(e);
   HNode *_n;
   for (_n = (HNode *)n; _n != NULL; _n = _n->n)
-    if (_n->p.k == k)
+    if (e(_n->p.k, k))
       return &(_n->p);
   return NULL;
 }
 
-void *hnode_delete(HNode **n, const void *k) {
+void *hnode_delete(HNode **n, const void *k, Equals e) {
+  assert(e);
   if ((*n)->p.k != k) {
     HNode *node;
     HNode *next = (*n)->n;
     for (node = *n; next != NULL; node = next) {
       next = node->n;
-      if (next->p.k == k) {
+      if (e(next->p.k, k)) {
         node->n = next->n;
         void *o = next->p.v;
         free(next);

@@ -1,4 +1,4 @@
-#include "../lang/type.h"
+#include "type.h"
 #include "compare.h"
 
 #include <assert.h>

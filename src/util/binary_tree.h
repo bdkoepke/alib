@@ -1,7 +1,7 @@
 #ifndef BINARY_TREE_H
 #define BINARY_TREE_H
 
-#include "compare.h"
+#include "../lang/compare.h"
 #include "linked_stack.h"
 #include "tree.h"
 

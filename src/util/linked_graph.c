@@ -5,14 +5,15 @@
 
 #include <stdlib.h>
 
-typedef Set *(*set_factory)(void *user_data);
+typedef struct {
+  Hash h;
+  Equals e;
+} HashEqualsPair;
 
 typedef struct {
   graph_vtable *vtable;
   Dictionary *d;
-  size_t e, v;
-  set_factory f;
-  void *user_data;
+  HashEqualsPair p;
 } LinkedGraph;
 
 static const Set *linked_graph_neighbors(const Graph *g, const void *x) {
@@ -44,7 +45,7 @@ static void linked_graph_insert_edge_directed(Graph *g, void *x, void *y) {
   LinkedGraph *l = (LinkedGraph *)g;
   Set *s = dictionary_search(l->d, x);
   if (s == NULL)
-    dictionary_insert(l->d, x, s = l->f(l->user_data));
+    dictionary_insert(l->d, x, s = (Set *)hashtable_new(l->p.h, l->p.e));
   set_insert(s, y);
 }
 
@@ -68,19 +69,18 @@ static void linked_graph_delete_edge_undirected(Graph *g, const void *x,
   linked_graph_delete_edge_directed(g, y, x);
 }
 
-static Graph *linked_graph_new(Hash h, graph_vtable *vtable) {
+static Graph *linked_graph_new(Hash h, Equals e, graph_vtable *vtable) {
   static const size_t DEFAULT_CAPACITY = 11;
   LinkedGraph *l = malloc(sizeof(LinkedGraph));
-  l->d = (Dictionary *)hashtable_new(contract_requires_non_null(h));
+  l->d = (Dictionary *)hashtable_new(contract_requires_non_null(h),
+                                     contract_requires_non_null(e));
   l->vtable = vtable;
-  l->e = 0;
-  l->v = 0;
-  l->f = (set_factory) hashtable_new;
-  l->user_data = h;
+  l->p.h = h;
+  l->p.e = e;
   return (Graph *)l;
 }
 
-UndirectedGraph *undirected_linked_graph_new(Hash h) {
+UndirectedGraph *undirected_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
     {.class = "linked_graph", .free = linked_graph_free,
                                   .to_string = _object_to_string },
@@ -91,10 +91,10 @@ UndirectedGraph *undirected_linked_graph_new(Hash h) {
         .breadth_first = _undirected_graph_breadth_first,
         .depth_first = _undirected_graph_depth_first
   };
-  return (UndirectedGraph *)linked_graph_new(h, &vtable);
+  return (UndirectedGraph *)linked_graph_new(h, e, &vtable);
 }
 
-DirectedGraph *directed_linked_graph_new(Hash h) {
+DirectedGraph *directed_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
     {.class = "linked_graph", .free = linked_graph_free,
                                   .to_string = _object_to_string },
@@ -105,5 +105,5 @@ DirectedGraph *directed_linked_graph_new(Hash h) {
         .breadth_first = _directed_graph_breadth_first,
         .depth_first = _directed_graph_depth_first
   };
-  return (DirectedGraph *)linked_graph_new(h, &vtable);
+  return (DirectedGraph *)linked_graph_new(h, e, &vtable);
 }

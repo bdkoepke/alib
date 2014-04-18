@@ -1,7 +1,7 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-#include "../util/compare.h"
+#include "compare.h"
 
 #include <stdbool.h>
 #include <stddef.h>

@@ -1,7 +1,7 @@
 #ifndef RANGE_CONTAINER_H
 #define RANGE_CONTAINER_H
 
-#include "compare.h"
+#include "../lang/compare.h"
 #include "../lang/object.h"
 
 #include <stddef.h>

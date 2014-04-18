@@ -118,11 +118,11 @@ void test_red_black_tree(void) {
 
 void test_hashtable(void) {
   puts("test_hashtable");
-  Dictionary *d = hashtable_new(hash_int_pointer);
+  Dictionary *d = hashtable_new(hash_int_pointer, equals_int_pointer);
   test_dictionary(d, test_values, test_values_length);
   object_free((Object *)d);
 
-  d = hashtable_new(hash_int_pointer);
+  d = hashtable_new(hash_int_pointer, equals_int_pointer);
   test_dictionary(d, test_values_extended, test_values_extended_length);
   object_free((Object *)d);
 }
@@ -329,7 +329,7 @@ void question_3_15(void) {
   puts("test_question_3_15");
   Vector *v =
       sparse_vector_new(reduce_int(test_values, test_values_length, max, 0) + 1,
-                       test_values_length);
+                        test_values_length);
   test_container((Container *)v, test_values, test_values_length);
   object_free((Object *)v);
 

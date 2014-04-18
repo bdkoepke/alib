@@ -18,12 +18,13 @@ alib_SOURCES =\
   lang/algorithm.c\
   lang/array.c\
   lang/class.c\
+  lang/compare.c\
+  lang/equals.c\
   lang/hash.c\
   lang/math_extended.c\
   lang/object.c\
   lang/sort.c\
   lang/string.c\
-  lang/tuple.c\
   main.c\
   test/test.c\
   test/test_container.c\
@@ -33,7 +34,6 @@ alib_SOURCES =\
   util/binary_node.c\
   util/binary_tree.c\
   util/color_array.c\
-  util/compare.c\
   util/container.c\
   util/dictionary.c\
   util/edge_node.c\
