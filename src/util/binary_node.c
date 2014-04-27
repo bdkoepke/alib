@@ -173,10 +173,11 @@ static void *binary_node_current(const Iterator *i) {
 }
 
 static iterator_vtable binary_node_iterator_vtable_invalid_state = {
-  {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                        .to_string = _object_to_string },
-      .current = _iterator_current_invalid_state,
-      .move_next = _iterator_move_next_invalid_state
+  { .class = "binary_node_iterator",
+    .free = binary_node_iterator_free,
+    .to_string = _object_to_string },
+  .current = _iterator_current_invalid_state,
+  .move_next = _iterator_move_next_invalid_state
 };
 
 static bool binary_node_move_next_pre_order(Iterator *i) {
@@ -195,12 +196,12 @@ static bool binary_node_move_next_pre_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_pre_order_init(Iterator *i) {
-  static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = binary_node_current, .move_next =
-                                            binary_node_move_next_pre_order
-  };
+  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+                                      .free = binary_node_iterator_free,
+                                      .to_string = _object_to_string },
+                                    .current = binary_node_current,
+                                    .move_next =
+                                        binary_node_move_next_pre_order };
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   if (b->n == NULL)
     return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
@@ -208,12 +209,12 @@ static bool binary_node_move_next_pre_order_init(Iterator *i) {
 }
 
 Iterator *binary_node_pre_order(BinaryNode *root) {
-  static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = _iterator_current_invalid_state,
-        .move_next = binary_node_move_next_pre_order_init
-  };
+  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+                                      .free = binary_node_iterator_free,
+                                      .to_string = _object_to_string },
+                                    .current = _iterator_current_invalid_state,
+                                    .move_next =
+                                        binary_node_move_next_pre_order_init };
   return binary_node_iterator_new(root, (Container *)linked_stack_new(),
                                   &vtable);
 }
@@ -230,12 +231,12 @@ static bool binary_node_move_next_in_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_in_order_init(Iterator *i) {
-  static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = binary_node_current, .move_next =
-                                            binary_node_move_next_in_order
-  };
+  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+                                      .free = binary_node_iterator_free,
+                                      .to_string = _object_to_string },
+                                    .current = binary_node_current,
+                                    .move_next =
+                                        binary_node_move_next_in_order };
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   Container *c = b->c;
   BinaryNode *n;
@@ -248,12 +249,12 @@ static bool binary_node_move_next_in_order_init(Iterator *i) {
 }
 
 Iterator *binary_node_in_order(BinaryNode *root) {
-  static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = _iterator_current_invalid_state,
-        .move_next = binary_node_move_next_in_order_init
-  };
+  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+                                      .free = binary_node_iterator_free,
+                                      .to_string = _object_to_string },
+                                    .current = _iterator_current_invalid_state,
+                                    .move_next =
+                                        binary_node_move_next_in_order_init };
   return binary_node_iterator_new(root, (Container *)linked_stack_new(),
                                   &vtable);
 }
@@ -272,12 +273,12 @@ static bool binary_node_move_next_post_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_post_order_init(Iterator *i) {
-  static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = binary_node_current, .move_next =
-                                            binary_node_move_next_post_order
-  };
+  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+                                      .free = binary_node_iterator_free,
+                                      .to_string = _object_to_string },
+                                    .current = binary_node_current,
+                                    .move_next =
+                                        binary_node_move_next_post_order };
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   stack_push_non_null((Stack *)b->c, b->n);
   bool move_next = binary_node_move_next_post_order(i);
@@ -287,12 +288,12 @@ static bool binary_node_move_next_post_order_init(Iterator *i) {
 }
 
 Iterator *binary_node_post_order(BinaryNode *root) {
-  static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = _iterator_current_invalid_state,
-        .move_next = binary_node_move_next_post_order_init
-  };
+  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+                                      .free = binary_node_iterator_free,
+                                      .to_string = _object_to_string },
+                                    .current = _iterator_current_invalid_state,
+                                    .move_next =
+                                        binary_node_move_next_post_order_init };
   return binary_node_iterator_new(root, (Container *)linked_stack_new(),
                                   &vtable);
 }
@@ -309,12 +310,12 @@ static bool binary_node_move_next_level_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_level_order_init(Iterator *i) {
-  static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = binary_node_current, .move_next =
-                                            binary_node_move_next_level_order
-  };
+  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+                                      .free = binary_node_iterator_free,
+                                      .to_string = _object_to_string },
+                                    .current = binary_node_current,
+                                    .move_next =
+                                        binary_node_move_next_level_order };
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   BinaryNode *n = b->n;
   Container *c = b->c;
@@ -327,10 +328,11 @@ static bool binary_node_move_next_level_order_init(Iterator *i) {
 
 Iterator *binary_node_level_order(BinaryNode *root) {
   static iterator_vtable vtable = {
-    {.class = "binary_node_iterator", .free = binary_node_iterator_free,
-                                          .to_string = _object_to_string },
-        .current = _iterator_current_invalid_state,
-        .move_next = binary_node_move_next_level_order_init
+    { .class = "binary_node_iterator",
+      .free = binary_node_iterator_free,
+      .to_string = _object_to_string },
+    .current = _iterator_current_invalid_state,
+    .move_next = binary_node_move_next_level_order_init
   };
   return binary_node_iterator_new(root, (Container *)linked_queue_new(),
                                   &vtable);

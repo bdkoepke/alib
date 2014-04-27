@@ -16,14 +16,14 @@ void *_dictionary_set_delete(Set *s, const void *x) {
 }
 
 void *dictionary_search(const Dictionary *d, const void *k) {
-  return d->vtable
-      ->search(contract_requires_non_null(d), contract_requires_non_null(k));
+  return d->vtable->search(contract_requires_non_null(d),
+                           contract_requires_non_null(k));
 }
 
 void dictionary_insert(Dictionary *d, const void *k, void *v) {
   contract_weak_requires_equal(dictionary_search(d, k), NULL);
-  d->vtable
-      ->insert(contract_requires_non_null(d), contract_requires_non_null(k), v);
+  d->vtable->insert(contract_requires_non_null(d),
+                    contract_requires_non_null(k), v);
   contract_weak_ensures_equal(dictionary_search(d, k), v);
 }
 

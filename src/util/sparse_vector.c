@@ -74,13 +74,14 @@ static void *sparse_vector_get(const Vector *v, size_t i) {
 
 Vector *sparse_vector_new(unsigned int n, unsigned int m) {
   static vector_vtable vtable = {
-    { { {.class = "sparse_vector", .free = sparse_vector_free,
-                                       .to_string = _object_to_string },
-            .iterator = _vector_iterator },
-          .empty = _vector_empty, .search = sparse_vector_search,
-          .delete = sparse_vector_delete, .insert = sparse_vector_insert },
-        .set = sparse_vector_set, .get = sparse_vector_get,
-        .size = sparse_vector_size
+    { { { .class = "sparse_vector",
+          .free = sparse_vector_free,
+          .to_string = _object_to_string },
+        .iterator = _vector_iterator },
+      .empty = _vector_empty, .search = sparse_vector_search,
+      .delete = sparse_vector_delete, .insert = sparse_vector_insert },
+    .set = sparse_vector_set, .get = sparse_vector_get,
+    .size = sparse_vector_size
   };
   SparseVector *s = malloc(sizeof(SparseVector));
   s->vtable = &vtable;

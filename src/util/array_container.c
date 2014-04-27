@@ -23,10 +23,11 @@ static void *array_container_iterator_current(const Iterator *i) {
 }
 
 static iterator_vtable vtable_invalid_state = {
-  {.class = "array_container_iterator", .free = _object_free,
-                                            .to_string = _object_to_string },
-      .current = _iterator_current_invalid_state,
-      .move_next = _iterator_move_next_invalid_state
+  { .class = "array_container_iterator",
+    .free = _object_free,
+    .to_string = _object_to_string },
+  .current = _iterator_current_invalid_state,
+  .move_next = _iterator_move_next_invalid_state
 };
 
 static bool array_container_iterator_move_next(Iterator *i) {
@@ -39,12 +40,12 @@ static bool array_container_iterator_move_next(Iterator *i) {
 }
 
 static bool array_container_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = {
-    {.class = "array_container_iterator", .free = _object_free,
-                                              .to_string = _object_to_string },
-        .current = array_container_iterator_current,
-        .move_next = array_container_iterator_move_next
-  };
+  static iterator_vtable vtable = { { .class = "array_container_iterator",
+                                      .free = _object_free,
+                                      .to_string = _object_to_string },
+                                    .current = array_container_iterator_current,
+                                    .move_next =
+                                        array_container_iterator_move_next };
   // we already know that there is at least one element in the
   // container (determined in the constructor). This would result
   // in a hard-failure at runtime if it was false, but this is
@@ -58,10 +59,11 @@ static bool array_container_iterator_move_next_init(Iterator *i) {
 
 static Iterator *array_container_iterator(const Iterable *i) {
   static iterator_vtable vtable = {
-    {.class = "array_container_iterator", .free = _object_free,
-                                              .to_string = _object_to_string },
-        .current = _iterator_current_invalid_state,
-        .move_next = array_container_iterator_move_next_init
+    { .class = "array_container_iterator",
+      .free = _object_free,
+      .to_string = _object_to_string },
+    .current = _iterator_current_invalid_state,
+    .move_next = array_container_iterator_move_next_init
   };
   ArrayContainerIterator *a = malloc(sizeof(ArrayContainerIterator));
   a->a = (ArrayContainer *)i;
@@ -108,13 +110,14 @@ static bool array_container_empty(const Container *c) {
 }
 
 Container *array_container_new(size_t length) {
-  static container_vtable vtable = {
-    { {.class = "array_container", .free = array_container_free,
-                                       .to_string = _object_to_string },
-          .iterator = array_container_iterator },
-        .search = array_container_search, .empty = array_container_empty,
-        .insert = array_container_insert, .delete = array_container_delete
-  };
+  static container_vtable vtable = { { { .class = "array_container",
+                                         .free = array_container_free,
+                                         .to_string = _object_to_string },
+                                       .iterator = array_container_iterator },
+                                     .search = array_container_search,
+                                     .empty = array_container_empty,
+                                     .insert = array_container_insert,
+                                     .delete = array_container_delete };
   // TODO: should be possible to create a lower bound to, so you could have an
   // array that requires 1999-2010, etc.
   ArrayContainer *array = malloc(sizeof(ArrayContainer));

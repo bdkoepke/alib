@@ -13,7 +13,7 @@ typedef struct {
 
 /**
  * Creates a new binary tree with the specified comparison function.
- * 
+ *
  * @param c the comparison function.
  * @return a new binary tree.
  */

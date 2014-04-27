@@ -53,27 +53,28 @@ static void *_sorted_set_delete(SortedSet *s, size_t k) {
   void *__sorted_set_delete(BinaryNode * n, BinaryNode * *p, size_t k) {
     KeyValuePair t = n->p;
     /*
-  		printf("k: %d, t->k: %d\n", k, t->k);
-  		 int r = k - t->k;
-  		 if (r < 0) {
-  			 t->k--;
-  			 return __sorted_set_delete(n->left, &(n->left), k);
-  		 } else if (r > 0)
-  			 return __sorted_set_delete(n->right, &(n->right), k);
-  		 else {
-  			 if (binary_node_is_branch(n)) {
-  				 KeyValue *min = sorted_set_min(n->right);
-  				 n->x = min;
-  				 return __sorted_set_delete(n->right, &(n->right), min->k);
-  			 } else {
-  				 *p = (n->left != NULL) ? n->left : n->right;
-  				 void *x = ((KeyValue *)n->x)->x;
-  				 free(n->x);
-  				 free(n);
-  				 return x;
-  			 }
-  		 }
-  		*/
+                printf("k: %d, t->k: %d\n", k, t->k);
+                 int r = k - t->k;
+                 if (r < 0) {
+                         t->k--;
+                         return __sorted_set_delete(n->left, &(n->left), k);
+                 } else if (r > 0)
+                         return __sorted_set_delete(n->right, &(n->right), k);
+                 else {
+                         if (binary_node_is_branch(n)) {
+                                 KeyValue *min = sorted_set_min(n->right);
+                                 n->x = min;
+                                 return __sorted_set_delete(n->right,
+       &(n->right), min->k);
+                         } else {
+                                 *p = (n->left != NULL) ? n->left : n->right;
+                                 void *x = ((KeyValue *)n->x)->x;
+                                 free(n->x);
+                                 free(n);
+                                 return x;
+                         }
+                 }
+                */
   }
   BinaryNode *root = (((_SortedSet *)s)->root);
   return __sorted_set_delete(root, &(root), k);
@@ -102,12 +103,13 @@ static void sorted_set_free(Object *o) {
 }
 
 SortedSet *sorted_set_new(Compare c) {
-  static sorted_set_vtable vtable = {
-    {.class = "sorted_set", .free = sorted_set_free, .to_string =
-                                                         _object_to_string },
-        .member = _sorted_set_member, .insert = _sorted_set_insert,
-        .delete = _sorted_set_delete, .size = _sorted_set_size,
-  };
+  static sorted_set_vtable vtable = { { .class = "sorted_set",
+                                        .free = sorted_set_free,
+                                        .to_string = _object_to_string },
+                                      .member = _sorted_set_member,
+                                      .insert = _sorted_set_insert,
+                                      .delete = _sorted_set_delete,
+                                      .size = _sorted_set_size, };
 
   _SortedSet *s = malloc(sizeof(_SortedSet));
   s->vtable = &vtable;
@@ -117,14 +119,14 @@ SortedSet *sorted_set_new(Compare c) {
 }
 
 bool sorted_set_member(const SortedSet *s, const void *x) {
-  return s->vtable
-      ->member(contract_requires_non_null(s), contract_requires_non_null(x));
+  return s->vtable->member(contract_requires_non_null(s),
+                           contract_requires_non_null(x));
 }
 
 void sorted_set_insert(SortedSet *s, void *x) {
   contract_weak_requires(!sorted_set_member(s, x));
-  s->vtable
-      ->insert(contract_requires_non_null(s), contract_requires_non_null(x));
+  s->vtable->insert(contract_requires_non_null(s),
+                    contract_requires_non_null(x));
   contract_weak_ensures(sorted_set_member(s, x));
 }
 

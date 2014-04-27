@@ -7,7 +7,7 @@
 
 /**
  * Creates a new linked queue.
- * 
+ *
  * @return a new linked queue.
  */
 Queue *linked_queue_new();

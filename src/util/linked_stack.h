@@ -9,7 +9,7 @@ typedef struct _LinkedStack LinkedStack;
 
 /**
  * Creates a new linked stack.
- * 
+ *
  * @return a new linked stack.
  */
 LinkedStack *linked_stack_new();

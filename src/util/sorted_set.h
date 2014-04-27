@@ -40,7 +40,7 @@ bool sorted_set_member(const SortedSet *s, const void *x);
 /**
  * Inserts the specified object into the specified
  * sorted set.
- * 
+ *
  * @param s the sorted set to insert the object into.
  * @param x the object to insert.
  */

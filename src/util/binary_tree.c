@@ -88,18 +88,18 @@ static Iterator *binary_tree_iterator(const Iterable *i) {
 
 BinaryTree *binary_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { { { {.free = binary_tree_free }, .iterator = binary_tree_iterator, },
-              .search = _dictionary_set_search, .insert =
-                                                    _dictionary_set_insert,
-              .delete = _dictionary_set_delete, .empty = binary_tree_empty },
-            .search = binary_tree_search, .delete = binary_tree_delete,
-            .insert = binary_tree_insert, .reassign = binary_tree_reassign },
-          .max = binary_tree_max, .min = binary_tree_min,
-          .predecessor = binary_tree_predecessor, .successor =
-                                                      binary_tree_successor },
-        .pre_order = binary_tree_pre_order, .in_order = binary_tree_in_order,
-        .post_order = binary_tree_post_order, .level_order =
-                                                  binary_tree_level_order
+    { { { { { .free = binary_tree_free }, .iterator = binary_tree_iterator, },
+          .search = _dictionary_set_search,
+          .insert = _dictionary_set_insert,
+          .delete = _dictionary_set_delete,
+          .empty = binary_tree_empty },
+        .search = binary_tree_search, .delete = binary_tree_delete,
+        .insert = binary_tree_insert, .reassign = binary_tree_reassign },
+      .max = binary_tree_max, .min = binary_tree_min,
+      .predecessor = binary_tree_predecessor,
+      .successor = binary_tree_successor },
+    .pre_order = binary_tree_pre_order, .in_order = binary_tree_in_order,
+    .post_order = binary_tree_post_order, .level_order = binary_tree_level_order
   };
 
   _BinaryTree *b = malloc(sizeof(_BinaryTree));
@@ -172,19 +172,19 @@ static void *min_max_binary_tree_max(const SortedDictionary *d) {
 
 BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   static tree_vtable vtable = {
-    { { { { {.free = binary_tree_free }, .iterator = binary_tree_iterator },
-              .insert = _dictionary_set_insert, .search =
-                                                    _dictionary_set_search,
-              .delete = _dictionary_set_delete, .empty = binary_tree_empty },
-            .search = binary_tree_search, .delete = min_max_binary_tree_delete,
-            .insert = min_max_binary_tree_insert,
-            .reassign = min_max_binary_tree_reassign },
-          .max = min_max_binary_tree_max, .min = min_max_binary_tree_min,
-          .predecessor = binary_tree_predecessor, .successor =
-                                                      binary_tree_successor },
-        .pre_order = binary_tree_pre_order, .in_order = binary_tree_in_order,
-        .post_order = binary_tree_post_order, .level_order =
-                                                  binary_tree_level_order
+    { { { { { .free = binary_tree_free }, .iterator = binary_tree_iterator },
+          .insert = _dictionary_set_insert,
+          .search = _dictionary_set_search,
+          .delete = _dictionary_set_delete,
+          .empty = binary_tree_empty },
+        .search = binary_tree_search, .delete = min_max_binary_tree_delete,
+        .insert = min_max_binary_tree_insert,
+        .reassign = min_max_binary_tree_reassign },
+      .max = min_max_binary_tree_max, .min = min_max_binary_tree_min,
+      .predecessor = binary_tree_predecessor,
+      .successor = binary_tree_successor },
+    .pre_order = binary_tree_pre_order, .in_order = binary_tree_in_order,
+    .post_order = binary_tree_post_order, .level_order = binary_tree_level_order
   };
 
   MinMaxBinaryTree *b = malloc(sizeof(MinMaxBinaryTree));

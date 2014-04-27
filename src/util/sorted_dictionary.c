@@ -21,6 +21,6 @@ void *sorted_dictionary_predecessor(const SortedDictionary *s, const void *k) {
 
 void *sorted_dictionary_successor(const SortedDictionary *s, const void *k) {
   contract_requires(!set_empty((Set *)s));
-  return s->vtable
-      ->successor(contract_requires_non_null(s), contract_requires_non_null(k));
+  return s->vtable->successor(contract_requires_non_null(s),
+                              contract_requires_non_null(k));
 }

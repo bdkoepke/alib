@@ -23,10 +23,11 @@ typedef struct {
 } HashtableIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  {.class = "hashtable_iterator", .free = _object_free, .to_string =
-                                                            _object_to_string },
-      .current = _iterator_current_invalid_state,
-      .move_next = _iterator_move_next_invalid_state
+  { .class = "hashtable_iterator",
+    .free = _object_free,
+    .to_string = _object_to_string },
+  .current = _iterator_current_invalid_state,
+  .move_next = _iterator_move_next_invalid_state
 };
 
 static void *hashtable_iterator_current(const Iterator *i) {
@@ -45,12 +46,11 @@ static bool hashtable_iterator_move_next(Iterator *_i) {
 }
 
 static bool hashtable_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = {
-    {.class = "hashtable_iterator", .free = _object_free,
-                                        .to_string = _object_to_string },
-        .current = hashtable_iterator_current, .move_next =
-                                                   hashtable_iterator_move_next
-  };
+  static iterator_vtable vtable = { { .class = "hashtable_iterator",
+                                      .free = _object_free,
+                                      .to_string = _object_to_string },
+                                    .current = hashtable_iterator_current,
+                                    .move_next = hashtable_iterator_move_next };
   HashtableIterator *h = (HashtableIterator *)i;
   if (set_empty((Set *)(Hashtable *)h->h))
     return i->vtable = &vtable_invalid_state, false;
@@ -58,12 +58,12 @@ static bool hashtable_iterator_move_next_init(Iterator *i) {
 }
 
 static Iterator *hashtable_iterator(const Iterable *i) {
-  static iterator_vtable vtable = {
-    {.class = "hashtable_iterator", .free = _object_free,
-                                        .to_string = _object_to_string },
-        .current = _iterator_current_invalid_state,
-        .move_next = hashtable_iterator_move_next_init
-  };
+  static iterator_vtable vtable = { { .class = "hashtable_iterator",
+                                      .free = _object_free,
+                                      .to_string = _object_to_string },
+                                    .current = _iterator_current_invalid_state,
+                                    .move_next =
+                                        hashtable_iterator_move_next_init };
 
   HashtableIterator *h = malloc(sizeof(HashtableIterator));
   h->vtable = &vtable;
@@ -147,13 +147,14 @@ static bool hashtable_empty(const Set *s) {
 
 Dictionary *hashtable_new(Hash hash, Equals equals) {
   static dictionary_vtable vtable = {
-    { { {.class = "hashtable", .free = hashtable_free, .to_string =
-                                                           _object_to_string },
-            .iterator = hashtable_iterator },
-          .insert = _dictionary_set_insert, .search = _dictionary_set_search,
-          .delete = _dictionary_set_delete, .empty = hashtable_empty },
-        .search = hashtable_search, .delete = hashtable_delete,
-        .insert = hashtable_insert, .reassign = hashtable_reassign
+    { { { .class = "hashtable",
+          .free = hashtable_free,
+          .to_string = _object_to_string },
+        .iterator = hashtable_iterator },
+      .insert = _dictionary_set_insert, .search = _dictionary_set_search,
+      .delete = _dictionary_set_delete, .empty = hashtable_empty },
+    .search = hashtable_search, .delete = hashtable_delete,
+    .insert = hashtable_insert, .reassign = hashtable_reassign
   };
 
   static const float DEFAULT_FACTOR = 0.75;

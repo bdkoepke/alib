@@ -4,8 +4,8 @@
 #include <stdlib.h>
 
 const void *set_search(const Set *s, const void *x) {
-  return s->vtable
-      ->search(contract_requires_non_null(s), contract_requires_non_null(x));
+  return s->vtable->search(contract_requires_non_null(s),
+                           contract_requires_non_null(x));
 }
 
 bool set_empty(const Set *s) {
@@ -14,8 +14,8 @@ bool set_empty(const Set *s) {
 
 void set_insert(Set *s, void *x) {
   contract_weak_requires(set_search(s, x) == NULL);
-  s->vtable
-      ->insert(contract_requires_non_null(s), contract_requires_non_null(x));
+  s->vtable->insert(contract_requires_non_null(s),
+                    contract_requires_non_null(x));
   contract_weak_ensures_equal(set_search(s, x), x);
 }
 

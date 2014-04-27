@@ -70,13 +70,14 @@ static void *linked_queue_delete(Container *c, const void *x) {
 
 Queue *linked_queue_new() {
   static queue_vtable vtable = {
-    { { {.class = "linked_queue", .free = _queue_free, .to_string =
-                                                           _object_to_string },
-            .iterator = linked_queue_iterator },
-          .empty = linked_queue_empty, .search = linked_queue_search,
-          .insert = _queue_insert, .delete = linked_queue_delete },
-        .enqueue = linked_queue_enqueue, .dequeue = linked_queue_dequeue,
-        .head = linked_queue_head
+    { { { .class = "linked_queue",
+          .free = _queue_free,
+          .to_string = _object_to_string },
+        .iterator = linked_queue_iterator },
+      .empty = linked_queue_empty, .search = linked_queue_search,
+      .insert = _queue_insert, .delete = linked_queue_delete },
+    .enqueue = linked_queue_enqueue, .dequeue = linked_queue_dequeue,
+    .head = linked_queue_head
   };
 
   LinkedQueue *q = malloc(sizeof(LinkedQueue));

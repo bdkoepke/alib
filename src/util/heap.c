@@ -111,11 +111,12 @@ static void heap_free(Object *o) {
 }
 
 static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
-  static heap_vtable vtable = {
-    {.class = "heap", .free = heap_free, .to_string = _object_to_string },
-        .insert = _heap_insert, .extract_min = _heap_extract_min,
-        .size = _heap_size, .compare = _heap_compare
-  };
+  static heap_vtable vtable = { { .class = "heap",
+                                  .free = heap_free,
+                                  .to_string = _object_to_string },
+                                .insert = _heap_insert,
+                                .extract_min = _heap_extract_min,
+                                .size = _heap_size, .compare = _heap_compare };
 
   contract_requires(c != NULL && p != NULL && capacity > 0);
 
@@ -143,8 +144,8 @@ Heap *heap_new_from_array(Compare c, void *a, size_t length) {
 }
 
 void heap_insert(Heap *h, void *x) {
-  h->vtable
-      ->insert(contract_requires_non_null(h), contract_requires_non_null(x));
+  h->vtable->insert(contract_requires_non_null(h),
+                    contract_requires_non_null(x));
 }
 
 void *heap_extract_min(Heap *h) {

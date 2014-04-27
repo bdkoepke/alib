@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void BFS(const Graph *g, const void *s, Dictionary *parents, Dictionary *vertices,
-         void (*process_vertex_early)(const void *),
+void BFS(const Graph *g, const void *s, Dictionary *parents,
+         Dictionary *vertices, void (*process_vertex_early)(const void *),
          void (*process_edge)(const void *, const void *),
          void (*process_vertex_late)(const void *)) {
   typedef enum {
@@ -84,8 +84,9 @@ void test_linked_graph(void) {
   puts("test_linked_graph");
   DirectedGraph *g =
       directed_linked_graph_new(hash_int_pointer, equals_int_pointer);
-  int graph[][6] = { { 2, 5, 6 }, { 1, 3, 5 }, { 2, 4 }, { 3, 5 }, { 1, 2, 4 },
-                     { 1 } };
+  int graph[][6] = {
+    { 2, 5, 6 }, { 1, 3, 5 }, { 2, 4 }, { 3, 5 }, { 1, 2, 4 }, { 1 }
+  };
   /* int graph[][6] = { { 2, 5, 6 }, { 3, 5 }, { 4 }, {}, { 4 },
                      {} }; */
   int i, j;
@@ -122,33 +123,33 @@ void test_linked_graph(void) {
       (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
   Dictionary *vertices =
       (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
-  BFS(g, INT_TO_POINTER(1), parents, vertices, process_vertex_early, process_edge,
-      process_vertex_late);
+  BFS(g, INT_TO_POINTER(1), parents, vertices, process_vertex_early,
+      process_edge, process_vertex_late);
 
-	void find_path(int start, int end, int parents[]) {
-		if ((start == end) || (end == POINTER_TO_INT(NULL)))
-			printf("\n%d", start);
-		else
-			find_path(start, parents[end - 1], parents), printf(" %d", end);
-	}
+  void find_path(int start, int end, int parents[]) {
+    if ((start == end) || (end == POINTER_TO_INT(NULL)))
+      printf("\n%d", start);
+    else
+      find_path(start, parents[end - 1], parents), printf(" %d", end);
+  }
 
-	Iterator *it = iterable_iterator((Iterable *)parents);
-	int p[6];
-	i = 0;
-	while (iterator_move_next(it))
-		p[i++] = POINTER_TO_INT(dictionary_search(parents, iterator_current(it)));
-	for (i = 0; i < 6; i++)
-		printf("%d\n", p[i]);
+  Iterator *it = iterable_iterator((Iterable *)parents);
+  int p[6];
+  i = 0;
+  while (iterator_move_next(it))
+    p[i++] = POINTER_TO_INT(dictionary_search(parents, iterator_current(it)));
+  for (i = 0; i < 6; i++)
+    printf("%d\n", p[i]);
 
-	find_path(1, 4, p);
+  find_path(1, 4, p);
 
   /*
- 	const Set *vertices = graph_vertices(g);
- 
- 	Iterator *it = iterable_iterator((Iterable *)vertices);
- 	while (iterator_move_next(it))
- 		printf("%d\n", iterator_current(it));
- 	
+        const Set *vertices = graph_vertices(g);
+
+        Iterator *it = iterable_iterator((Iterable *)vertices);
+        while (iterator_move_next(it))
+                printf("%d\n", iterator_current(it));
+
    for (i = 1; i <= 6; i++)
      for (j = 1; j <= 6 && graph[i - 1][j - 1]; j++) {
        graph_delete_edge(g, INT_TO_POINTER(i),
@@ -157,7 +158,7 @@ void test_linked_graph(void) {
                                    INT_TO_POINTER(graph[i - 1][j - 1])));
      }
    object_free((Object *)g);
- 	*/
+        */
 }
 
 void test_matrix_graph(void) {}

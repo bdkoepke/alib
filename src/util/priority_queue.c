@@ -41,14 +41,15 @@ void _priority_queue_free(Object *o) {
 
 PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
   static priority_queue_vtable vtable = {
-    {.class = "priority_queue", .free = _priority_queue_free,
-                                    .to_string = _object_to_string },
-        .insert = _priority_queue_insert, .find_minimum =
-                                              _priority_queue_find_minimum,
-        .find_maximum = _priority_queue_find_maximum,
-        .delete_minimum = _priority_queue_delete_minimum,
-        .delete_maximum = _priority_queue_delete_maximum,
-        .empty = _priority_queue_empty
+    { .class = "priority_queue",
+      .free = _priority_queue_free,
+      .to_string = _object_to_string },
+    .insert = _priority_queue_insert,
+    .find_minimum = _priority_queue_find_minimum,
+    .find_maximum = _priority_queue_find_maximum,
+    .delete_minimum = _priority_queue_delete_minimum,
+    .delete_maximum = _priority_queue_delete_maximum,
+    .empty = _priority_queue_empty
   };
 
   _PriorityQueue *p = malloc(sizeof(_PriorityQueue));

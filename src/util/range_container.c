@@ -28,15 +28,15 @@ static void array_range_container_insert(RangeContainer *r, void *x) {
   size_t size = a->size;
 
   /*
-  	a->size++;
-  	for (i = 0; i < size; i++) {
-  		void *min = m[0][size];
-  		for (j = 1; j < size; j++)
-  			if (a->c(min, m[i][j]) < 0)
-  				min = m[i][j];
-  		m[i][size] = min;
-  	}
- 	*/
+        a->size++;
+        for (i = 0; i < size; i++) {
+                void *min = m[0][size];
+                for (j = 1; j < size; j++)
+                        if (a->c(min, m[i][j]) < 0)
+                                min = m[i][j];
+                m[i][size] = min;
+        }
+        */
 }
 
 static void *array_range_container_query(const RangeContainer *r, size_t i,
@@ -48,10 +48,10 @@ static void array_range_container_free(Object *o) { free(o); }
 
 RangeContainer *array_range_container_new(Compare c) {
   static range_container_vtable vtable = {
-    {.class = "range_container", .free = array_range_container_free,
-                                     .to_string = _object_to_string },
-        .insert = array_range_container_insert, .query =
-                                                    array_range_container_query
+    { .class = "range_container",
+      .free = array_range_container_free,
+      .to_string = _object_to_string },
+    .insert = array_range_container_insert, .query = array_range_container_query
   };
 
   ArrayRangeContainer *r = malloc(sizeof(ArrayRangeContainer *));
@@ -64,8 +64,8 @@ RangeContainer *array_range_container_new(Compare c) {
 }
 
 void range_container_insert(RangeContainer *r, void *x) {
-  r->vtable
-      ->insert(contract_requires_non_null(r), contract_requires_non_null(x));
+  r->vtable->insert(contract_requires_non_null(r),
+                    contract_requires_non_null(x));
 }
 
 void *range_container_query(const RangeContainer *r, size_t i, size_t j) {

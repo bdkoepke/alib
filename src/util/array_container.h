@@ -8,7 +8,7 @@
 /**
  * Creates a new array container that has constant time search,
  * insertion, and deletion where the maximum item value is bounded.
- * 
+ *
  * I.e. in java this would be ArrayContainer : Container<Integer>
  * with the additional condition that you can only insert integers
  * that are strictly less than the specified max.

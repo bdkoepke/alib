@@ -10,10 +10,11 @@ typedef struct {
 } NodeIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  {.class = "node_iterator", .free = _object_free, .to_string =
-                                                       _object_to_string },
-      .current = _iterator_current_invalid_state,
-      .move_next = _iterator_move_next_invalid_state
+  { .class = "node_iterator",
+    .free = _object_free,
+    .to_string = _object_to_string },
+  .current = _iterator_current_invalid_state,
+  .move_next = _iterator_move_next_invalid_state
 };
 
 static void *node_iterator_current(const Iterator *i) {
@@ -27,11 +28,11 @@ static bool node_iterator_move_next(Iterator *i) {
 }
 
 static bool node_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = {
-    {.class = "node_iterator", .free = _object_free, .to_string =
-                                                         _object_to_string },
-        .current = node_iterator_current, .move_next = node_iterator_move_next
-  };
+  static iterator_vtable vtable = { { .class = "node_iterator",
+                                      .free = _object_free,
+                                      .to_string = _object_to_string },
+                                    .current = node_iterator_current,
+                                    .move_next = node_iterator_move_next };
   if (node_iterator_move_next(i)) {
     i->vtable = &vtable;
     return true;
@@ -40,12 +41,11 @@ static bool node_iterator_move_next_init(Iterator *i) {
 }
 
 Iterator *node_iterator(Node *n) {
-  static iterator_vtable vtable = {
-    {.class = "node_iterator", .free = _object_free, .to_string =
-                                                         _object_to_string },
-        .current = _iterator_current_invalid_state,
-        .move_next = node_iterator_move_next_init
-  };
+  static iterator_vtable vtable = { { .class = "node_iterator",
+                                      .free = _object_free,
+                                      .to_string = _object_to_string },
+                                    .current = _iterator_current_invalid_state,
+                                    .move_next = node_iterator_move_next_init };
 
   NodeIterator *i = malloc(sizeof(NodeIterator));
   i->vtable = n == NULL ? &vtable_invalid_state : &vtable;

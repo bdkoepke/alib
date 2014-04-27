@@ -86,8 +86,8 @@ static RedBlackNode *sibling(RedBlackNode *n) {
 }
 
 static void rotate_right(RedBlackNode *n, RedBlackTree *r) {
-  //contract_requires(n->parent != NULL);
-  //contract_requires(grandparent(n) != NULL);
+  // contract_requires(n->parent != NULL);
+  // contract_requires(grandparent(n) != NULL);
   assert(n->c == Red);
   assert(n->parent->c == Black);
   assert(grandparent(n)->c == Red);
@@ -295,15 +295,15 @@ static bool red_black_tree_empty(const Container *c) {
 static void *red_black_tree_max(const Dictionary *d) {
   return container_empty((const Container *)d)
              ? NULL
-             : binary_node_max((const BinaryNode *)((const RedBlackTree *)d)
-                                   ->root);
+             : binary_node_max(
+                   (const BinaryNode *)((const RedBlackTree *)d)->root);
 }
 
 static void *red_black_tree_min(const Dictionary *d) {
   return container_empty((const Container *)d)
              ? NULL
-             : binary_node_min((const BinaryNode *)((const RedBlackTree *)d)
-                                   ->root);
+             : binary_node_min(
+                   (const BinaryNode *)((const RedBlackTree *)d)->root);
 }
 
 static void *red_black_tree_predecessor(const Dictionary *d, const void *x) {
@@ -343,16 +343,17 @@ static void red_black_tree_level_order(const Tree *t, Visitor v,
 
 Tree *red_black_tree_new(Compare c) {
   static tree_vtable vtable = {
-    { { { {.free = red_black_tree_free }, .iterator = NULL },
-            .search = red_black_tree_search, .empty = red_black_tree_empty,
-            .delete = red_black_tree_delete, .insert = red_black_tree_insert },
-          .max = red_black_tree_max, .min = red_black_tree_min,
-          .predecessor = red_black_tree_predecessor,
-          .successor = red_black_tree_successor },
-        .pre_order = red_black_tree_pre_order, .in_order =
-                                                   red_black_tree_in_order,
-        .post_order = red_black_tree_post_order, .level_order =
-                                                     red_black_tree_level_order
+    { { { { .free = red_black_tree_free }, .iterator = NULL },
+        .search = red_black_tree_search,
+        .empty = red_black_tree_empty,
+        .delete = red_black_tree_delete,
+        .insert = red_black_tree_insert },
+      .max = red_black_tree_max, .min = red_black_tree_min,
+      .predecessor = red_black_tree_predecessor,
+      .successor = red_black_tree_successor },
+    .pre_order = red_black_tree_pre_order, .in_order = red_black_tree_in_order,
+    .post_order = red_black_tree_post_order,
+    .level_order = red_black_tree_level_order
   };
 
   RedBlackTree *r = malloc(sizeof(RedBlackTree));

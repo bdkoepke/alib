@@ -22,9 +22,9 @@ const char *color_to_string(const Color c) {
 }
 
 ColorArray *color_array_new(Color a[], size_t len) {
-  static object_vtable vtable =
-      {.class = "color_array", .free = _object_free, .to_string =
-                                                         _object_to_string };
+  static object_vtable vtable = { .class = "color_array",
+                                  .free = _object_free,
+                                  .to_string = _object_to_string };
 
   ColorArray *c = malloc(sizeof(ColorArray));
   c->a = contract_requires_non_null(a);

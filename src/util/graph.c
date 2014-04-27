@@ -5,9 +5,9 @@
 #include <stdlib.h>
 
 bool graph_adjacent(const Graph *g, const void *x, const void *y) {
-  return g->vtable
-      ->adjacent(contract_requires_non_null(g), contract_requires_non_null(x),
-                 contract_requires_non_null(y));
+  return g->vtable->adjacent(contract_requires_non_null(g),
+                             contract_requires_non_null(x),
+                             contract_requires_non_null(y));
 }
 
 const Set *graph_neighbors(const Graph *g, const void *x) {

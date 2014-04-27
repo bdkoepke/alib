@@ -82,24 +82,26 @@ static Graph *linked_graph_new(Hash h, Equals e, graph_vtable *vtable) {
 
 UndirectedGraph *undirected_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
-    {.class = "linked_graph", .free = linked_graph_free,
-                                  .to_string = _object_to_string },
-        .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
-        .vertices = linked_graph_vertices,
-        .insert_edge = linked_graph_insert_edge_undirected,
-        .delete_edge = linked_graph_delete_edge_undirected,
+    { .class = "linked_graph",
+      .free = linked_graph_free,
+      .to_string = _object_to_string },
+    .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
+    .vertices = linked_graph_vertices,
+    .insert_edge = linked_graph_insert_edge_undirected,
+    .delete_edge = linked_graph_delete_edge_undirected,
   };
   return (UndirectedGraph *)linked_graph_new(h, e, &vtable);
 }
 
 DirectedGraph *directed_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
-    {.class = "linked_graph", .free = linked_graph_free,
-                                  .to_string = _object_to_string },
-        .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
-        .vertices = linked_graph_vertices,
-        .insert_edge = linked_graph_insert_edge_directed,
-        .delete_edge = linked_graph_delete_edge_directed,
+    { .class = "linked_graph",
+      .free = linked_graph_free,
+      .to_string = _object_to_string },
+    .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
+    .vertices = linked_graph_vertices,
+    .insert_edge = linked_graph_insert_edge_directed,
+    .delete_edge = linked_graph_delete_edge_directed,
   };
   return (DirectedGraph *)linked_graph_new(h, e, &vtable);
 }

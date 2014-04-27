@@ -191,7 +191,7 @@ void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
     size_t i;
   } OrderVisitor;
   OrderVisitor *order_visitor_new(const int * order) {
-    static object_vtable vtable = {.free = _object_free };
+    static object_vtable vtable = { .free = _object_free };
 
     OrderVisitor *o = malloc(sizeof(OrderVisitor));
     o->vtable = &vtable;

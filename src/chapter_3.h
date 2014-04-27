@@ -56,7 +56,7 @@ size_t bin_packing_worst_fit(const double *weights, size_t length);
 
 /**
  * Returns a copy of the specified line with the words in the reverse order.
- * 
+ *
  * Example: reverse_words_in_line("This line is a line") = "line a is line This"
  *
  * @param line the line to copy the reverse of.
