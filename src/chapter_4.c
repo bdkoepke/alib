@@ -210,7 +210,7 @@ void question_4_3(void) {
   typedef struct {
     int a, b;
   } Tuple;
-  void min_partition_pairs(int * a, int n, Tuple * t) {
+  void min_partition_pairs(int * a, int n, Tuple t[n / 2]) {
     contract_requires(even(n));
     quicksort(a, n);
     size_t i;
@@ -222,7 +222,7 @@ void question_4_3(void) {
   int numbers[] = { 1, 3, 5, 9 };
   int numbers_length = array_size(numbers);
   Tuple pairs[numbers_length / 2];
-  min_partition_pairs(numbers, numbers_length, &pairs);
+  min_partition_pairs(numbers, numbers_length, pairs);
   assert_equals(pairs[0].a, 1);
   assert_equals(pairs[0].b, 9);
   assert_equals(pairs[1].a, 3);

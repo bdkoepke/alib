@@ -88,8 +88,6 @@ UndirectedGraph *undirected_linked_graph_new(Hash h, Equals e) {
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_undirected,
         .delete_edge = linked_graph_delete_edge_undirected,
-        .breadth_first = _undirected_graph_breadth_first,
-        .depth_first = _undirected_graph_depth_first
   };
   return (UndirectedGraph *)linked_graph_new(h, e, &vtable);
 }
@@ -102,8 +100,6 @@ DirectedGraph *directed_linked_graph_new(Hash h, Equals e) {
         .vertices = linked_graph_vertices,
         .insert_edge = linked_graph_insert_edge_directed,
         .delete_edge = linked_graph_delete_edge_directed,
-        .breadth_first = _directed_graph_breadth_first,
-        .depth_first = _directed_graph_depth_first
   };
   return (DirectedGraph *)linked_graph_new(h, e, &vtable);
 }

@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void BFS(const Graph *g, const void *s,
+void BFS(const Graph *g, const void *s, Dictionary *parents, Dictionary *vertices,
          void (*process_vertex_early)(const void *),
          void (*process_edge)(const void *, const void *),
          void (*process_vertex_late)(const void *)) {
@@ -48,10 +48,6 @@ void BFS(const Graph *g, const void *s,
   }
 
   Dictionary *edges = (Dictionary *)hashtable_new(edge_hash, edge_equals);
-  Dictionary *vertices =
-      (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
-  Dictionary *parents =
-      (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
 
   Iterator *i = iterable_iterator((Iterable *)graph_vertices(g));
   while (iterator_move_next(i)) {
@@ -122,8 +118,29 @@ void test_linked_graph(void) {
     printf("processed vertex late: %d\n", v);
   }
 
-  BFS(g, INT_TO_POINTER(1), process_vertex_early, process_edge,
+  Dictionary *parents =
+      (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
+  Dictionary *vertices =
+      (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
+  BFS(g, INT_TO_POINTER(1), parents, vertices, process_vertex_early, process_edge,
       process_vertex_late);
+
+	void find_path(int start, int end, int parents[]) {
+		if ((start == end) || (end == POINTER_TO_INT(NULL)))
+			printf("\n%d", start);
+		else
+			find_path(start, parents[end - 1], parents), printf(" %d", end);
+	}
+
+	Iterator *it = iterable_iterator((Iterable *)parents);
+	int p[6];
+	i = 0;
+	while (iterator_move_next(it))
+		p[i++] = POINTER_TO_INT(dictionary_search(parents, iterator_current(it)));
+	for (i = 0; i < 6; i++)
+		printf("%d\n", p[i]);
+
+	find_path(1, 4, p);
 
   /*
  	const Set *vertices = graph_vertices(g);
