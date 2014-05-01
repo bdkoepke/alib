@@ -20,6 +20,7 @@ typedef struct {
   iterator_vtable *vtable;
   Hashtable *h;
   size_t i;
+  HNode *n;
 } HashtableIterator;
 
 static iterator_vtable vtable_invalid_state = {
@@ -32,17 +33,19 @@ static iterator_vtable vtable_invalid_state = {
 
 static void *hashtable_iterator_current(const Iterator *i) {
   HashtableIterator *h = (HashtableIterator *)i;
-  return const_cast(h->h->array[h->i]->p.k);
+  return const_cast(h->n->p.k);
 }
 
 static bool hashtable_iterator_move_next(Iterator *_i) {
   HashtableIterator *i = (HashtableIterator *)_i;
   Hashtable *h = (Hashtable *)i->h;
+  if (i->n != NULL && (i->n = i->n->n))
+    return true;
   for (i->i++; i->i < h->capacity && h->array[i->i] == NULL; i->i++)
     continue;
   if (i->i == h->capacity || h->array[i->i] == NULL)
     return i->vtable = &vtable_invalid_state, false;
-  return true;
+  return i->n = h->array[i->i], true;
 }
 
 static bool hashtable_iterator_move_next_init(Iterator *i) {
@@ -69,6 +72,7 @@ static Iterator *hashtable_iterator(const Iterable *i) {
   h->vtable = &vtable;
   h->h = (Hashtable *)i;
   h->i = 0;
+  h->n = NULL;
   return (Iterator *)h;
 }
 
