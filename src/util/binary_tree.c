@@ -196,12 +196,14 @@ BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   return (BinaryTree *)b;
 }
 
+inline void swap(void **a, void **b) {
+  void *temp = *a;
+  *a = *b;
+  *b = temp;
+}
+
 BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
-  inline void swap(void * *a, void * *b) {
-    void *temp = *a;
-    *a = *b;
-    *b = temp;
-  }
+
   if (set_empty((Set *)a))
     return set_empty((Set *)b) ? a : b;
   else if (set_empty((Set *)b))
@@ -218,15 +220,17 @@ BinaryTree *binary_tree_concat(BinaryTree *a, BinaryTree *b) {
   return a;
 }
 
+static bool binary_node_compare(const BinaryNode *a, const BinaryNode *b,
+                                Compare c) {
+  if (a == NULL)
+    return b == NULL;
+  return b == NULL ? false : c(a->p.k, b->p.k) == 0 &&
+                                 binary_node_compare(a->left, b->left, c) &&
+                                 binary_node_compare(a->right, b->right, c);
+}
+
 bool binary_tree_compare(const BinaryTree *a, const BinaryTree *b) {
-  bool binary_node_compare(const BinaryNode * a, const BinaryNode * b,
-                           Compare c) {
-    if (a == NULL)
-      return b == NULL;
-    return b == NULL ? false : c(a->p.k, b->p.k) == 0 &&
-                                   binary_node_compare(a->left, b->left, c) &&
-                                   binary_node_compare(a->right, b->right, c);
-  }
+
   return ((_BinaryTree *)a)->c != ((_BinaryTree *)b)->c
              ? false
              : binary_node_compare(((_BinaryTree *)a)->root,

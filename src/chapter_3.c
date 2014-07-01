@@ -21,6 +21,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 bool balanced_parenthesis(const char *text, size_t length, int *out_position) {
@@ -206,7 +207,7 @@ void question_3_9(void) {
   size_t i;
   for (i = 1; i <= 10; i++)
     dictionary_insert((Dictionary *)a, INT_TO_POINTER(i), INT_TO_POINTER(i));
-  for (i; i <= 20; i++)
+  for (; i <= 20; i++)
     dictionary_insert((Dictionary *)b, INT_TO_POINTER(i), INT_TO_POINTER(i));
   BinaryTree *concat = binary_tree_concat(a, b);
   for (i = 1; i <= 20; i++)
@@ -216,9 +217,12 @@ void question_3_9(void) {
   object_free((Object *)concat);
 }
 
+static bool validate_weight(double weight) {
+  return weight > 0.0 && weight <= 1.0;
+}
+
 size_t bin_packing(const double *weights, size_t length,
                    bool (*f)(const SortedDictionary *, double, double *)) {
-  bool validate_weight(double weight) { return weight > 0.0 && weight <= 1.0; }
   contract_requires(weights != NULL);
   contract_weak_requires(all_double(weights, length, validate_weight));
 
@@ -243,22 +247,25 @@ size_t bin_packing(const double *weights, size_t length,
   return bin == 0 ? bins : bins + 1;
 }
 
+static bool bin_packing_best_fit_heuristic(const SortedDictionary *d,
+                                           double bin, double *out_next) {
+  contract_requires(d != NULL && out_next != NULL);
+  *out_next = *(double *)sorted_dictionary_predecessor(d, &bin);
+  return out_next == NULL;
+}
+
 size_t bin_packing_best_fit(const double *weights, size_t length) {
-  bool bin_packing_best_fit_heuristic(const SortedDictionary * d, double bin,
-                                      double * out_next) {
-    contract_requires(d != NULL && out_next != NULL);
-    *out_next = *(double *)sorted_dictionary_predecessor(d, &bin);
-    return out_next == NULL;
-  }
+
   return bin_packing(weights, length, bin_packing_best_fit_heuristic);
 }
 
+static bool bin_packing_worst_fit_heuristic(const SortedDictionary *d,
+                                            double bin, double *out_next) {
+  contract_requires(d != NULL && out_next != NULL);
+  return (*out_next = *(double *)sorted_dictionary_min(d)) > (1 - bin);
+}
+
 size_t bin_packing_worst_fit(const double *weights, size_t length) {
-  bool bin_packing_worst_fit_heuristic(const SortedDictionary * d, double bin,
-                                       double * out_next) {
-    contract_requires(d != NULL && out_next != NULL);
-    return (*out_next = *(double *)sorted_dictionary_min(d)) > (1 - bin);
-  }
   return bin_packing(weights, length, bin_packing_worst_fit_heuristic);
 }
 

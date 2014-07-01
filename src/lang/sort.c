@@ -36,11 +36,11 @@ void insertionsort(int a[], size_t length) {
       swap(&a[j], &a[j - 1]);
 }
 
-void merge(int a[], int l, int m, int h) {
-  inline bool queue_empty(const Queue * q) {
-    return container_empty((const Container *)q);
-  }
+inline bool queue_empty(const Queue *q) {
+  return container_empty((const Container *)q);
+}
 
+void merge(int a[], int l, int m, int h) {
   Queue *lq = linked_queue_new();
   Queue *hq = linked_queue_new();
 
@@ -64,16 +64,18 @@ void merge(int a[], int l, int m, int h) {
   object_free((Object *)hq);
 }
 
-void mergesort(int a[], size_t length) {
-  void _mergesort(int a[], int l, int h) {
-    if (l < h) {
-      size_t m = (l + h) / 2;
-      _mergesort(a, l, m);
-      _mergesort(a, m + 1, h);
-      merge(a, l, m, h);
-    }
+static void __mergesort(int a[], int l, int h) {
+  if (l < h) {
+    size_t m = (l + h) / 2;
+    __mergesort(a, l, m);
+    __mergesort(a, m + 1, h);
+    merge(a, l, m, h);
   }
-  return _mergesort(contract_requires_non_null(a), 0, length - 1);
+}
+
+void _mergesort(int a[], size_t length) {
+
+  return __mergesort(contract_requires_non_null(a), 0, length - 1);
 }
 
 static size_t partition(int a[], size_t l, size_t h) {
@@ -87,25 +89,27 @@ static size_t partition(int a[], size_t l, size_t h) {
   return p;
 }
 
+static int qs(int a[], size_t l, size_t h, size_t k) {
+  size_t p = partition(a, l, h);
+  if (k == p)
+    return a[p];
+  return k < p ? qs(a, l, p == 0 ? 0 : p - 1, k) : qs(a, p + 1, h, k);
+}
+
 int quickselect(int a[], size_t length, size_t k) {
-  int qs(int a[], size_t l, size_t h, size_t k) {
-    size_t p = partition(a, l, h);
-    if (k == p)
-      return a[p];
-    return k < p ? qs(a, l, p == 0 ? 0 : p - 1, k) : qs(a, p + 1, h, k);
-  }
   contract_requires(k < length);
   return qs(contract_requires_non_null(a), 0, length - 1, k);
 }
 
-void quicksort(int a[], size_t length) {
-  void _quicksort(int a[], size_t l, size_t h) {
-    if (l < h) {
-      size_t p = partition(a, l, h);
-      _quicksort(a, l, p == 0 ? 0 : p - 1);
-      _quicksort(a, p + 1, h);
-    }
+static void _quicksort(int a[], size_t l, size_t h) {
+  if (l < h) {
+    size_t p = partition(a, l, h);
+    _quicksort(a, l, p == 0 ? 0 : p - 1);
+    _quicksort(a, p + 1, h);
   }
+}
+
+void quicksort(int a[], size_t length) {
   if (length > 0)
     _quicksort(contract_requires_non_null(a), 0, length - 1);
 }

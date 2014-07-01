@@ -27,10 +27,11 @@ Iterator *tree_level_order(const Tree *t) {
   return tree_iterator(t, t->vtable->level_order);
 }
 
+static void linked_stack_visitor(void *p, void *x) {
+  stack_push((Stack *)p, ((KeyValuePair *)x)->v);
+}
+
 LinkedStack *tree_to_linked_stack(const Tree *t) {
-  void linked_stack_visitor(void * p, void * x) {
-    stack_push((Stack *)p, ((KeyValuePair *)x)->v);
-  }
   LinkedStack *l = linked_stack_new();
   Iterator *i = tree_in_order(contract_requires_non_null(t));
   iterator_foreach(i, linked_stack_visitor, l);

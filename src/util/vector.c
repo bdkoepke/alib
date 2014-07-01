@@ -102,25 +102,28 @@ static void _vector_insert(Container *c, void *x) {
   vector_set((Vector *)v, size, x);
 }
 
-static void *vector_delete(Container *c, const void *x) {
-  inline void shift_right(void * *a, size_t length, size_t offset, size_t x) {
-    size_t i;
-    for (i = offset; i < (length - x); i++)
-      a[i] = a[i + x];
-  }
-  inline size_t vector_indexof(Vector * v, const void * x) {
-    size_t i;
-    size_t size = vector_size(v);
-    for (i = 0; i < size; i++)
-      if (vector_get(v, i) == x)
-        return i;
-  }
-  inline size_t max(size_t a, size_t b) { return a > b ? a : b; }
+inline void shift_right(void **a, size_t length, size_t offset, size_t x) {
+  size_t i;
+  for (i = offset; i < (length - x); i++)
+    a[i] = a[i + x];
+}
 
+static size_t vector_indexof(Vector *v, const void *x) {
+  size_t i;
+  size_t size = vector_size(v);
+  for (i = 0; i < size; i++)
+    if (vector_get(v, i) == x)
+      return i;
+  contract_fail();
+}
+
+inline size_t _max(size_t a, size_t b) { return a > b ? a : b; }
+
+static void *vector_delete(Container *c, const void *x) {
   Vector *v = (Vector *)c;
   _Vector *_v = (_Vector *)v;
   size_t size = vector_size(v);
-  size_t _capacity = max(_v->capacity * 0.33, DEFAULT_CAPACITY);
+  size_t _capacity = _max(_v->capacity * 0.33, DEFAULT_CAPACITY);
   if (size < _capacity) {
     vector_resize(_v, _capacity * sizeof(void *));
     _v->capacity = _capacity;

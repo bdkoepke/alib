@@ -182,28 +182,28 @@ void test_linked_stack(LinkedStack *l, const int *values, size_t length) {
   assert_true(container_empty(c));
 }
 
+typedef struct {
+  object_vtable *vtable;
+  const int *order;
+  size_t i;
+} OrderVisitor;
+static OrderVisitor *order_visitor_new(const int *order) {
+  static object_vtable vtable = { .free = _object_free };
+
+  OrderVisitor *o = malloc(sizeof(OrderVisitor));
+  o->vtable = &vtable;
+  o->order = order;
+  o->i = 0;
+  return o;
+}
+static void order_visitor_visit(void *p, void *x) {
+  OrderVisitor *o = (OrderVisitor *)p;
+  assert_equals(POINTER_TO_INT(((KeyValuePair *)x)->v), o->order[o->i++]);
+}
+
 void test_tree(Tree *t, const int *values, size_t length, const int *pre_order,
                const int *in_order, const int *post_order,
                const int *level_order) {
-  typedef struct {
-    object_vtable *vtable;
-    const int *order;
-    size_t i;
-  } OrderVisitor;
-  OrderVisitor *order_visitor_new(const int * order) {
-    static object_vtable vtable = { .free = _object_free };
-
-    OrderVisitor *o = malloc(sizeof(OrderVisitor));
-    o->vtable = &vtable;
-    o->order = order;
-    o->i = 0;
-    return o;
-  }
-  void order_visitor_visit(void * p, void * x) {
-    OrderVisitor *o = (OrderVisitor *)p;
-    assert_equals(POINTER_TO_INT(((KeyValuePair *)x)->v), o->order[o->i++]);
-  }
-
   test_sorted_dictionary((SortedDictionary *)t, values, length);
   assert_true(set_empty((Set *)t));
 

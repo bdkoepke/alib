@@ -95,28 +95,30 @@ static void *hashtable_search(const Dictionary *d, const void *k) {
   return p == NULL ? NULL : p->v;
 }
 
+inline void _hashtable_insert(Hashtable *h, const void *k, void *v) {
+  size_t hash = h->h(k) % h->capacity;
+  hnode_insert(&(h->array[hash]), k, v);
+}
+
+static void hashtable_resize(Hashtable *h, size_t capacity) {
+  contract_requires_non_null(h);
+  contract_requires(h->size < capacity < SIZE_MAX);
+  HNode **array = h->array;
+  size_t _capacity = h->capacity;
+  h->capacity = capacity;
+  h->array = calloc(capacity, sizeof(HNode *));
+  size_t i;
+  for (i = 0; i < _capacity; i++)
+    if (array[i] != NULL) {
+      HNode *n;
+      for (n = array[i]; n != NULL; n = n->n)
+        _hashtable_insert(h, n->p.k, n->p.v);
+      hnode_free_r(array[i]);
+    }
+  free(array);
+}
+
 static void hashtable_insert(Dictionary *d, const void *k, void *v) {
-  inline void _hashtable_insert(Hashtable * h, const void * k, void * v) {
-    size_t hash = h->h(k) % h->capacity;
-    hnode_insert(&(h->array[hash]), k, v);
-  }
-  inline void hashtable_resize(Hashtable * h, size_t capacity) {
-    contract_requires_non_null(h);
-    contract_requires(h->size < capacity < SIZE_MAX);
-    HNode **array = h->array;
-    size_t _capacity = h->capacity;
-    h->capacity = capacity;
-    h->array = calloc(capacity, sizeof(HNode *));
-    size_t i;
-    for (i = 0; i < _capacity; i++)
-      if (array[i] != NULL) {
-        HNode *n;
-        for (n = array[i]; n != NULL; n = n->n)
-          _hashtable_insert(h, n->p.k, n->p.v);
-        hnode_free_r(array[i]);
-      }
-    free(array);
-  }
   Hashtable *h = (Hashtable *)d;
   contract_requires_non_null(k);
   contract_requires(h->size < SIZE_MAX);

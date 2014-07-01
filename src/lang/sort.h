@@ -25,7 +25,7 @@ int *buckets_new(int a[], size_t length, int max);
 /** Various sort implementations */
 void selectionsort(int a[], size_t length);
 void insertionsort(int a[], size_t length);
-void mergesort(int a[], size_t length);
+void _mergesort(int a[], size_t length);
 void quicksort(int a[], size_t length);
 void bucketsort(int a[], size_t length, int max);
 
