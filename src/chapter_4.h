@@ -27,13 +27,15 @@ void max_min(int *a, size_t length, int *out_max, int *out_min);
 
 /** Basic lang tests. */
 void _test_heap(void);
+void _test_vector(void);
+void test_binary_search(void);
+void test_binary_sort(void);
+void test_bucketsort(void);
+void test_count_occurrences(void);
+void test_max_min(void);
 void test_mergesort(void);
 void test_quicksort(void);
-void test_count_occurrences(void);
 void test_sqrt(void);
-void test_max_min(void);
-void test_bucketsort(void);
-void test_binary_sort(void);
 
 void question_4_1(void);
 void question_4_2(void);

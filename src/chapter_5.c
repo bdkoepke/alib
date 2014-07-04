@@ -1,6 +1,7 @@
 #include "diag/contract.h"
 #include "chapter_5.h"
 #include "lang/hash.h"
+#include "lang/math_extended.h"
 #include "lang/type.h"
 #include "util/graph_visitor.h"
 #include "util/hashtable.h"
@@ -45,13 +46,13 @@ size_t edge_hash(const void *x) {
 }
 
 static void print_vertex_early(GraphVisitor *gv, const void *v) {
-  printf("processed vertex early %d\n", v);
+  printf("processed vertex early %d\n", POINTER_TO_INT(v));
 }
 static void print_edge(GraphVisitor *gv, const void *x, const void *y) {
-  printf("processed edge (%d,%d)\n", x, y);
+  printf("processed edge (%d,%d)\n", POINTER_TO_INT(x), POINTER_TO_INT(y));
 }
 static void print_vertex_late(GraphVisitor *gv, const void *v) {
-  printf("processed vertex late: %d\n", v);
+  printf("processed vertex late: %d\n", POINTER_TO_INT(v));
 }
 static graph_visitor_vtable graph_visitor_print_vtable = {
   .vertex_early = print_vertex_early,

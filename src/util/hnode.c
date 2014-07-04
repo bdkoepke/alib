@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 HNode *hnode_new(const void *k, void *v, HNode *next) {
   HNode *n = malloc(sizeof(HNode));
@@ -38,6 +39,8 @@ void *hnode_delete(HNode **n, const void *k, Equals e) {
         return o;
       }
     }
+    contract_fail();
+    return NULL;
   } else {
     HNode *head = *n;
     *n = head->n;

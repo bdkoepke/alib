@@ -1,4 +1,5 @@
 #include "test.h"
+#include "../lang/type.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -46,7 +47,8 @@ void _assert_memcmp(const void *a, const void *b, size_t num, const char *a_s,
                     const char *b_s, const char *file, int line,
                     const char *func) {
   if (memcmp(a, b, num)) {
-    fprintf(stderr, "%s:%d: %s: `%d' != `%d'.\n", file, line, func, a, b);
+    fprintf(stderr, "%s:%d: %s: `%d' != `%d'.\n", file, line, func,
+            POINTER_TO_INT(a), POINTER_TO_INT(b));
     assert(false), exit(EXIT_FAILURE);
   }
 }

@@ -59,6 +59,8 @@ static void *linked_queue_delete(Container *c, const void *x) {
         return o;
       }
     }
+    contract_fail();
+    return NULL;
   } else {
     Node *head = q->head;
     void *o = head->x;

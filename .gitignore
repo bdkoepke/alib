@@ -47,3 +47,6 @@ nbproject/private
 
 # ignore dot svg files
 *.svg
+
+.deps
+.dirstamp

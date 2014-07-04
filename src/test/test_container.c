@@ -1,6 +1,8 @@
 #include "../diag/contract.h"
 #include "../lang/algorithm.h"
 #include "../lang/compare.h"
+#include "../lang/math_extended.h"
+#include "../lang/sort.h"
 #include "../lang/string.h"
 #include "../lang/type.h"
 #include "../util/key_value_pair.h"
@@ -8,6 +10,7 @@
 #include "test_container.h"
 
 #include <assert.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 

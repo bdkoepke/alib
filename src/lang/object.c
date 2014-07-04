@@ -22,6 +22,6 @@ char *_object_to_string(const Object *o) {
   const char *name = class_name(object_class(o));
   size_t size = sizeof(void *) + sizeof('@') + strlen(name) + sizeof('\n');
   char *buffer = malloc(size);
-  snprintf(buffer, size, "%s@%x", name, o);
+  snprintf(buffer, size, "%s@%x", name, (unsigned int)o);
   return buffer;
 }

@@ -85,6 +85,8 @@ void *node_delete(Node **n, const void *x) {
         return o;
       }
     }
+    contract_fail();
+    return NULL;
   } else {
     Node *head = *n;
     *n = head->n;

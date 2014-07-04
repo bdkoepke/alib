@@ -115,6 +115,7 @@ static size_t vector_indexof(Vector *v, const void *x) {
     if (vector_get(v, i) == x)
       return i;
   contract_fail();
+  return 0;
 }
 
 inline size_t _max(size_t a, size_t b) { return a > b ? a : b; }
