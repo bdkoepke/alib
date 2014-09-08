@@ -196,7 +196,7 @@ BinaryTree *binary_tree_new_fast_min_max(Compare c) {
   return (BinaryTree *)b;
 }
 
-inline void swap(void **a, void **b) {
+static void swap(void **a, void **b) {
   void *temp = *a;
   *a = *b;
   *b = temp;

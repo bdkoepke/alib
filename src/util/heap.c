@@ -13,26 +13,26 @@ typedef struct {
   void **p;
 } _Heap;
 
-static inline size_t heap_left_child(size_t n) {
+static size_t heap_left_child(size_t n) {
   contract_requires(n < SIZE_MAX / 2 - 1);
   return n * 2;
 }
 
-static inline size_t heap_right_child(size_t n) {
+static size_t heap_right_child(size_t n) {
   contract_requires(n < SIZE_MAX / 2);
   return n * 2 + 1;
 }
 
-static inline void swap(void **p, size_t n, size_t parent) {
+static void swap(void **p, size_t n, size_t parent) {
   void *t = p[n];
   p[n] = p[parent], p[parent] = t;
 }
 
-inline void *heap_get(_Heap *h, size_t n) {
+static void *heap_get(_Heap *h, size_t n) {
   return n < h->size ? h->p[n] : NULL;
 }
 
-inline size_t heap_min(_Heap *h, size_t a, size_t b) {
+static size_t heap_min(_Heap *h, size_t a, size_t b) {
   void *left = heap_get(h, a);
   void *right = heap_get(h, b);
   if (left == NULL)
@@ -42,7 +42,7 @@ inline size_t heap_min(_Heap *h, size_t a, size_t b) {
   return h->c(left, right) < 0 ? a : b;
 }
 
-static inline void heap_bubble_down(_Heap *h, size_t n) {
+static void heap_bubble_down(_Heap *h, size_t n) {
   if (n >= h->size)
     return;
   size_t min_index =
@@ -55,12 +55,12 @@ static inline void heap_bubble_down(_Heap *h, size_t n) {
 
 static size_t _heap_size(const Heap *h) { return ((_Heap *)h)->size; }
 
-inline size_t heap_parent(size_t n) {
+static size_t heap_parent(size_t n) {
   contract_requires(n != 0);
   return n / 2;
 }
 
-inline void heap_bubble_up(_Heap *h, size_t n) {
+static void heap_bubble_up(_Heap *h, size_t n) {
   if (n == 0)
     return;
   size_t parent = heap_parent(n);

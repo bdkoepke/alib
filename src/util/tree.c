@@ -7,7 +7,7 @@
 
 typedef Iterator *(*TreeIterator)(const Tree *t);
 
-static inline Iterator *tree_iterator(const Tree *t, TreeIterator i) {
+static Iterator *tree_iterator(const Tree *t, TreeIterator i) {
   return contract_ensures_non_null(i(contract_requires_non_null(t)));
 }
 

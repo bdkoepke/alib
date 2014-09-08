@@ -95,7 +95,7 @@ static void *hashtable_search(const Dictionary *d, const void *k) {
   return p == NULL ? NULL : p->v;
 }
 
-inline void _hashtable_insert(Hashtable *h, const void *k, void *v) {
+static void _hashtable_insert(Hashtable *h, const void *k, void *v) {
   size_t hash = h->h(k) % h->capacity;
   hnode_insert(&(h->array[hash]), k, v);
 }

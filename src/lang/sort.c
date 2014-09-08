@@ -36,7 +36,7 @@ void insertionsort(int a[], size_t length) {
       swap(&a[j], &a[j - 1]);
 }
 
-inline bool queue_empty(const Queue *q) {
+static bool queue_empty(const Queue *q) {
   return container_empty((const Container *)q);
 }
 

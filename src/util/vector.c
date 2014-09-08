@@ -72,7 +72,7 @@ Iterator *_vector_iterator(const Iterable *i) {
   return (Iterator *)v;
 }
 
-static inline void vector_resize(_Vector *v, size_t capacity) {
+static void vector_resize(_Vector *v, size_t capacity) {
   contract_requires(v->size < capacity);
   v->array = realloc(v->array, capacity);
 }
@@ -102,7 +102,7 @@ static void _vector_insert(Container *c, void *x) {
   vector_set((Vector *)v, size, x);
 }
 
-inline void shift_right(void **a, size_t length, size_t offset, size_t x) {
+static void shift_right(void **a, size_t length, size_t offset, size_t x) {
   size_t i;
   for (i = offset; i < (length - x); i++)
     a[i] = a[i + x];
@@ -118,7 +118,7 @@ static size_t vector_indexof(Vector *v, const void *x) {
   return 0;
 }
 
-inline size_t _max(size_t a, size_t b) { return a > b ? a : b; }
+static size_t _max(size_t a, size_t b) { return a > b ? a : b; }
 
 static void *vector_delete(Container *c, const void *x) {
   Vector *v = (Vector *)c;

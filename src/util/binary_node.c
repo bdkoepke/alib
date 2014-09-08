@@ -5,12 +5,12 @@
 
 #include <stdlib.h>
 
-static inline void stack_push_non_null(Stack *s, void *x) {
+static void stack_push_non_null(Stack *s, void *x) {
   if (x != NULL)
     stack_push(s, x);
 }
 
-static inline void queue_enqueue_non_null(Queue *q, void *x) {
+static void queue_enqueue_non_null(Queue *q, void *x) {
   if (x != NULL)
     queue_enqueue(q, x);
 }
@@ -153,7 +153,7 @@ typedef struct BinaryNodeIterator {
   Container *c;
 } BinaryNodeIterator;
 
-static inline Iterator *binary_node_iterator_new(BinaryNode *root, Container *c,
+static Iterator *binary_node_iterator_new(BinaryNode *root, Container *c,
                                                  iterator_vtable *vtable) {
   BinaryNodeIterator *b = malloc(sizeof(BinaryNodeIterator));
   b->vtable = vtable;
