@@ -33,7 +33,7 @@ static iterator_vtable vtable_invalid_state = {
 
 static void *hashtable_iterator_current(const Iterator *i) {
   HashtableIterator *h = (HashtableIterator *)i;
-  return const_cast(h->n->p.k);
+  return void_cast(h->n->p.k);
 }
 
 static bool hashtable_iterator_move_next(Iterator *_i) {

@@ -12,6 +12,7 @@
 #include "util/linked_queue.h"
 #include "util/node.h"
 #include "util/sparse_vector.h"
+#include "lang/unsafe.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -223,7 +224,7 @@ size_t bin_packing(const double *weights, size_t length,
   BinaryTree *b = binary_tree_new(compare_double);
   size_t i;
   for (i = 0; i < length; i++)
-    container_insert((Container *)b, (void *)&weights[i]);
+    container_insert((Container *)b, void_cast(&weights[i]));
 
   size_t bins = 0;
   double bin = 0;

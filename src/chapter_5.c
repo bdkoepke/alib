@@ -66,36 +66,36 @@ void graph_breadth_first(const Graph *g, const void *s, GraphVisitor *gv) {
 
   Iterator *i = iterable_iterator((Iterable *)graph_vertices(g));
   while (iterator_move_next(i)) {
-    dictionary_insert(vertices, iterator_current(i), const_cast(&undiscovered));
+    dictionary_insert(vertices, iterator_current(i), void_cast(&undiscovered));
     dictionary_insert(parents, iterator_current(i), NULL);
   }
   object_free((Object *)i);
   contract_requires_non_null(dictionary_search(vertices, s));
-  dictionary_reassign(vertices, s, const_cast(&discovered));
+  dictionary_reassign(vertices, s, void_cast(&discovered));
 
   Queue *q = linked_queue_new();
-  queue_enqueue(q, const_cast(s));
+  queue_enqueue(q, void_cast(s));
   while (!container_empty((Container *)q)) {
     const void *u = queue_dequeue(q);
     graph_visitor_vertex_early(gv, u);
     i = iterable_iterator((Iterable *)graph_neighbors(g, u));
     while (iterator_move_next(i)) {
       const void *v = iterator_current(i);
-      Edge *e = edge_new(const_cast(u), const_cast(v));
+      Edge *e = edge_new(void_cast(u), void_cast(v));
       if (dictionary_search(edges, e) == INT_TO_POINTER(NULL))
         graph_visitor_edge(gv, u, v),
             dictionary_insert(edges, e, INT_TO_POINTER(true));
       else
         free(e);
       if (dictionary_search(vertices, v) == &undiscovered) {
-        dictionary_reassign(vertices, v, const_cast(&discovered));
-        dictionary_reassign(parents, v, const_cast(u));
-        queue_enqueue(q, const_cast(v));
+        dictionary_reassign(vertices, v, void_cast(&discovered));
+        dictionary_reassign(parents, v, void_cast(u));
+        queue_enqueue(q, void_cast(v));
       }
     }
     object_free((Object *)i);
     graph_visitor_vertex_late(gv, u);
-    dictionary_reassign(vertices, u, const_cast(&processed));
+    dictionary_reassign(vertices, u, void_cast(&processed));
   }
   object_free((Object *)q);
   object_free((Object *)vertices);

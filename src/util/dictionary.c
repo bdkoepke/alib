@@ -1,10 +1,11 @@
 #include "../diag/contract.h"
 #include "dictionary.h"
+#include "../lang/unsafe.h"
 
 #include <stdlib.h>
 
 const void *_dictionary_set_search(const Set *s, const void *x) {
-  return dictionary_search((Dictionary *)s, x) == NULL ? NULL : (void *)x;
+  return dictionary_search((Dictionary *)s, x) == NULL ? NULL : void_cast(x);
 }
 
 void _dictionary_set_insert(Set *s, void *x) {
@@ -12,7 +13,7 @@ void _dictionary_set_insert(Set *s, void *x) {
 }
 
 void *_dictionary_set_delete(Set *s, const void *x) {
-  return dictionary_delete((Dictionary *)s, x), (void *)x;
+  return dictionary_delete((Dictionary *)s, x), void_cast(x);
 }
 
 void *dictionary_search(const Dictionary *d, const void *k) {

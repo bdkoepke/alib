@@ -1,4 +1,5 @@
 #include "contract.h"
+#include "../lang/unsafe.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -19,7 +20,7 @@ static inline void *contract_non_null(const void *x, const char *x_s,
     fprintf(stderr, format, file, line, func, x_s);
     assert(false), exit(EXIT_FAILURE);
   }
-  return (void *)x;
+  return void_cast(x);
 }
 
 static inline void *contract_equal(const void *a, const void *b,
@@ -30,7 +31,7 @@ static inline void *contract_equal(const void *a, const void *b,
     fprintf(stderr, format, file, line, func, a_s, b_s);
     assert(false), exit(EXIT_FAILURE);
   }
-  return (void *)a;
+  return void_cast(a);
 }
 
 void _contract_fail(const char *file, int line, const char *func) {

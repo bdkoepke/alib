@@ -2,6 +2,7 @@
 #include "binary_node.h"
 #include "linked_queue.h"
 #include "linked_stack.h"
+#include "../lang/unsafe.h"
 
 #include <stdlib.h>
 
@@ -123,12 +124,12 @@ const KeyValuePair *binary_node_predecessor(const BinaryNode *n, Compare c,
     return NULL;
   int r = c(k, n->p.k);
   if (r == 0)
-    return n->left == NULL ? NULL : (void *)binary_node_max(n->left);
+    return n->left == NULL ? NULL : void_cast(binary_node_max(n->left));
   if (r < 0)
     return binary_node_predecessor(n->left, c, k);
   else {
     KeyValuePair const *predecessor = binary_node_predecessor(n->right, c, k);
-    return predecessor == NULL ? &(n->p) : (void *)predecessor;
+    return predecessor == NULL ? &(n->p) : void_cast(predecessor);
   }
 }
 
@@ -138,12 +139,12 @@ const KeyValuePair *binary_node_successor(const BinaryNode *n, Compare c,
     return NULL;
   int r = c(k, n->p.k);
   if (r == 0)
-    return n->right == NULL ? NULL : (void *)binary_node_min(n->right);
+    return n->right == NULL ? NULL : void_cast(binary_node_min(n->right));
   if (r > 0)
     return binary_node_successor(n->right, c, k);
   else {
     KeyValuePair const *successor = binary_node_successor(n->left, c, k);
-    return successor == NULL ? &(n->p) : (void *)successor;
+    return successor == NULL ? &(n->p) : void_cast(successor);
   }
 }
 
