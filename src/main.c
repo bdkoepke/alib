@@ -82,4 +82,5 @@ int main(void) {
   chapter_3();
   chapter_4();
   chapter_5();
+  return 0;
 }

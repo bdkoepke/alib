@@ -3,8 +3,6 @@
 #include "../util/linked_queue.h"
 #include "sort.h"
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdlib.h>
 
 void swap(int *a, int *b) {
@@ -44,7 +42,7 @@ void merge(int a[], int l, int m, int h) {
   Queue *lq = linked_queue_new();
   Queue *hq = linked_queue_new();
 
-  size_t i;
+  int i;
   for (i = l; i <= m; i++)
     queue_enqueue(lq, INT_TO_POINTER(a[i]));
   for (; i <= h; i++)
@@ -66,7 +64,7 @@ void merge(int a[], int l, int m, int h) {
 
 static void __mergesort(int a[], int l, int h) {
   if (l < h) {
-    size_t m = (l + h) / 2;
+    int m = (l + h) / 2;
     __mergesort(a, l, m);
     __mergesort(a, m + 1, h);
     merge(a, l, m, h);
@@ -74,8 +72,7 @@ static void __mergesort(int a[], int l, int h) {
 }
 
 void _mergesort(int a[], size_t length) {
-
-  return __mergesort(contract_requires_non_null(a), 0, length - 1);
+  return __mergesort(contract_requires_non_null(a), 0, (int)length - 1);
 }
 
 static size_t partition(int a[], size_t l, size_t h) {
@@ -116,7 +113,7 @@ void quicksort(int a[], size_t length) {
 
 int *buckets_new(int a[], size_t length, int max) {
   contract_requires_non_null(a);
-  int *s = calloc(max + 1, sizeof(int));
+  int *s = calloc((size_t)(max + 1), sizeof(int));
   size_t i;
   for (i = 0; i < length; i++)
     s[a[i]]++;
@@ -127,7 +124,7 @@ void bucketsort(int a[], size_t length, int max) {
   contract_requires_non_null(a);
   int s[max + 1];
 
-  size_t i, j, k;
+  int i, j, k;
   for (i = 0; i <= max; i++)
     s[i] = 0;
   for (i = 0; i < length; i++)

@@ -2,9 +2,7 @@
 #include "test.h"
 #include "test_sort.h"
 
-#include <assert.h>
 #include <stdlib.h>
-#include <string.h>
 
 void test_sort(Sort s) {
   static const int sorted[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };

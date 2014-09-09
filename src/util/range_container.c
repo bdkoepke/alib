@@ -3,7 +3,6 @@
 #include "range_container.h"
 
 #include <stdlib.h>
-#include <stdint.h>
 
 typedef struct {
   range_container_vtable *vtable;
@@ -16,6 +15,7 @@ typedef struct {
 static const int DEFAULT_CAPACITY = 11;
 
 static void array_range_container_insert(RangeContainer *r, void *x) {
+  /*
   ArrayRangeContainer *a = (ArrayRangeContainer *)r;
   if (a->size >= a->capacity) {
     size_t _capacity =
@@ -27,7 +27,6 @@ static void array_range_container_insert(RangeContainer *r, void *x) {
   void **m = a->m;
   size_t size = a->size;
 
-  /*
         a->size++;
         for (i = 0; i < size; i++) {
                 void *min = m[0][size];
@@ -48,18 +47,21 @@ static void array_range_container_free(Object *o) { free(o); }
 
 RangeContainer *array_range_container_new(Compare c) {
   static range_container_vtable vtable = {
-    { .class = "range_container",
+    { .class = { "range_container" },
       .free = array_range_container_free,
       .to_string = _object_to_string },
     .insert = array_range_container_insert, .query = array_range_container_query
   };
 
   ArrayRangeContainer *r = malloc(sizeof(ArrayRangeContainer *));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   r->vtable = &vtable;
+#pragma clang diagnostic pop
   r->capacity = DEFAULT_CAPACITY;
   r->size = 0;
   r->c = c;
-  r->m = malloc(sizeof(void *) * square(r->capacity));
+  r->m = malloc(sizeof(void *) * square((int)r->capacity));
   return (RangeContainer *)r;
 }
 

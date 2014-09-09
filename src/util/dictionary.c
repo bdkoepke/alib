@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 const void *_dictionary_set_search(const Set *s, const void *x) {
-  return dictionary_search((Dictionary *)s, x) == NULL ? NULL : x;
+  return dictionary_search((Dictionary *)s, x) == NULL ? NULL : (void *)x;
 }
 
 void _dictionary_set_insert(Set *s, void *x) {

@@ -2,7 +2,6 @@
 #include "../lang/math_extended.h"
 #include "vector.h"
 
-#include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -20,7 +19,7 @@ typedef struct {
 } VectorIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  { .class = "vector_iterator",
+  { .class = { "vector_iterator" },
     .free = _object_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -43,7 +42,7 @@ static bool vector_iterator_move_next(Iterator *i) {
 }
 
 static bool vector_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "vector_iterator",
+  static iterator_vtable vtable = { { .class = { "vector_iterator" },
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .move_next = vector_iterator_move_next,
@@ -54,19 +53,25 @@ static bool vector_iterator_move_next_init(Iterator *i) {
     v->vtable = &vtable_invalid_state;
     return false;
   }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   v->vtable = &vtable;
+#pragma clang diagnostic pop
   return true;
 }
 
 Iterator *_vector_iterator(const Iterable *i) {
-  static iterator_vtable vtable = { { .class = "vector_iterator",
+  static iterator_vtable vtable = { { .class = { "vector_iterator" },
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .move_next = vector_iterator_move_next_init,
                                     .current =
                                         _iterator_current_invalid_state };
   VectorIterator *v = malloc(sizeof(VectorIterator));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   v->vtable = &vtable;
+#pragma clang diagnostic pop
   v->a = (Vector *)i;
   v->i = 0;
   return (Iterator *)v;
@@ -124,7 +129,7 @@ static void *vector_delete(Container *c, const void *x) {
   Vector *v = (Vector *)c;
   _Vector *_v = (_Vector *)v;
   size_t size = vector_size(v);
-  size_t _capacity = _max(_v->capacity * 0.33, DEFAULT_CAPACITY);
+  size_t _capacity = _max((size_t)(_v->capacity * 0.33), DEFAULT_CAPACITY);
   if (size < _capacity) {
     vector_resize(_v, _capacity * sizeof(void *));
     _v->capacity = _capacity;
@@ -144,7 +149,7 @@ static void vector_free(Object *o) {
 
 Vector *vector_new() {
   static vector_vtable vtable = {
-    { { { .class = "vector",
+    { { { .class = { "vector" },
           .free = vector_free,
           .to_string = _object_to_string },
         .iterator = _vector_iterator },
@@ -154,7 +159,10 @@ Vector *vector_new() {
   };
 
   _Vector *v = malloc(sizeof(_Vector));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   v->vtable = &vtable;
+#pragma clang diagnostic pop
   v->capacity = DEFAULT_CAPACITY;
   v->array = malloc(sizeof(void *) * v->capacity);
   v->size = 0;

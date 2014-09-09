@@ -5,9 +5,7 @@
 #include "test/test.h"
 #include "test/test_sort.h"
 
-#include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 void test_selectionsort(void) {
@@ -24,7 +22,8 @@ void test_find_match(void) {
   puts("test_find_match");
   const char pattern[] = "pattern";
   const char text[] = "this is a pattern";
-  assert_equals(find_match(pattern, text, strlen(pattern), strlen(text)), 10);
+  assert_equals(
+      find_match(pattern, text, (int)strlen(pattern), (int)strlen(text)), 10);
 }
 
 void test_power(void) {

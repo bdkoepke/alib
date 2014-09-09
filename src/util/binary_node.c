@@ -123,12 +123,12 @@ const KeyValuePair *binary_node_predecessor(const BinaryNode *n, Compare c,
     return NULL;
   int r = c(k, n->p.k);
   if (r == 0)
-    return n->left == NULL ? NULL : binary_node_max(n->left);
+    return n->left == NULL ? NULL : (void *)binary_node_max(n->left);
   if (r < 0)
     return binary_node_predecessor(n->left, c, k);
   else {
     KeyValuePair const *predecessor = binary_node_predecessor(n->right, c, k);
-    return predecessor == NULL ? &(n->p) : predecessor;
+    return predecessor == NULL ? &(n->p) : (void *)predecessor;
   }
 }
 
@@ -138,12 +138,12 @@ const KeyValuePair *binary_node_successor(const BinaryNode *n, Compare c,
     return NULL;
   int r = c(k, n->p.k);
   if (r == 0)
-    return n->right == NULL ? NULL : binary_node_min(n->right);
+    return n->right == NULL ? NULL : (void *)binary_node_min(n->right);
   if (r > 0)
     return binary_node_successor(n->right, c, k);
   else {
     KeyValuePair const *successor = binary_node_successor(n->left, c, k);
-    return successor == NULL ? &(n->p) : successor;
+    return successor == NULL ? &(n->p) : (void *)successor;
   }
 }
 
@@ -154,7 +154,7 @@ typedef struct BinaryNodeIterator {
 } BinaryNodeIterator;
 
 static Iterator *binary_node_iterator_new(BinaryNode *root, Container *c,
-                                                 iterator_vtable *vtable) {
+                                          iterator_vtable *vtable) {
   BinaryNodeIterator *b = malloc(sizeof(BinaryNodeIterator));
   b->vtable = vtable;
   b->n = root;
@@ -173,7 +173,7 @@ static void *binary_node_current(const Iterator *i) {
 }
 
 static iterator_vtable binary_node_iterator_vtable_invalid_state = {
-  { .class = "binary_node_iterator",
+  { .class = { "binary_node_iterator" },
     .free = binary_node_iterator_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -196,7 +196,7 @@ static bool binary_node_move_next_pre_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_pre_order_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+  static iterator_vtable vtable = { { .class = { "binary_node_iterator" },
                                       .free = binary_node_iterator_free,
                                       .to_string = _object_to_string },
                                     .current = binary_node_current,
@@ -205,11 +205,14 @@ static bool binary_node_move_next_pre_order_init(Iterator *i) {
   BinaryNodeIterator *b = (BinaryNodeIterator *)i;
   if (b->n == NULL)
     return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   return b->vtable = &vtable, true;
+#pragma clang diagnostic pop
 }
 
 Iterator *binary_node_pre_order(BinaryNode *root) {
-  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+  static iterator_vtable vtable = { { .class = { "binary_node_iterator" },
                                       .free = binary_node_iterator_free,
                                       .to_string = _object_to_string },
                                     .current = _iterator_current_invalid_state,
@@ -231,7 +234,7 @@ static bool binary_node_move_next_in_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_in_order_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+  static iterator_vtable vtable = { { .class = { "binary_node_iterator" },
                                       .free = binary_node_iterator_free,
                                       .to_string = _object_to_string },
                                     .current = binary_node_current,
@@ -245,11 +248,14 @@ static bool binary_node_move_next_in_order_init(Iterator *i) {
   if (container_empty(c))
     return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   b->n = stack_pop((Stack *)c);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   return b->vtable = &vtable, true;
+#pragma clang diagnostic pop
 }
 
 Iterator *binary_node_in_order(BinaryNode *root) {
-  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+  static iterator_vtable vtable = { { .class = { "binary_node_iterator" },
                                       .free = binary_node_iterator_free,
                                       .to_string = _object_to_string },
                                     .current = _iterator_current_invalid_state,
@@ -273,7 +279,7 @@ static bool binary_node_move_next_post_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_post_order_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+  static iterator_vtable vtable = { { .class = { "binary_node_iterator" },
                                       .free = binary_node_iterator_free,
                                       .to_string = _object_to_string },
                                     .current = binary_node_current,
@@ -283,12 +289,15 @@ static bool binary_node_move_next_post_order_init(Iterator *i) {
   stack_push_non_null((Stack *)b->c, b->n);
   bool move_next = binary_node_move_next_post_order(i);
   if (move_next)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
     b->vtable = &vtable;
+#pragma clang diagnostic pop
   return move_next;
 }
 
 Iterator *binary_node_post_order(BinaryNode *root) {
-  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+  static iterator_vtable vtable = { { .class = { "binary_node_iterator" },
                                       .free = binary_node_iterator_free,
                                       .to_string = _object_to_string },
                                     .current = _iterator_current_invalid_state,
@@ -310,7 +319,7 @@ static bool binary_node_move_next_level_order(Iterator *i) {
 }
 
 static bool binary_node_move_next_level_order_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "binary_node_iterator",
+  static iterator_vtable vtable = { { .class = { "binary_node_iterator" },
                                       .free = binary_node_iterator_free,
                                       .to_string = _object_to_string },
                                     .current = binary_node_current,
@@ -323,12 +332,15 @@ static bool binary_node_move_next_level_order_init(Iterator *i) {
     return b->vtable = &binary_node_iterator_vtable_invalid_state, false;
   queue_enqueue_non_null((Queue *)c, n->left);
   queue_enqueue_non_null((Queue *)c, n->right);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   return i->vtable = &vtable, true;
+#pragma clang diagnostic pop
 }
 
 Iterator *binary_node_level_order(BinaryNode *root) {
   static iterator_vtable vtable = {
-    { .class = "binary_node_iterator",
+    { .class = { "binary_node_iterator" },
       .free = binary_node_iterator_free,
       .to_string = _object_to_string },
     .current = _iterator_current_invalid_state,

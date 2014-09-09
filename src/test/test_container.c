@@ -1,16 +1,12 @@
 #include "../diag/contract.h"
 #include "../lang/algorithm.h"
-#include "../lang/compare.h"
 #include "../lang/math_extended.h"
 #include "../lang/sort.h"
-#include "../lang/string.h"
 #include "../lang/type.h"
 #include "../util/key_value_pair.h"
 #include "test.h"
 #include "test_container.h"
 
-#include <assert.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -28,14 +24,14 @@ void test_vector(Vector *v, const int *values, size_t length) {
   assert_true(container_empty((Container *)v));
   size_t i;
   for (i = 0; i < length; i++) {
-    assert_equals(vector_size(v), i);
+    assert_equals((int)vector_size(v), (int)i);
     container_insert((Container *)v, INT_TO_POINTER(values[i]));
     assert_equals(POINTER_TO_INT(container_search((Container *)v,
                                                   INT_TO_POINTER(values[i]))),
                   values[i]);
     assert_false(container_empty((Container *)v));
   }
-  assert_equals(vector_size(v), length);
+  assert_equals((int)vector_size(v), (int)length);
   for (i = 0; i < length; i++)
     vector_set(v, i, NULL);
   for (i = 0; i < length; i++)
@@ -152,7 +148,7 @@ void test_stack(Stack *s, const int *values, size_t length) {
   assert_true(container_empty(c));
   size_t i;
   for (i = 0; i < length; i++) {
-    container_insert((Container *)c, INT_TO_POINTER(values[i]));
+    container_insert(c, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))),
         values[i]);
@@ -171,14 +167,14 @@ void test_linked_stack(LinkedStack *l, const int *values, size_t length) {
   assert_true(container_empty(c));
   size_t i;
   for (i = 0; i < length; i++) {
-    container_insert((Container *)c, INT_TO_POINTER(values[i]));
+    container_insert(c, INT_TO_POINTER(values[i]));
     assert_equals(
         POINTER_TO_INT(container_search(c, INT_TO_POINTER(values[i]))),
         values[i]);
   }
   assert_false(container_empty(c));
-  assert_equals(linked_stack_middle(l),
-                even(length) ? length / 2 : length / 2 + 1);
+  assert_equals((int)linked_stack_middle(l),
+                (int)(even((int)length) ? length / 2 : length / 2 + 1));
   linked_stack_reverse(l);
   for (i = 0; i < length; i++)
     assert_equals(POINTER_TO_INT(stack_pop((Stack *)l)), values[i]);
@@ -194,7 +190,10 @@ static OrderVisitor *order_visitor_new(const int *order) {
   static object_vtable vtable = { .free = _object_free };
 
   OrderVisitor *o = malloc(sizeof(OrderVisitor));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   o->vtable = &vtable;
+#pragma clang diagnostic pop
   o->order = order;
   o->i = 0;
   return o;

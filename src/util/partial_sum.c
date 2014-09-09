@@ -19,7 +19,7 @@ void _partial_sum_delete(PartialSum *p, void *k) {}
 void partial_sum_free(Object *o) {}
 
 PartialSum *partial_sum_new(Compare c) {
-  static partial_sum_vtable vtable = { { .class = "partial_sum",
+  static partial_sum_vtable vtable = { { .class = { "partial_sum" },
                                          .free = partial_sum_free,
                                          .to_string = _object_to_string },
                                        .add = _partial_sum_add,
@@ -27,7 +27,10 @@ PartialSum *partial_sum_new(Compare c) {
                                        .insert = _partial_sum_insert,
                                        .delete = _partial_sum_delete };
   _PartialSum *p = malloc(sizeof(PartialSum));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   p->vtable = &vtable;
+#pragma clang diagnostic pop
   p->c = c;
   return (PartialSum *)p;
 }

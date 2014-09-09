@@ -2,9 +2,7 @@
 #include "binary_node.h"
 #include "binary_tree.h"
 
-#include <stdbool.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 typedef struct {
   tree_vtable *vtable;
@@ -104,7 +102,10 @@ BinaryTree *binary_tree_new(Compare c) {
 
   _BinaryTree *b = malloc(sizeof(_BinaryTree));
   b->c = contract_requires_non_null(c);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   b->vtable = &vtable;
+#pragma clang diagnostic pop
   b->root = NULL;
   return (BinaryTree *)b;
 }
@@ -189,7 +190,10 @@ BinaryTree *binary_tree_new_fast_min_max(Compare c) {
 
   MinMaxBinaryTree *b = malloc(sizeof(MinMaxBinaryTree));
   b->super.c = contract_requires_non_null(c);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   b->super.vtable = &vtable;
+#pragma clang diagnostic pop
   b->super.root = NULL;
   b->min.k = NULL, b->min.v = NULL;
   b->max.k = NULL, b->max.v = NULL;

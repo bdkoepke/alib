@@ -22,7 +22,6 @@ static const Set *linked_graph_neighbors(const Graph *g, const void *x) {
 
 static void linked_graph_free(Object *o) {
   LinkedGraph *l = (LinkedGraph *)o;
-  Graph *g = (Graph *)o;
   Iterator *i = iterable_iterator((Iterable *)l->d);
   while (iterator_move_next(i))
     object_free((Object *)iterator_current(i));
@@ -34,7 +33,8 @@ static void linked_graph_free(Object *o) {
 static bool linked_graph_adjacent(const Graph *g, const void *x,
                                   const void *y) {
   Set *s = dictionary_search(((LinkedGraph *)g)->d, x);
-  return s == NULL ? false : set_search(s, y);
+  // TODO: verify this...
+  return (bool)(s == NULL ? false : set_search(s, y));
 }
 
 static const Set *linked_graph_vertices(const Graph *g) {
@@ -70,10 +70,9 @@ static void linked_graph_delete_edge_undirected(Graph *g, const void *x,
 }
 
 static Graph *linked_graph_new(Hash h, Equals e, graph_vtable *vtable) {
-  static const size_t DEFAULT_CAPACITY = 11;
   LinkedGraph *l = malloc(sizeof(LinkedGraph));
-  l->d = (Dictionary *)hashtable_new(contract_requires_non_null(h),
-                                     contract_requires_non_null(e));
+  l->d = hashtable_new(contract_requires_non_null(h),
+                       contract_requires_non_null(e));
   l->vtable = vtable;
   l->p.h = h;
   l->p.e = e;
@@ -82,7 +81,7 @@ static Graph *linked_graph_new(Hash h, Equals e, graph_vtable *vtable) {
 
 UndirectedGraph *undirected_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
-    { .class = "linked_graph",
+    { .class = { "linked_graph" },
       .free = linked_graph_free,
       .to_string = _object_to_string },
     .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
@@ -90,12 +89,12 @@ UndirectedGraph *undirected_linked_graph_new(Hash h, Equals e) {
     .insert_edge = linked_graph_insert_edge_undirected,
     .delete_edge = linked_graph_delete_edge_undirected,
   };
-  return (UndirectedGraph *)linked_graph_new(h, e, &vtable);
+  return linked_graph_new(h, e, &vtable);
 }
 
 DirectedGraph *directed_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
-    { .class = "linked_graph",
+    { .class = { "linked_graph" },
       .free = linked_graph_free,
       .to_string = _object_to_string },
     .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
@@ -103,5 +102,5 @@ DirectedGraph *directed_linked_graph_new(Hash h, Equals e) {
     .insert_edge = linked_graph_insert_edge_directed,
     .delete_edge = linked_graph_delete_edge_directed,
   };
-  return (DirectedGraph *)linked_graph_new(h, e, &vtable);
+  return linked_graph_new(h, e, &vtable);
 }

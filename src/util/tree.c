@@ -3,8 +3,6 @@
 #include "linked_stack.h"
 #include "tree.h"
 
-#include <stdlib.h>
-
 typedef Iterator *(*TreeIterator)(const Tree *t);
 
 static Iterator *tree_iterator(const Tree *t, TreeIterator i) {

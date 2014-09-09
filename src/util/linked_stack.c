@@ -1,7 +1,6 @@
 #include "../diag/contract.h"
 #include "linked_stack.h"
 #include "node.h"
-#include "stack.h"
 
 #include <stdlib.h>
 
@@ -66,7 +65,7 @@ static Iterator *linked_stack_iterator(const Iterable *i) {
 
 LinkedStack *linked_stack_new() {
   static stack_vtable vtable = {
-    { { { .class = "linked_stack",
+    { { { .class = { "linked_stack" },
           .free = _stack_free,
           .to_string = _object_to_string },
         .iterator = linked_stack_iterator },
@@ -78,6 +77,9 @@ LinkedStack *linked_stack_new() {
 
   LinkedStack *l = malloc(sizeof(LinkedStack));
   l->head = NULL;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   l->vtable = &vtable;
+#pragma clang diagnostic pop
   return l;
 }

@@ -1,7 +1,6 @@
 #include "../diag/contract.h"
 #include "node.h"
 
-#include <assert.h>
 #include <stdlib.h>
 
 typedef struct {
@@ -10,7 +9,7 @@ typedef struct {
 } NodeIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  { .class = "node_iterator",
+  { .class = { "node_iterator" },
     .free = _object_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -28,27 +27,33 @@ static bool node_iterator_move_next(Iterator *i) {
 }
 
 static bool node_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "node_iterator",
+  static iterator_vtable vtable = { { .class = { "node_iterator" },
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = node_iterator_current,
                                     .move_next = node_iterator_move_next };
   if (node_iterator_move_next(i)) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
     i->vtable = &vtable;
+#pragma clang diagnostic pop
     return true;
   }
   return false;
 }
 
 Iterator *node_iterator(Node *n) {
-  static iterator_vtable vtable = { { .class = "node_iterator",
+  static iterator_vtable vtable = { { .class = { "node_iterator" },
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = _iterator_current_invalid_state,
                                     .move_next = node_iterator_move_next_init };
 
   NodeIterator *i = malloc(sizeof(NodeIterator));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   i->vtable = n == NULL ? &vtable_invalid_state : &vtable;
+#pragma clang diagnostic pop
   i->n = n;
   return (Iterator *)i;
 }
@@ -127,7 +132,7 @@ int node_loop(const Node *n) {
   Node *slow = (Node *)n;
   Node *fast;
   int i = 0;
-  for (fast = (Node *)n->n->n; fast->n != NULL && fast->n->n != NULL;
+  for (fast = n->n->n; fast->n != NULL && fast->n->n != NULL;
        fast = fast->n->n) {
     if (slow == fast)
       return i;

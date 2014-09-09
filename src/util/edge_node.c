@@ -2,7 +2,6 @@
 #include "edge_node.h"
 #include "linked_stack.h"
 
-#include <stdbool.h>
 #include <stdlib.h>
 
 typedef struct {
@@ -44,7 +43,7 @@ static void _edge_node_set(EdgeNode *e, void *x) { ((_EdgeNode *)e)->x = x; }
 
 EdgeNode *edge_node_new(void *x) {
   static edge_node_vtable vtable = {
-    { { { .class = "edge_node",
+    { { { .class = { "edge_node" },
           .free = edge_node_free,
           .to_string = _object_to_string },
         .iterator = edge_node_iterator },
@@ -55,7 +54,10 @@ EdgeNode *edge_node_new(void *x) {
   _EdgeNode *e = malloc(sizeof(_EdgeNode));
   e->x = x;
   e->s = linked_stack_new();
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   e->vtable = &vtable;
+#pragma clang diagnostic pop
   return (EdgeNode *)e;
 }
 

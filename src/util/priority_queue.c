@@ -41,7 +41,7 @@ void _priority_queue_free(Object *o) {
 
 PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
   static priority_queue_vtable vtable = {
-    { .class = "priority_queue",
+    { .class = { "priority_queue" },
       .free = _priority_queue_free,
       .to_string = _object_to_string },
     .insert = _priority_queue_insert,
@@ -54,7 +54,10 @@ PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
 
   _PriorityQueue *p = malloc(sizeof(_PriorityQueue));
   p->dictionary = dictionary;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   p->vtable = &vtable;
+#pragma clang diagnostic pop
   return (PriorityQueue *)p;
 }
 

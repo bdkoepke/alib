@@ -23,10 +23,9 @@ static void sparse_vector_free(Object *o) {
 
 static void sparse_vector_insert(Container *c, void *x) {
   SparseVector *s = (SparseVector *)c;
-  unsigned int _x = POINTER_TO_INT(x);
+  unsigned int _x = (unsigned int)POINTER_TO_INT(x);
   contract_requires(_x < s->n && s->size < UINT_MAX && s->size < s->m);
-  contract_weak_requires(container_search((Container *)c, x) ==
-                         INT_TO_POINTER(false));
+  contract_weak_requires(INT_TO_POINTER(false) == container_search(c, x));
   s->size++;
   s->A[_x] = s->size;
   s->B[s->A[_x] - 1] = _x;
@@ -37,7 +36,7 @@ static void *sparse_vector_search(const Container *c, const void *x) {
   // NOTE: valgrind will issue errors here do to the nature of a sparse
   // vector, we are abusing this behavior on purpose (i.e. a conditional
   // jump based on uninitialized memory).
-  unsigned int _x = POINTER_TO_INT(x);
+  unsigned int _x = (unsigned int)POINTER_TO_INT(x);
   return (x != NULL && _x < s->n && s->A[_x] != POINTER_TO_INT(NULL) &&
           (s->A[_x] - 1) < s->m && s->B[s->A[_x] - 1] == _x)
              ? INT_TO_POINTER(_x)
@@ -74,7 +73,7 @@ static void *sparse_vector_get(const Vector *v, size_t i) {
 
 Vector *sparse_vector_new(unsigned int n, unsigned int m) {
   static vector_vtable vtable = {
-    { { { .class = "sparse_vector",
+    { { { .class = { "sparse_vector" },
           .free = sparse_vector_free,
           .to_string = _object_to_string },
         .iterator = _vector_iterator },
@@ -84,7 +83,10 @@ Vector *sparse_vector_new(unsigned int n, unsigned int m) {
     .size = sparse_vector_size
   };
   SparseVector *s = malloc(sizeof(SparseVector));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   s->vtable = &vtable;
+#pragma clang diagnostic pop
   s->size = 0;
   s->n = n;
   s->m = m;

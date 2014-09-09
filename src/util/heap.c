@@ -97,9 +97,10 @@ static bool _heap_empty(const Heap *h) { return ((const _Heap *)h)->size == 0; }
 
 static bool __heap_compare(const _Heap *h, const void *x, size_t n, size_t k) {
   if (k <= 0 || n >= h->size || h->c(h->p[n], x) >= 0)
-    return k;
-  return __heap_compare(h, x, heap_right_child(n),
-                        __heap_compare(h, x, heap_left_child(n), k - 1));
+    return (bool)k;
+  return __heap_compare(
+      h, x, heap_right_child(n),
+      (size_t)__heap_compare(h, x, heap_left_child(n), k - 1));
 }
 
 static bool _heap_compare(const Heap *h, const void *x, size_t k) {
@@ -113,7 +114,7 @@ static void heap_free(Object *o) {
 }
 
 static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
-  static heap_vtable vtable = { { .class = "heap",
+  static heap_vtable vtable = { { .class = { "heap" },
                                   .free = heap_free,
                                   .to_string = _object_to_string },
                                 .insert = _heap_insert,
@@ -123,7 +124,10 @@ static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
   contract_requires(c != NULL && p != NULL && capacity > 0);
 
   _Heap *h = malloc(sizeof(_Heap));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   h->vtable = &vtable;
+#pragma clang diagnostic pop
   h->size = size;
   h->capacity = capacity;
   h->c = c;

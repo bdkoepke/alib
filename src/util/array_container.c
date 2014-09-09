@@ -23,7 +23,7 @@ static void *array_container_iterator_current(const Iterator *i) {
 }
 
 static iterator_vtable vtable_invalid_state = {
-  { .class = "array_container_iterator",
+  { .class = { "array_container_iterator" },
     .free = _object_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -40,7 +40,7 @@ static bool array_container_iterator_move_next(Iterator *i) {
 }
 
 static bool array_container_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "array_container_iterator",
+  static iterator_vtable vtable = { { .class = { "array_container_iterator" },
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = array_container_iterator_current,
@@ -53,13 +53,16 @@ static bool array_container_iterator_move_next_init(Iterator *i) {
   // requirement.
   contract_weak_requires(
       !container_empty((Container *)((ArrayContainerIterator *)i)->a));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   i->vtable = &vtable;
+#pragma clang diagnostic pop
   return true;
 }
 
 static Iterator *array_container_iterator(const Iterable *i) {
   static iterator_vtable vtable = {
-    { .class = "array_container_iterator",
+    { .class = { "array_container_iterator" },
       .free = _object_free,
       .to_string = _object_to_string },
     .current = _iterator_current_invalid_state,
@@ -68,7 +71,10 @@ static Iterator *array_container_iterator(const Iterable *i) {
   ArrayContainerIterator *a = malloc(sizeof(ArrayContainerIterator));
   a->a = (ArrayContainer *)i;
   a->i = 0;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   a->vtable = container_empty((Container *)i) ? &vtable_invalid_state : &vtable;
+#pragma clang diagnostic pop
   return (Iterator *)a;
 }
 
@@ -82,15 +88,14 @@ static void array_container_insert(Container *c, void *x) {
   size_t _x;
   contract_requires((_x = POINTER_TO_INT(contract_requires_non_null(x))) <=
                     a->length);
-  contract_weak_requires(container_search((Container *)c, x) ==
-                         INT_TO_POINTER(false));
+  contract_weak_requires(container_search(c, x) == INT_TO_POINTER(false));
   a->array[_x - 1] = x;
   a->size++;
 }
 
 static void *array_container_search(const Container *c, const void *x) {
   ArrayContainer *a = (ArrayContainer *)c;
-  size_t _x = POINTER_TO_INT(x);
+  int _x = POINTER_TO_INT(x);
   return _x <= a->length ? a->array[_x - 1] : NULL;
 }
 
@@ -110,7 +115,7 @@ static bool array_container_empty(const Container *c) {
 }
 
 Container *array_container_new(size_t length) {
-  static container_vtable vtable = { { { .class = "array_container",
+  static container_vtable vtable = { { { .class = { "array_container" },
                                          .free = array_container_free,
                                          .to_string = _object_to_string },
                                        .iterator = array_container_iterator },
@@ -121,7 +126,10 @@ Container *array_container_new(size_t length) {
   // TODO: should be possible to create a lower bound to, so you could have an
   // array that requires 1999-2010, etc.
   ArrayContainer *array = malloc(sizeof(ArrayContainer));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   array->vtable = &vtable;
+#pragma clang diagnostic pop
   array->array = calloc(length, sizeof(void *));
   array->length = length;
   array->size = 0;

@@ -1,8 +1,5 @@
 #include "../diag/contract.h"
 #include "graph.h"
-#include "linked_queue.h"
-
-#include <stdlib.h>
 
 bool graph_adjacent(const Graph *g, const void *x, const void *y) {
   return g->vtable->adjacent(contract_requires_non_null(g),

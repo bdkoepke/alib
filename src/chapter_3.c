@@ -10,16 +10,10 @@
 #include "util/binary_tree.h"
 #include "util/hashtable.h"
 #include "util/linked_queue.h"
-#include "util/linked_stack.h"
 #include "util/node.h"
-#include "util/red_black_tree.h"
 #include "util/sparse_vector.h"
-#include "util/stack.h"
-#include "util/vector.h"
 
-#include <assert.h>
 #include <math.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -29,7 +23,7 @@ bool balanced_parenthesis(const char *text, size_t length, int *out_position) {
   contract_weak_requires(length <= strlen(text));
 
   size_t left_parenthesis = 0;
-  size_t i;
+  int i;
   for (i = 0; i < length; i++) {
     switch (text[i]) {
     case '(':
@@ -161,13 +155,13 @@ void question_3_3(void) {
 
 void question_3_4(void) {
   puts("test_question_3_4");
-  Container *c = (Container *)array_container_new(
-      reduce_int(test_values, test_values_length, max, 0));
+  Container *c = array_container_new(
+      (size_t)reduce_int(test_values, test_values_length, max, 0));
   test_container(c, test_values, test_values_length);
   object_free((Object *)c);
-  c = (Container *)array_container_new(
-      reduce_int(test_values_extended_positive,
-                 test_values_extended_positive_length, max, 0));
+  c = array_container_new(
+      (size_t)reduce_int(test_values_extended_positive,
+                         test_values_extended_positive_length, max, 0));
   test_container(c, test_values_extended_positive,
                  test_values_extended_positive_length);
   object_free((Object *)c);
@@ -204,7 +198,7 @@ void question_3_9(void) {
   puts("test_question_3_9");
   BinaryTree *a = binary_tree_new(compare_int_pointer);
   BinaryTree *b = binary_tree_new(compare_int_pointer);
-  size_t i;
+  int i;
   for (i = 1; i <= 10; i++)
     dictionary_insert((Dictionary *)a, INT_TO_POINTER(i), INT_TO_POINTER(i));
   for (; i <= 20; i++)
@@ -334,17 +328,17 @@ void question_3_14(void) {
 
 void question_3_15(void) {
   puts("test_question_3_15");
-  Vector *v =
-      sparse_vector_new(reduce_int(test_values, test_values_length, max, 0) + 1,
-                        test_values_length);
+  Vector *v = sparse_vector_new(
+      (unsigned int)(reduce_int(test_values, test_values_length, max, 0) + 1),
+      (unsigned int)test_values_length);
   test_container((Container *)v, test_values, test_values_length);
   object_free((Object *)v);
 
-  v = sparse_vector_new(reduce_int(test_values_extended_positive,
-                                   test_values_extended_positive_length, max,
-                                   0) +
-                            1,
-                        test_values_extended_positive_length);
+  v = sparse_vector_new(
+      (unsigned int)(reduce_int(test_values_extended_positive,
+                                test_values_extended_positive_length, max, 0) +
+                     1),
+      (unsigned int)test_values_extended_positive_length);
   test_container((Container *)v, test_values_extended_positive,
                  test_values_extended_positive_length);
   object_free((Object *)v);
@@ -388,7 +382,7 @@ void question_3_22(void) {
 
   assert_false(container_empty((Container *)l));
   int j;
-  for (j = (test_values_length - 1); j >= 0; j--)
+  for (j = (int)(test_values_length - 1); j >= 0; j--)
     assert_equals(POINTER_TO_INT(stack_pop((Stack *)l)),
                   test_values_in_order[j]);
   assert_true(container_empty((Container *)l));
@@ -485,7 +479,7 @@ int *unordered_product_ignoring_index_with_division(const int *X,
 int *unordered_product_ignoring_index(const int *X, size_t length) {
   contract_requires(X != NULL);
 
-  int number_of_products = log2(length);
+  int number_of_products = (int)log2(length);
   int *Y = malloc(sizeof(int) * length);
   int *M = malloc(sizeof(int) * length);
   Y = memcpy(Y, X, sizeof(int) * length);

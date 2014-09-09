@@ -9,7 +9,7 @@ static int _binary_search(const void *key, const void *values, size_t low,
   const void *p = values + middle * size;
   int r = c(key, p);
   if (r == 0)
-    return middle;
+    return (int)middle;
   return r < 0 ? _binary_search(key, values, low, middle - 1, size, c)
                : _binary_search(key, values, middle + 1, high, size, c);
 }
@@ -56,7 +56,7 @@ static int _binary_search_int(int x, const int *a, size_t l, size_t h) {
     return -1;
   size_t m = (l + h) / 2;
   if (a[m] == x)
-    return m;
+    return (int)m;
   return x < a[m] ? m == 0 ? -1 : _binary_search_int(x, a, l, m - 1)
                            : _binary_search_int(x, a, m + 1, h);
 }

@@ -24,7 +24,7 @@ typedef struct {
 } HashtableIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  { .class = "hashtable_iterator",
+  { .class = { "hashtable_iterator" },
     .free = _object_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -38,7 +38,7 @@ static void *hashtable_iterator_current(const Iterator *i) {
 
 static bool hashtable_iterator_move_next(Iterator *_i) {
   HashtableIterator *i = (HashtableIterator *)_i;
-  Hashtable *h = (Hashtable *)i->h;
+  Hashtable *h = i->h;
   if (i->n != NULL && (i->n = i->n->n))
     return true;
   for (i->i++; i->i < h->capacity && h->array[i->i] == NULL; i->i++)
@@ -49,19 +49,22 @@ static bool hashtable_iterator_move_next(Iterator *_i) {
 }
 
 static bool hashtable_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = "hashtable_iterator",
+  static iterator_vtable vtable = { { .class = { "hashtable_iterator" },
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = hashtable_iterator_current,
                                     .move_next = hashtable_iterator_move_next };
   HashtableIterator *h = (HashtableIterator *)i;
-  if (set_empty((Set *)(Hashtable *)h->h))
+  if (set_empty((Set *)h->h))
     return i->vtable = &vtable_invalid_state, false;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   return i->vtable = &vtable, hashtable_iterator_move_next(i);
+#pragma clang diagnostic pop
 }
 
 static Iterator *hashtable_iterator(const Iterable *i) {
-  static iterator_vtable vtable = { { .class = "hashtable_iterator",
+  static iterator_vtable vtable = { { .class = { "hashtable_iterator" },
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = _iterator_current_invalid_state,
@@ -69,7 +72,10 @@ static Iterator *hashtable_iterator(const Iterable *i) {
                                         hashtable_iterator_move_next_init };
 
   HashtableIterator *h = malloc(sizeof(HashtableIterator));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   h->vtable = &vtable;
+#pragma clang diagnostic pop
   h->h = (Hashtable *)i;
   h->i = 0;
   h->n = NULL;
@@ -153,7 +159,7 @@ static bool hashtable_empty(const Set *s) {
 
 Dictionary *hashtable_new(Hash hash, Equals equals) {
   static dictionary_vtable vtable = {
-    { { { .class = "hashtable",
+    { { { .class = { "hashtable" },
           .free = hashtable_free,
           .to_string = _object_to_string },
         .iterator = hashtable_iterator },
@@ -169,7 +175,10 @@ Dictionary *hashtable_new(Hash hash, Equals equals) {
   Hashtable *h = malloc(sizeof(Hashtable));
   h->h = contract_requires_non_null(hash);
   h->e = contract_requires_non_null(equals);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   h->vtable = &vtable;
+#pragma clang diagnostic pop
   h->capacity = DEFAULT_CAPACITY;
   h->array = calloc(h->capacity, sizeof(HNode *));
   h->size = 0;

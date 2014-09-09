@@ -7,7 +7,6 @@
 #include "util/hashtable.h"
 #include "util/linked_queue.h"
 #include "util/linked_graph.h"
-#include "util/matrix_graph.h"
 #include "test/test.h"
 #include "lang/unsafe.h"
 
@@ -61,11 +60,9 @@ static graph_visitor_vtable graph_visitor_print_vtable = {
 };
 
 void graph_breadth_first(const Graph *g, const void *s, GraphVisitor *gv) {
-  Dictionary *vertices =
-      (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
-  Dictionary *parents =
-      (Dictionary *)hashtable_new(hash_int_pointer, equals_int_pointer);
-  Dictionary *edges = (Dictionary *)hashtable_new(edge_hash, edge_equals);
+  Dictionary *vertices = hashtable_new(hash_int_pointer, equals_int_pointer);
+  Dictionary *parents = hashtable_new(hash_int_pointer, equals_int_pointer);
+  Dictionary *edges = hashtable_new(edge_hash, edge_equals);
 
   Iterator *i = iterable_iterator((Iterable *)graph_vertices(g));
   while (iterator_move_next(i)) {

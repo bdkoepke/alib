@@ -2,7 +2,6 @@
 #include "diag/contract.h"
 #include "lang/algorithm.h"
 #include "lang/array.h"
-#include "lang/compare.h"
 #include "lang/math_extended.h"
 #include "lang/sort.h"
 #include "lang/type.h"
@@ -10,12 +9,8 @@
 #include "test/test_container.h"
 #include "test/test_container_values.h"
 #include "test/test_sort.h"
-#include "util/binary_tree.h"
 #include "util/color_array.h"
-#include "util/key_value_pair.h"
 #include "util/linked_queue.h"
-#include "util/linked_stack.h"
-#include "util/stack.h"
 
 #include <assert.h>
 #include <limits.h>
@@ -104,7 +99,7 @@ void test_count_occurrences(void) {
 
 static int _one_sided_binary_search(int x, int *a, int i) {
   if (a[i - 1] == x)
-    return binary_search_int(x, a, i);
+    return binary_search_int(x, a, (size_t)i);
   return _one_sided_binary_search(x, a, i * 2);
 }
 
@@ -126,7 +121,7 @@ void test_sqrt(void) {
 }
 
 void partition_players(int *a, size_t length, int *team_a, int *team_b) {
-  contract_requires(even(length));
+  contract_requires(even((int)length));
   size_t half = length / 2;
 
   quicksort(a, length);
@@ -158,7 +153,7 @@ void max_min(int *a, size_t len, int *max, int *min) {
   int _min = INT_MAX;
 
   size_t len_half = (len / 2);
-  size_t middle = even(len) ? len_half : len_half + 1;
+  size_t middle = even((int)len) ? len_half : len_half + 1;
   size_t i;
   for (i = 0; i < len_half; i++)
     if (a[i] > a[i + middle])
@@ -197,10 +192,8 @@ void question_4_2(void) {
   assert_equals(sorted[array_size(sorted) - 1] - sorted[0], 16);
 
   int s, e, d;
-  s = 0;
-  e = INT_MAX;
   d = INT_MAX;
-  size_t i;
+  int i;
   for (i = 0; i < (array_size(sorted) - 1); i++)
     if (sorted[i + 1] - sorted[i] < d) {
       s = i;
@@ -216,7 +209,7 @@ typedef struct {
 
 static void min_partition_pairs(int *a, int n, Tuple t[n / 2]) {
   contract_requires(even(n));
-  quicksort(a, n);
+  quicksort(a, (size_t)n);
   size_t i;
   for (i = 0; i < (n / 2); i++) {
     Tuple u = { .a = a[i], .b = a[n - i - 1] };
@@ -251,9 +244,12 @@ void question_4_4(void) {
     Color c;
   } ColorPair;
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "ImplicitIntegerAndEnumConversion"
   ColorPair pairs[] = {
     { 1, blue }, { 3, red }, { 4, blue }, { 6, yellow }, { 9, red }
   };
+#pragma clang diagnostic pop
   size_t pairs_length = array_size(pairs);
   Queue *buckets[] = { linked_queue_new(), linked_queue_new(),
                        linked_queue_new() };
@@ -268,9 +264,12 @@ void question_4_4(void) {
     while (!container_empty((Container *)buckets[i]))
       sorted_pairs[j++] = *(ColorPair *)queue_dequeue(buckets[i]);
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "ImplicitIntegerAndEnumConversion"
   ColorPair expected[] = {
     { 3, red }, { 9, red }, { 1, blue }, { 4, blue }, { 6, yellow }
   };
+#pragma clang diagnostic pop
 
   for (i = 0; i < pairs_length; i++) {
     assert_equals(sorted_pairs[i].i, expected[i].i);
@@ -295,21 +294,21 @@ size_t find_mode(int a[], size_t len) {
   int *b = buckets_new(a, len, reduce_int(a, len, max, 0));
 
   int bucket_value = 0;
-  size_t i, largest_bucket;
+  int i, largest_bucket;
   for (i = largest_bucket = 0; i < len; i++)
     if (b[i] > largest_bucket) {
       largest_bucket = b[i];
       bucket_value = i;
     }
   free(b);
-  return bucket_value;
+  return (size_t)bucket_value;
 }
 
 void question_4_5(void) {
   puts("question_4_5");
   int numbers[] = { 4, 6, 2, 4, 3, 1 };
   size_t numbers_length = array_size(numbers);
-  assert_equals(find_mode(numbers, numbers_length), 4);
+  assert_equals((int)find_mode(numbers, numbers_length), 4);
 }
 
 bool sum_pair_equals_x(int S_1[], int S_2[], size_t len, int x) {
@@ -416,7 +415,7 @@ void get_elements_with_frequency(int S[], size_t length, int frequency,
   *result = malloc(sizeof(int) * (length / frequency));
 
   *result_length = 0;
-  size_t i;
+  int i;
   for (i = 0; i <= _max; i++)
     if (b[i] > frequency)
       (*result)[(*result_length)++] = i;
@@ -433,25 +432,27 @@ void question_4_11(void) {
                 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0,
                 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0,
                 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1 };
-  size_t S_2_len = array_size(S_2);
+  int S_2_len = array_size(S_2);
   int S_4[] = { 0, 0, 3, 3, 0, 0, 2, 2, 1, 3, 3, 1, 1, 0, 1, 2, 1, 1, 1, 0,
                 0, 1, 2, 0, 0, 0, 1, 3, 3, 3, 0, 0, 3, 3, 1, 1, 0, 0, 1, 1,
                 1, 1, 3, 0, 0, 3, 0, 1, 0, 0, 2, 0, 3, 2, 1, 1, 0, 1, 3, 0,
                 2, 2, 0, 0, 0, 2, 3, 2, 2, 3, 1, 0, 2, 1, 1, 2, 1, 1, 1, 1,
                 0, 2, 0, 2, 2, 1, 2, 0, 1, 3, 1, 1, 3, 2, 1, 3, 2, 1, 2, 0 };
-  size_t S_4_len = array_size(S_4);
+  int S_4_len = array_size(S_4);
 
   int *S_r;
   int r_length;
 
   int S_2_expected[] = { 1 };
   int S_4_expected[] = { 0, 1 };
-  get_elements_with_frequency(S_2, S_2_len, S_2_len / 2, &S_r, &r_length);
+  get_elements_with_frequency(S_2, (size_t)S_2_len, S_2_len / 2, &S_r,
+                              &r_length);
   assert_memcmp(S_2_expected, S_r);
   assert_equals(r_length, 1);
   free(S_r);
 
-  get_elements_with_frequency(S_4, S_4_len, S_4_len / 4, &S_r, &r_length);
+  get_elements_with_frequency(S_4, (size_t)S_4_len, S_4_len / 4, &S_r,
+                              &r_length);
   assert_memcmp(S_4_expected, S_r);
   assert_equals(r_length, 2);
   free(S_r);
@@ -487,16 +488,15 @@ void question_4_14(void) {
   int S_7[] = { 75, 27, 24, 6, 83, 21 };
   int S_8[] = { 53, 97, 31, 32, 91, 64, 55, 96, 23, 87, 95 };
   int S_9[] = { 56, 4, 74, 83, 2, 55, 23, 92, 19, 45, 26 };
-  size_t k = 10;
   int S[] = { 1,  2,  3,  4,  6,  11, 14, 19, 21, 23, 24, 26, 27,
               28, 31, 32, 34, 35, 37, 38, 40, 41, 44, 45, 47, 49,
               51, 52, 53, 54, 55, 56, 57, 59, 60, 62, 64, 65, 66,
               68, 72, 73, 74, 75, 77, 78, 79, 80, 83, 84, 85, 86,
               87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
-  size_t n = array_size(S);
+  int n = array_size(S);
 
   Heap *h = heap_new(compare_int_pointer);
-  size_t i;
+  int i;
   for (i = 0; i < array_size(S_0); i++)
     heap_insert(h, INT_TO_POINTER(S_0[i]));
   for (i = 0; i < array_size(S_1); i++)
@@ -518,7 +518,7 @@ void question_4_14(void) {
   for (i = 0; i < array_size(S_9); i++)
     heap_insert(h, INT_TO_POINTER(S_9[i]));
 
-  int *_S = calloc(n, sizeof(int));
+  int *_S = calloc((size_t)n, sizeof(int));
 
   i = 0;
   int _min = 0;
@@ -713,8 +713,8 @@ void question_4_24(void) {
   };
 
   int unsorted_length = 16;
-  quicksort(&unsorted[239], unsorted_length);
-  merge(unsorted, 0, (array_size(unsorted) - unsorted_length - 1),
+  quicksort(&unsorted[239], (size_t)unsorted_length);
+  merge(unsorted, 0, (int)(array_size(unsorted) - unsorted_length - 1),
         array_size(unsorted) - 1);
   assert_memcmp(unsorted, sorted);
 }
@@ -837,7 +837,7 @@ static bool _find_matching_index(const int A[], size_t l, size_t h) {
     return false;
   size_t m = (l + h) / 2;
   if (A[m] == m)
-    return m;
+    return (bool)m;
   return m > A[m] ? m == 0 ? false : _find_matching_index(A, l, m - 1)
                            : _find_matching_index(A, m + 1, h);
 }
@@ -866,8 +866,8 @@ void question_4_34(void) {
 }
 
 typedef struct {
-  int n;
-  int m;
+  size_t n;
+  size_t m;
 } Point;
 
 static Point matrix_search(int M[][8], size_t n, size_t m, int k) {
@@ -907,20 +907,20 @@ void question_4_35(void) {
                  { 120, 139, 147, 184, 195, 207, 211, 216 },
                  { 127, 153, 155, 192, 201, 208, 219, 228 } };
   Point p = matrix_search(M, n, m, 27);
-  assert_equals(p.n, 16);
-  assert_equals(p.m, 8);
+  assert_equals((int)p.n, 16);
+  assert_equals((int)p.m, 8);
   p = matrix_search(M, n, m, 29);
-  assert_equals(p.n, 0);
-  assert_equals(p.m, 4);
+  assert_equals((int)p.n, 0);
+  assert_equals((int)p.m, 4);
   p = matrix_search(M, n, m, 180);
-  assert_equals(p.n, 9);
-  assert_equals(p.m, 7);
+  assert_equals((int)p.n, 9);
+  assert_equals((int)p.m, 7);
   p = matrix_search(M, n, m, 158);
-  assert_equals(p.n, 7);
-  assert_equals(p.m, 7);
+  assert_equals((int)p.n, 7);
+  assert_equals((int)p.m, 7);
   p = matrix_search(M, n, m, 156);
-  assert_equals(p.n, n);
-  assert_equals(p.m, m);
+  assert_equals((int)p.n, n);
+  assert_equals((int)p.m, m);
 }
 
 void question_4_45(void) { puts("question_4_45: not implemented"); }
@@ -940,8 +940,8 @@ static Coin compare_coins(Coin a[], Coin b[], size_t length) {
   size_t i;
   for (i = 0; i < length; i++)
     if (a[i] != b[i])
-      return a[i] > b[i] ? 0 : 2;
-  return 1;
+      return (Coin)(a[i] > b[i] ? 0 : 2);
+  return (Coin)1;
 }
 
 static CoinPair find_fake_coin(Coin C[], size_t length) {
@@ -962,53 +962,53 @@ static CoinPair find_fake_coin(Coin C[], size_t length) {
                                 { { 3, Light }, { 2, Light },
                                   { 1, Light } } } };
   assert_equals(table[0][0][0].c, Heavy);
-  assert_equals(table[0][0][0].i, 1);
+  assert_equals((int)table[0][0][0].i, 1);
   assert_equals(table[0][0][1].c, Heavy);
-  assert_equals(table[0][0][1].i, 2);
+  assert_equals((int)table[0][0][1].i, 2);
   assert_equals(table[0][0][2].c, Heavy);
-  assert_equals(table[0][0][2].i, 3);
+  assert_equals((int)table[0][0][2].i, 3);
   assert_equals(table[0][1][0].c, Light);
-  assert_equals(table[0][1][0].i, 6);
+  assert_equals((int)table[0][1][0].i, 6);
   assert_equals(table[0][1][1].c, Light);
-  assert_equals(table[0][1][1].i, 5);
+  assert_equals((int)table[0][1][1].i, 5);
   assert_equals(table[0][1][2].c, Light);
-  assert_equals(table[0][1][2].i, 4);
+  assert_equals((int)table[0][1][2].i, 4);
   assert_equals(table[0][2][0].c, Light);
-  assert_equals(table[0][2][0].i, 10);
+  assert_equals((int)table[0][2][0].i, 10);
   assert_equals(table[0][2][1].c, Heavy);
-  assert_equals(table[0][2][1].i, 11);
+  assert_equals((int)table[0][2][1].i, 11);
   assert_equals(table[1][0][0].c, Light);
-  assert_equals(table[1][0][0].i, 9);
+  assert_equals((int)table[1][0][0].i, 9);
   assert_equals(table[1][0][1].c, Light);
-  assert_equals(table[1][0][1].i, 8);
+  assert_equals((int)table[1][0][1].i, 8);
   assert_equals(table[1][0][2].c, Light);
-  assert_equals(table[1][0][2].i, 7);
+  assert_equals((int)table[1][0][2].i, 7);
   assert_equals(table[1][1][0].c, Light);
-  assert_equals(table[1][1][0].i, 12);
+  assert_equals((int)table[1][1][0].i, 12);
   assert_equals(table[1][1][2].c, Heavy);
-  assert_equals(table[1][1][2].i, 12);
+  assert_equals((int)table[1][1][2].i, 12);
   assert_equals(table[1][2][0].c, Heavy);
-  assert_equals(table[1][2][0].i, 7);
+  assert_equals((int)table[1][2][0].i, 7);
   assert_equals(table[1][2][1].c, Heavy);
-  assert_equals(table[1][2][1].i, 8);
+  assert_equals((int)table[1][2][1].i, 8);
   assert_equals(table[1][2][2].c, Heavy);
-  assert_equals(table[1][2][2].i, 9);
+  assert_equals((int)table[1][2][2].i, 9);
   assert_equals(table[2][0][1].c, Light);
-  assert_equals(table[2][0][1].i, 11);
+  assert_equals((int)table[2][0][1].i, 11);
   assert_equals(table[2][0][2].c, Heavy);
-  assert_equals(table[2][0][2].i, 10);
+  assert_equals((int)table[2][0][2].i, 10);
   assert_equals(table[2][1][0].c, Heavy);
-  assert_equals(table[2][1][0].i, 4);
+  assert_equals((int)table[2][1][0].i, 4);
   assert_equals(table[2][1][1].c, Heavy);
-  assert_equals(table[2][1][1].i, 5);
+  assert_equals((int)table[2][1][1].i, 5);
   assert_equals(table[2][1][2].c, Heavy);
-  assert_equals(table[2][1][2].i, 6);
+  assert_equals((int)table[2][1][2].i, 6);
   assert_equals(table[2][2][0].c, Light);
-  assert_equals(table[2][2][0].i, 3);
+  assert_equals((int)table[2][2][0].i, 3);
   assert_equals(table[2][2][1].c, Light);
-  assert_equals(table[2][2][1].i, 2);
+  assert_equals((int)table[2][2][1].i, 2);
   assert_equals(table[2][2][2].c, Light);
-  assert_equals(table[2][2][2].i, 1);
+  assert_equals((int)table[2][2][2].i, 1);
   return table[compare_coins(set_0, set_1, array_size(set_0))]
               [compare_coins(set_2, set_3, array_size(set_2))]
               [compare_coins(set_4, set_5, array_size(set_4))];

@@ -19,17 +19,22 @@ const char *color_to_string(const Color c) {
   case Blue:
     return "Blue";
   }
+  contract_fail();
+  return "Error";
 }
 
 ColorArray *color_array_new(Color a[], size_t len) {
-  static object_vtable vtable = { .class = "color_array",
+  static object_vtable vtable = { .class = { "color_array" },
                                   .free = _object_free,
                                   .to_string = _object_to_string };
 
   ColorArray *c = malloc(sizeof(ColorArray));
   c->a = contract_requires_non_null(a);
   c->len = len;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   c->vtable = &vtable;
+#pragma clang diagnostic pop
   return c;
 }
 

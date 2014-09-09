@@ -32,9 +32,9 @@ static void __sorted_set_insert(BinaryNode *n, BinaryNode **p, Compare c,
   if (n == NULL)
     *p = binary_node_new_leaf(0, k);
   else {
-    KeyValuePair t = n->p;
-    int r = c(k, t.k);
-    BinaryNode **_p = (r > 0) ? &(n->right) : (t.k++, &(n->left));
+    KeyValuePair *t = &(n->p);
+    int r = c(k, t->k);
+    BinaryNode **_p = (r > 0) ? &(n->right) : (t->k++, &(n->left));
     __sorted_set_insert(*_p, _p, c, k);
   }
 }
@@ -108,7 +108,7 @@ static void sorted_set_free(Object *o) {
 }
 
 SortedSet *sorted_set_new(Compare c) {
-  static sorted_set_vtable vtable = { { .class = "sorted_set",
+  static sorted_set_vtable vtable = { { .class = { "sorted_set" },
                                         .free = sorted_set_free,
                                         .to_string = _object_to_string },
                                       .member = _sorted_set_member,
@@ -117,7 +117,10 @@ SortedSet *sorted_set_new(Compare c) {
                                       .size = _sorted_set_size, };
 
   _SortedSet *s = malloc(sizeof(_SortedSet));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   s->vtable = &vtable;
+#pragma clang diagnostic pop
   s->root = NULL;
   s->c = c;
   return (SortedSet *)s;

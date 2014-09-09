@@ -1,7 +1,6 @@
 #include "../diag/contract.h"
 #include "linked_queue.h"
 #include "node.h"
-#include "queue.h"
 
 #include <stdlib.h>
 
@@ -72,7 +71,7 @@ static void *linked_queue_delete(Container *c, const void *x) {
 
 Queue *linked_queue_new() {
   static queue_vtable vtable = {
-    { { { .class = "linked_queue",
+    { { { .class = { "linked_queue" },
           .free = _queue_free,
           .to_string = _object_to_string },
         .iterator = linked_queue_iterator },
@@ -84,6 +83,9 @@ Queue *linked_queue_new() {
 
   LinkedQueue *q = malloc(sizeof(LinkedQueue));
   q->tail = (q->head = NULL);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
   q->vtable = &vtable;
+#pragma clang diagnostic pop
   return (Queue *)q;
 }
