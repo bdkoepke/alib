@@ -1,0 +1,109 @@
+<<dictionary.c>>=
+#include "../diag/contract.h"
+#include "dictionary.h"
+#include "../lang/unsafe.h"
+
+#include <stdlib.h>
+
+const void *_dictionary_set_search(const Set *s, const void *x) {
+  return dictionary_search((Dictionary *)s, x) == NULL ? NULL : void_cast(x);
+}
+
+void _dictionary_set_insert(Set *s, void *x) {
+  dictionary_insert((Dictionary *)s, x, x);
+}
+
+void *_dictionary_set_delete(Set *s, const void *x) {
+  return dictionary_delete((Dictionary *)s, x), void_cast(x);
+}
+
+void *dictionary_search(const Dictionary *d, const void *k) {
+  return d->vtable->search(contract_requires_non_null(d),
+                           contract_requires_non_null(k));
+}
+
+void dictionary_insert(Dictionary *d, const void *k, void *v) {
+  contract_weak_requires_equal(dictionary_search(d, k), NULL);
+  d->vtable->insert(contract_requires_non_null(d),
+                    contract_requires_non_null(k), v);
+  contract_weak_ensures_equal(dictionary_search(d, k), v);
+}
+
+void *dictionary_reassign(Dictionary *d, const void *k, void *v) {
+  void *o = d->vtable->reassign(contract_requires_non_null(d),
+                                contract_requires_non_null(k), v);
+  contract_weak_ensures_equal(dictionary_search(d, k), v);
+  return o;
+}
+
+void *dictionary_delete(Dictionary *d, const void *k) {
+  contract_weak_requires_non_null(dictionary_search(d, k));
+  void *o = contract_ensures_non_null(d->vtable->delete (
+      contract_requires_non_null(d), contract_requires_non_null(k)));
+  contract_weak_ensures_equal(dictionary_search(d, k), NULL);
+  return o;
+}
+@
+<<dictionary.h>>=
+#ifndef DICTIONARY_H
+#define DICTIONARY_H
+
+#include "set.h"
+
+typedef struct _dictionary_vtable dictionary_vtable;
+typedef struct Dictionary {
+  dictionary_vtable *vtable;
+} Dictionary;
+struct _dictionary_vtable {
+  set_vtable set;
+  void *(*search)(const Dictionary *, const void *);
+  void (*insert)(Dictionary *, const void *, void *);
+  void *(*reassign)(Dictionary *, const void *, void *);
+  void *(*delete)(Dictionary *, const void *);
+};
+
+/**
+ * Searches the specified dictionary for the specified item.
+ *
+ * @param d the dictionary to search.
+ * @param k the key to search for.
+ * @return the value v from the dictionary associated with the
+ * 	key k if it exists, NULL otherwise.
+ */
+void *dictionary_search(const Dictionary *d, const void *k);
+
+/**
+ * Inserts the specified key and value into the dictionary.
+ * *
+ * @param d the dictionary to insert the key value pair into.
+ * @param k the key to associate with the value.
+ * @param v the value to be indexed by the key.
+ */
+void dictionary_insert(Dictionary *d, const void *k, void *v);
+
+/**
+ * Replaces the value of the specified key with the specified
+ * value.
+ *
+ * @param d the dictionary to replace the value in.
+ * @param k the key to associate with the value.
+ * @param v the new value that is associated with the key.
+ * @return the original value associated with k.
+ */
+void *dictionary_reassign(Dictionary *d, const void *k, void *v);
+
+/**
+ * Deletes the object with the specified key from the dictionary.
+ *
+ * @param d the dictionary to delete the key value pair from.
+ * @param k the key to delete from the dictionary.
+ * @return a pointer to the value that was deleted.
+ */
+void *dictionary_delete(Dictionary *d, const void *k);
+
+const void *_dictionary_set_search(const Set *s, const void *x);
+void _dictionary_set_insert(Set *s, void *x);
+void *_dictionary_set_delete(Set *s, const void *x);
+
+#endif /* DICTIONARY_H */
+@

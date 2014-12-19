@@ -1,0 +1,74 @@
+<<iterator.c>>=
+#include "../diag/contract.h"
+#include "iterator.h"
+
+#include <stdio.h>
+
+void *iterator_current(const Iterator *i) {
+  return i->vtable->current(contract_requires_non_null(i));
+}
+
+bool iterator_move_next(Iterator *i) {
+  return i->vtable->move_next(contract_requires_non_null(i));
+}
+
+void *_iterator_current_invalid_state(const Iterator *i) {
+  contract_fail();
+  return NULL;
+}
+
+bool _iterator_move_next_invalid_state(Iterator *i) {
+  contract_fail();
+  return false;
+}
+
+void iterator_foreach(Iterator *i, apply a, void *user_data) {
+  contract_requires_non_null(i);
+  contract_requires_non_null(a);
+  while (iterator_move_next(i))
+    a(user_data, iterator_current(i));
+}
+@
+<<iterator.h>>=
+#ifndef ITERATOR_H
+#define ITERATOR_H
+
+#include "../lang/object.h"
+
+#include <stdbool.h>
+
+typedef struct _iterator_vtable iterator_vtable;
+typedef struct Iterator {
+  iterator_vtable *vtable;
+} Iterator;
+struct _iterator_vtable {
+  object_vtable object;
+  void *(*current)(const Iterator *);
+  bool (*move_next)(Iterator *);
+};
+
+/**
+ * Gets the current iterator object.
+ *
+ * @param i the iterator.
+ * @return the current iterator object.
+ */
+void *iterator_current(const Iterator *i);
+
+/**
+ * Moves the iterator to the next object.
+ *
+ * @param i the iterator to advance.
+ * @return true if the iterator moved to
+ *	the next object, false otherwise.
+ */
+bool iterator_move_next(Iterator *i);
+
+typedef void (*apply)(void *user_data, void *x);
+void iterator_foreach(Iterator *i, apply a, void *user_data);
+
+void *_iterator_current_invalid_state(const Iterator *i);
+bool _iterator_move_next_invalid_state(Iterator *i);
+
+#endif /* ITERATOR_H */
+@

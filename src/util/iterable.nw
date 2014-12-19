@@ -1,0 +1,42 @@
+<<iterable.c>>=
+#include "../diag/contract.h"
+#include "iterable.h"
+
+Iterator *iterable_iterator(const Iterable *i) {
+  return contract_ensures_non_null(
+      i->vtable->iterator(contract_requires_non_null(i)));
+}
+
+void iterable_foreach(const Iterable *i, apply a, void *user_data) {
+  Iterator *_i = iterable_iterator(contract_requires_non_null(i));
+  iterator_foreach(_i, contract_requires_non_null(a), user_data);
+  object_free((Object *)_i);
+}
+@
+<<iterable.h>>=
+#ifndef ITERABLE_H
+#define ITERABLE_H
+
+#include "iterator.h"
+
+typedef struct _iterable_vtable iterable_vtable;
+typedef struct Iterable {
+  iterable_vtable *vtable;
+} Iterable;
+struct _iterable_vtable {
+  object_vtable object;
+  Iterator *(*iterator)(const Iterable *);
+};
+
+/**
+ * Gets the iterator for this iterable.
+ *
+ * @param i the iterable to get the iterator for.
+ * @return an iterator for this iterable.
+ */
+Iterator *iterable_iterator(const Iterable *i);
+
+void iterable_foreach(const Iterable *i, apply a, void *user_data);
+
+#endif /* ITERABLE_H */
+@

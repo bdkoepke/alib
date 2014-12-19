@@ -1,0 +1,121 @@
+<<linked_stack.c>>=
+#include "../diag/contract.h"
+#include "linked_stack.h"
+#include "node.h"
+
+#include <stdlib.h>
+
+struct _LinkedStack {
+  stack_vtable *vtable;
+  Node *head;
+};
+
+static void linked_stack_push(Stack *s, void *x) {
+  node_insert(&((LinkedStack *)s)->head, x);
+}
+
+static void *linked_stack_pop(Stack *s) {
+  LinkedStack *l = (LinkedStack *)s;
+  Node *head = l->head;
+  l->head = head->n;
+  void *x = head->x;
+  free(head);
+  return x;
+}
+
+static void *linked_stack_peek(const Stack *s) {
+  return ((LinkedStack *)s)->head->x;
+}
+
+static void *linked_stack_search(const Container *c, const void *x) {
+  return node_search(((const LinkedStack *)c)->head, x);
+}
+
+static void *linked_stack_delete(Container *c, const void *x) {
+  return node_delete(&((LinkedStack *)c)->head, x);
+}
+
+static bool linked_stack_empty(const Container *c) {
+  return node_empty(((const LinkedStack *)c)->head);
+}
+
+void linked_stack_reverse(LinkedStack *l) {
+  if (container_empty((Container *)contract_requires_non_null(l)))
+    return;
+
+  Node *node = l->head;
+  Node *next = node->n;
+  Node *_next;
+  for (node->n = NULL; next != NULL; next = _next) {
+    _next = next->n;
+    next->n = node;
+    node = next;
+  }
+  l->head = node;
+}
+
+size_t linked_stack_middle(const LinkedStack *l) {
+  contract_requires_non_null(l);
+  contract_requires(!container_empty((Container *)l));
+  return node_middle(l->head);
+}
+
+static Iterator *linked_stack_iterator(const Iterable *i) {
+  return node_iterator(((const LinkedStack *)i)->head);
+}
+
+LinkedStack *linked_stack_new() {
+  static stack_vtable vtable = {
+    { { { .class = { "linked_stack" },
+          .free = _stack_free,
+          .to_string = _object_to_string },
+        .iterator = linked_stack_iterator },
+      .empty = linked_stack_empty, .search = linked_stack_search,
+      .delete = linked_stack_delete, .insert = _stack_insert },
+    .push = linked_stack_push, .pop = linked_stack_pop,
+    .peek = linked_stack_peek
+  };
+
+  LinkedStack *l = malloc(sizeof(LinkedStack));
+  l->head = NULL;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
+  l->vtable = &vtable;
+#pragma clang diagnostic pop
+  return l;
+}
+@
+<<linked_stack.h>>=
+#ifndef LINKED_STACK_H
+#define LINKED_STACK_H
+
+#include "stack.h"
+
+#include <stddef.h>
+
+typedef struct _LinkedStack LinkedStack;
+
+/**
+ * Creates a new linked stack.
+ *
+ * @return a new linked stack.
+ */
+LinkedStack *linked_stack_new();
+
+/**
+ * Reverses the specified stack in place.
+ *
+ * @param l the stack to reverse.
+ */
+void linked_stack_reverse(LinkedStack *l);
+
+/**
+ * Gets the index of the middle object in the stack.
+ *
+ * @param l the stack to get the middle object of.
+ * @return the index of the middle object.
+ */
+size_t linked_stack_middle(const LinkedStack *l);
+
+#endif /* LINKED_STACK_H */
+@

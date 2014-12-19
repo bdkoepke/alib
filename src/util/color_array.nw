@@ -1,0 +1,83 @@
+<<color_array.c>>=
+#include "../diag/contract.h"
+#include "../lang/object.h"
+#include "color_array.h"
+
+#include <stdlib.h>
+
+struct _ColorArray {
+  object_vtable *vtable;
+  Color *a;
+  size_t len;
+};
+
+const char *color_to_string(const Color c) {
+  switch (c) {
+  case Red:
+    return "Red";
+  case White:
+    return "White";
+  case Blue:
+    return "Blue";
+  }
+  contract_fail();
+  return "Error";
+}
+
+ColorArray *color_array_new(Color a[], size_t len) {
+  static object_vtable vtable = { .class = { "color_array" },
+                                  .free = _object_free,
+                                  .to_string = _object_to_string };
+
+  ColorArray *c = malloc(sizeof(ColorArray));
+  c->a = contract_requires_non_null(a);
+  c->len = len;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
+  c->vtable = &vtable;
+#pragma clang diagnostic pop
+  return c;
+}
+
+Color color_array_examine(const ColorArray *c, size_t i) {
+  contract_requires_non_null(c);
+  contract_requires(i < c->len);
+  return c->a[i];
+}
+
+void color_array_swap(ColorArray *c, size_t i, size_t j) {
+  contract_requires_non_null(c);
+  contract_requires(i < c->len && j < c->len);
+  Color t = c->a[i];
+  c->a[i] = c->a[j], c->a[j] = t;
+}
+
+size_t color_array_length(const ColorArray *c) {
+  contract_requires_non_null(c);
+  return c->len;
+}
+@
+<<color_array.h>>=
+#ifndef COLOR_ARRAY_H
+#define COLOR_ARRAY_H
+
+#include <stddef.h>
+
+typedef enum {
+  Red = 0,
+  White = 1,
+  Blue = 2
+} Color;
+
+const char *color_to_string(const Color);
+
+typedef struct _ColorArray ColorArray;
+
+ColorArray *color_array_new(Color a[], size_t len);
+
+Color color_array_examine(const ColorArray *, size_t);
+void color_array_swap(ColorArray *, size_t i, size_t j);
+size_t color_array_length(const ColorArray *);
+
+#endif /* COLOR_ARRAY_H */
+@

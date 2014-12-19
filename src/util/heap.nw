@@ -1,0 +1,262 @@
+<<heap.c>>=
+#include "../diag/contract.h"
+#include "../lang/math_extended.h"
+#include "heap.h"
+
+#include <stdint.h>
+#include <stdlib.h>
+
+typedef struct {
+  heap_vtable *vtable;
+  size_t size;
+  size_t capacity;
+  Compare c;
+  void **p;
+} _Heap;
+
+static size_t heap_left_child(size_t n) {
+  contract_requires(n < SIZE_MAX / 2 - 1);
+  return n * 2;
+}
+
+static size_t heap_right_child(size_t n) {
+  contract_requires(n < SIZE_MAX / 2);
+  return n * 2 + 1;
+}
+
+static void swap(void **p, size_t n, size_t parent) {
+  void *t = p[n];
+  p[n] = p[parent], p[parent] = t;
+}
+
+static void *heap_get(_Heap *h, size_t n) {
+  return n < h->size ? h->p[n] : NULL;
+}
+
+static size_t heap_min(_Heap *h, size_t a, size_t b) {
+  void *left = heap_get(h, a);
+  void *right = heap_get(h, b);
+  if (left == NULL)
+    return b;
+  if (right == NULL)
+    return a;
+  return h->c(left, right) < 0 ? a : b;
+}
+
+static void heap_bubble_down(_Heap *h, size_t n) {
+  if (n >= h->size)
+    return;
+  size_t min_index =
+      heap_min(h, n, heap_min(h, heap_left_child(n), heap_right_child(n)));
+  if (min_index != n) {
+    swap(h->p, n, min_index);
+    heap_bubble_down(h, min_index);
+  }
+}
+
+static size_t _heap_size(const Heap *h) { return ((_Heap *)h)->size; }
+
+static size_t heap_parent(size_t n) {
+  contract_requires(n != 0);
+  return n / 2;
+}
+
+static void heap_bubble_up(_Heap *h, size_t n) {
+  if (n == 0)
+    return;
+  size_t parent = heap_parent(n);
+  if (h->c(h->p[parent], h->p[n]) > 0) {
+    swap(h->p, n, parent);
+    heap_bubble_up(h, parent);
+  }
+}
+
+static void _heap_insert(Heap *_h, void *x) {
+  _Heap *h = (_Heap *)_h;
+  if (h->size >= h->capacity) {
+    size_t capacity =
+        checked_product(h->capacity, 2 * sizeof(void *), SIZE_MAX);
+    h->p = realloc(h->p, capacity);
+    h->capacity = capacity / sizeof(void *);
+  }
+
+  h->p[h->size] = x;
+  heap_bubble_up(h, h->size);
+  h->size++;
+}
+
+static void *_heap_extract_min(Heap *_h) {
+  _Heap *h = (_Heap *)_h;
+  void *min = h->p[0];
+  h->size--;
+  h->p[0] = h->p[h->size];
+  heap_bubble_down(h, 0);
+  return min;
+}
+
+static bool _heap_empty(const Heap *h) { return ((const _Heap *)h)->size == 0; }
+
+static bool __heap_compare(const _Heap *h, const void *x, size_t n, size_t k) {
+  if (k <= 0 || n >= h->size || h->c(h->p[n], x) >= 0)
+    return (bool)k;
+  return __heap_compare(
+      h, x, heap_right_child(n),
+      (size_t)__heap_compare(h, x, heap_left_child(n), k - 1));
+}
+
+static bool _heap_compare(const Heap *h, const void *x, size_t k) {
+  return __heap_compare((_Heap *)h, x, 0, k);
+}
+
+static void heap_free(Object *o) {
+  _Heap *h = (_Heap *)o;
+  free(h->p);
+  free(h);
+}
+
+static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
+  static heap_vtable vtable = { { .class = { "heap" },
+                                  .free = heap_free,
+                                  .to_string = _object_to_string },
+                                .insert = _heap_insert,
+                                .extract_min = _heap_extract_min,
+                                .size = _heap_size, .compare = _heap_compare };
+
+  contract_requires(c != NULL && p != NULL && capacity > 0);
+
+  _Heap *h = malloc(sizeof(_Heap));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
+  h->vtable = &vtable;
+#pragma clang diagnostic pop
+  h->size = size;
+  h->capacity = capacity;
+  h->c = c;
+  h->p = p;
+  return (Heap *)h;
+}
+
+Heap *heap_new(Compare c) {
+  static const size_t DEFAULT_CAPACITY = 11;
+  return _heap_new(c, calloc(DEFAULT_CAPACITY, sizeof(void *)), 0,
+                   DEFAULT_CAPACITY);
+}
+
+Heap *heap_new_from_array(Compare c, void *a, size_t length) {
+  Heap *h = _heap_new(c, a, length, length);
+  size_t i;
+  for (i = 0; i < length; i++)
+    heap_bubble_down((_Heap *)h, (length - 1) - i);
+  return h;
+}
+
+void heap_insert(Heap *h, void *x) {
+  h->vtable->insert(contract_requires_non_null(h),
+                    contract_requires_non_null(x));
+}
+
+void *heap_extract_min(Heap *h) {
+  contract_requires(!heap_empty(h));
+  return h->vtable->extract_min(contract_requires_non_null(h));
+}
+
+bool heap_empty(const Heap *h) {
+  return heap_size(contract_requires_non_null(h)) == 0;
+}
+
+size_t heap_size(const Heap *h) {
+  return h->vtable->size(contract_requires_non_null(h));
+}
+
+bool heap_compare(const Heap *h, const void *x, size_t k) {
+  contract_requires(k < heap_size(h));
+  return h->vtable->compare(contract_requires_non_null(h),
+                            contract_requires_non_null(x), k);
+}
+@
+<<heap.h>>=
+#ifndef HEAP_H
+#define HEAP_H
+
+#include "../lang/object.h"
+#include "../lang/compare.h"
+
+#include <stdbool.h>
+#include <stddef.h>
+
+typedef struct _heap_vtable heap_vtable;
+typedef struct Heap {
+  heap_vtable *vtable;
+} Heap;
+struct _heap_vtable {
+  object_vtable object;
+  void (*insert)(Heap *, void *);
+  void *(*extract_min)(Heap *);
+  size_t (*size)(const Heap *);
+  bool (*compare)(const Heap *, const void *, size_t);
+};
+
+/**
+ * Creates a new min heap with the specified comparison function.
+ *
+ * @param c the comparison function.
+ * @return a new min heap.
+ */
+Heap *heap_new(Compare c);
+
+/**
+ * Creates a new min heap with the specified comparison function and array.
+ *
+ * @param c the comparison function.
+ * @param a the array to use to create the heap.
+ * @param length the length of the array.
+ * @return a new min heap.
+ */
+Heap *heap_new_from_array(Compare c, void *a, size_t length);
+
+/**
+ * Inserts the specified object into the heap.
+ *
+ * @param h the heap to insert the object into.
+ * @param x the object to insert into the heap.
+ */
+void heap_insert(Heap *h, void *x);
+
+/**
+ * Extracts the next minimum object from the heap.
+ *
+ * @param h the heap to extract the minimum from.
+ * @return the next minimum object.
+ */
+void *heap_extract_min(Heap *h);
+
+/**
+ * Gets a value indicating whether the object x is at least the kth
+ * largest object in the heap.
+ *
+ * @param h the heap to get the value from.
+ * @param x the object to check.
+ * @param k the position that the object will be larger than if
+ * 	the function is true.
+ * @return true if ti is at least the kth largest object, false otherwise.
+ */
+bool heap_compare(const Heap *h, const void *x, size_t k);
+
+/**
+ * Gets the size of the specified heap.
+ *
+ * @param h the heap to get the size of.
+ * @return the size of the heap.
+ */
+size_t heap_size(const Heap *h);
+
+/**
+ * Gets a value indicating whether the heap is empty or not.
+ *
+ * @param h the heap to get the emptiness of.
+ * @return true if the heap is empty, false otherwise.
+ */
+bool heap_empty(const Heap *h);
+
+#endif /* HEAP_H */
+@

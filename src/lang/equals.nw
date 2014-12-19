@@ -1,0 +1,42 @@
+<<equals.c>>=
+#include "equals.h"
+#include "type.h"
+
+bool equals_int_pointer(const void *a, const void *b) {
+  return POINTER_TO_INT(a) == POINTER_TO_INT(b);
+}
+
+bool equals_int(const void *a, const void *b) {
+  return *((int *)a) == *((int *)b);
+}
+
+bool equals_float(const void *a, const void *b) {
+  return *(float *)a == *(float *)b;
+}
+
+bool equals_double(const void *a, const void *b) {
+  return *(double *)a == *(double *)b;
+}
+@
+<<equals.h>>=
+#ifndef EQUALS_H
+#define EQUALS_H
+
+#include <stdbool.h>
+
+/**
+ * Gets a value indicating whether two objects are equal.
+ *
+ * @param a the first object.
+ * @param b the second object.
+ * @return true if they are equal, false otherwise.
+ */
+typedef bool (*Equals)(const void *a, const void *b);
+
+extern bool equals_int_pointer(const void *, const void *);
+extern bool equals_int(const void *, const void *);
+extern bool equals_float(const void *, const void *);
+extern bool equals_double(const void *, const void *);
+
+#endif /* EQUALS_H */
+@

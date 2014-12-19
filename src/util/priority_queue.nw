@@ -1,0 +1,176 @@
+<<priority_queue.c>>=
+#include "../diag/contract.h"
+#include "priority_queue.h"
+
+#include <stdlib.h>
+
+typedef struct {
+  priority_queue_vtable *vtable;
+  SortedDictionary *dictionary;
+} _PriorityQueue;
+
+void _priority_queue_insert(PriorityQueue *p, void *x) {
+  container_insert((Container *)((_PriorityQueue *)p)->dictionary, x);
+}
+
+void *_priority_queue_find_minimum(const PriorityQueue *p) {
+  return sorted_dictionary_min(((_PriorityQueue *)p)->dictionary);
+}
+
+void *_priority_queue_find_maximum(const PriorityQueue *p) {
+  return sorted_dictionary_max(((_PriorityQueue *)p)->dictionary);
+}
+
+void _priority_queue_delete_minimum(PriorityQueue *p) {
+  container_delete((Container *)((_PriorityQueue *)p)->dictionary,
+                   priority_queue_find_minimum(p));
+}
+
+void _priority_queue_delete_maximum(PriorityQueue *p) {
+  container_delete((Container *)((_PriorityQueue *)p)->dictionary,
+                   priority_queue_find_maximum(p));
+}
+
+bool _priority_queue_empty(const PriorityQueue *p) {
+  return container_empty((Container *)((_PriorityQueue *)p)->dictionary);
+}
+
+void _priority_queue_free(Object *o) {
+  object_free((Object *)((_PriorityQueue *)o)->dictionary);
+  free(o);
+}
+
+PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
+  static priority_queue_vtable vtable = {
+    { .class = { "priority_queue" },
+      .free = _priority_queue_free,
+      .to_string = _object_to_string },
+    .insert = _priority_queue_insert,
+    .find_minimum = _priority_queue_find_minimum,
+    .find_maximum = _priority_queue_find_maximum,
+    .delete_minimum = _priority_queue_delete_minimum,
+    .delete_maximum = _priority_queue_delete_maximum,
+    .empty = _priority_queue_empty
+  };
+
+  _PriorityQueue *p = malloc(sizeof(_PriorityQueue));
+  p->dictionary = dictionary;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
+  p->vtable = &vtable;
+#pragma clang diagnostic pop
+  return (PriorityQueue *)p;
+}
+
+void priority_queue_insert(PriorityQueue *p, void *x) {
+  p->vtable->insert(contract_requires_non_null(p), x);
+  contract_ensures(!priority_queue_empty(p));
+}
+
+void *priority_queue_find_minimum(const PriorityQueue *p) {
+  contract_requires(!priority_queue_empty(p));
+  return p->vtable->find_minimum(contract_requires_non_null(p));
+}
+
+void *priority_queue_find_maximum(const PriorityQueue *p) {
+  contract_requires(!priority_queue_empty(p));
+  return p->vtable->find_maximum(contract_requires_non_null(p));
+}
+
+void priority_queue_delete_minimum(PriorityQueue *p) {
+  contract_requires(!priority_queue_empty(p));
+  p->vtable->delete_minimum(contract_requires_non_null(p));
+}
+
+void priority_queue_delete_maximum(PriorityQueue *p) {
+  contract_requires(!priority_queue_empty(p));
+  p->vtable->delete_maximum(contract_requires_non_null(p));
+}
+
+bool priority_queue_empty(const PriorityQueue *p) {
+  return p->vtable->empty(contract_requires_non_null(p));
+}
+@
+<<priority_queue.h>>=
+#ifndef PRIORITY_QUEUE_H
+#define PRIORITY_QUEUE_H
+
+#include "../lang/object.h"
+#include "sorted_dictionary.h"
+
+#include <stdbool.h>
+
+typedef struct _priority_queue_vtable priority_queue_vtable;
+typedef struct PriorityQueue {
+  priority_queue_vtable *vtable;
+} PriorityQueue;
+struct _priority_queue_vtable {
+  object_vtable object;
+  void (*insert)(PriorityQueue *, void *);
+  void *(*find_minimum)(const PriorityQueue *);
+  void *(*find_maximum)(const PriorityQueue *);
+  void (*delete_minimum)(PriorityQueue *);
+  void (*delete_maximum)(PriorityQueue *);
+  bool (*empty)(const PriorityQueue *);
+};
+
+/**
+ * Creates a new priority queue using the specified dictionary
+ * to implement the interface.
+ *
+ * @param d the dictionary to use.
+ * @return a new priority queue backed by the specified dictionary.
+ */
+PriorityQueue *priority_queue_new(SortedDictionary *d);
+
+/**
+ * Inserts the specified object into the priority queue.
+ *
+ * @param p the priority queue to insert the object into.
+ * @param x the object to insert into the priority queue.
+ */
+void priority_queue_insert(PriorityQueue *p, void *x);
+
+/**
+ * Retrieves but does not remove the minimum object from
+ * the priority queue.
+ *
+ * @param p the priority queue to get the minimum object from.
+ * @return the minimum object.
+ */
+void *priority_queue_find_minimum(const PriorityQueue *p);
+
+/**
+ * Retrieves but does not remove the maximum object from
+ * the priority queue.
+ *
+ * @param p the priority queue to get the maximum object from.
+ * @return the maximum object.
+ */
+void *priority_queue_find_maximum(const PriorityQueue *p);
+
+/**
+ * Removes the minimum object from the priority queue.
+ *
+ * @param p the queue to retrieve the minimum object from.
+ */
+void priority_queue_delete_minimum(PriorityQueue *p);
+
+/**
+ * Removes the maximum object from the priority queue.
+ *
+ * @param p the queue to retrieve the maximum object from.
+ */
+void priority_queue_delete_maximum(PriorityQueue *p);
+
+/**
+ * Gets a value indicating whether the priority queue is empty
+ * or not.
+ *
+ * @param p the priority queue to get the emptiness of.
+ * @return true if the queue is empty, false otherwise.
+ */
+bool priority_queue_empty(const PriorityQueue *p);
+
+#endif /* PRIORITY_QUEUE_H */
+@

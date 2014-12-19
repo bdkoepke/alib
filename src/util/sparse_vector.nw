@@ -1,0 +1,116 @@
+<<sparse_vector.c>>=
+#include "../diag/contract.h"
+#include "../lang/type.h"
+#include "sparse_vector.h"
+
+#include <limits.h>
+#include <stdlib.h>
+
+typedef struct {
+  vector_vtable *vtable;
+  unsigned int n;
+  unsigned int m;
+  unsigned int size;
+  unsigned int *A;
+  unsigned int *B;
+} SparseVector;
+
+static void sparse_vector_free(Object *o) {
+  SparseVector *s = (SparseVector *)o;
+  free(s->A);
+  free(s->B);
+  free(o);
+}
+
+static void sparse_vector_insert(Container *c, void *x) {
+  SparseVector *s = (SparseVector *)c;
+  unsigned int _x = (unsigned int)POINTER_TO_INT(x);
+  contract_requires(_x < s->n && s->size < UINT_MAX && s->size < s->m);
+  contract_weak_requires(INT_TO_POINTER(false) == container_search(c, x));
+  s->size++;
+  s->A[_x] = s->size;
+  s->B[s->A[_x] - 1] = _x;
+}
+
+static void *sparse_vector_search(const Container *c, const void *x) {
+  SparseVector *s = (SparseVector *)c;
+  // NOTE: valgrind will issue errors here do to the nature of a sparse
+  // vector, we are abusing this behavior on purpose (i.e. a conditional
+  // jump based on uninitialized memory).
+  unsigned int _x = (unsigned int)POINTER_TO_INT(x);
+  return (x != NULL && _x < s->n && s->A[_x] != POINTER_TO_INT(NULL) &&
+          (s->A[_x] - 1) < s->m && s->B[s->A[_x] - 1] == _x)
+             ? INT_TO_POINTER(_x)
+             : NULL;
+}
+
+static void *sparse_vector_delete(Container *c, const void *x) {
+  SparseVector *s = (SparseVector *)c;
+  unsigned int _x;
+  contract_requires((_x = POINTER_TO_INT(contract_requires_non_null(x))) <
+                    s->n);
+  s->B[s->A[_x] - 1] = POINTER_TO_INT(NULL);
+  s->A[_x] = POINTER_TO_INT(NULL);
+  s->size--;
+  return INT_TO_POINTER(x);
+}
+
+static size_t sparse_vector_size(const Vector *v) {
+  return ((SparseVector *)v)->size;
+}
+
+static void sparse_vector_set(Vector *v, size_t i, void *x) {
+  contract_requires(i == POINTER_TO_INT(x));
+  container_insert((Container *)v, x);
+}
+
+static void *sparse_vector_get(const Vector *v, size_t i) {
+  SparseVector *s = (SparseVector *)v;
+  return (i < s->n && s->A[i] != POINTER_TO_INT(NULL) && (s->A[i] - 1) < s->m &&
+          s->B[s->A[i] - 1] == i)
+             ? INT_TO_POINTER(i)
+             : NULL;
+}
+
+Vector *sparse_vector_new(unsigned int n, unsigned int m) {
+  static vector_vtable vtable = {
+    { { { .class = { "sparse_vector" },
+          .free = sparse_vector_free,
+          .to_string = _object_to_string },
+        .iterator = _vector_iterator },
+      .empty = _vector_empty, .search = sparse_vector_search,
+      .delete = sparse_vector_delete, .insert = sparse_vector_insert },
+    .set = sparse_vector_set, .get = sparse_vector_get,
+    .size = sparse_vector_size
+  };
+  SparseVector *s = malloc(sizeof(SparseVector));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-stack-address"
+  s->vtable = &vtable;
+#pragma clang diagnostic pop
+  s->size = 0;
+  s->n = n;
+  s->m = m;
+  s->A = malloc(sizeof(unsigned int) * s->n);
+  s->B = malloc(sizeof(unsigned int) * s->m);
+  return (Vector *)s;
+}
+@
+<<sparse_vector.h>>=
+#ifndef SPARSE_VECTOR_H
+#define SPARSE_VECTOR_H
+
+#include "vector.h"
+
+/**
+ * Creates a new sparse vector.
+ *
+ * @param n the maximum object size that can be inserted into the vector.
+ * @param m the maximum number of objects that can be inserted
+ * 	into the vector.
+ * @return a new empty sparse vector.
+ */
+Vector *sparse_vector_new(unsigned int n, unsigned int m);
+
+#endif /* SPARSE_VECTOR_H */
+@

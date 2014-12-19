@@ -1,0 +1,36 @@
+<<string.c>>=
+#include "../diag/contract.h"
+#include "string.h"
+
+int find_match(const char *pattern, const char *text, int m, int n) {
+  contract_requires_non_null(pattern);
+  contract_requires_non_null(text);
+  int i;
+  for (i = 0; i <= (n - m); i++) {
+    int j;
+    for (j = 0; j < m && text[i + j] == pattern[j]; j++)
+      continue;
+    if (j == m)
+      return i;
+  }
+  return -1;
+}
+@
+<<string.h>>=
+#ifndef STRING_H
+#define STRING_H
+
+/**
+ * Finds a pattern in the text.
+ *
+ * @param pattern the pattern to search for
+ * @param text the text to search in
+ * @param m the length of pattern
+ * @param n the length of the text
+ * @return the index of the match in the text,
+ * -1 if there is no match.
+ */
+int find_match(const char *pattern, const char *text, int m, int n);
+
+#endif /* STRING_H */
+@
