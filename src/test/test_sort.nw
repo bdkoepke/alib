@@ -1,4 +1,16 @@
-<<test_sort.c>>=
+<<test-sort.h>>=
+#ifndef TEST_SORT_H
+#define TEST_SORT_H
+
+#include <stddef.h>
+
+typedef void (*Sort)(int a[], size_t);
+
+void test_sort(Sort);
+
+#endif /* TEST_SORT_H */
+@
+<<test-sort.c>>=
 #include "../lang/array.h"
 #include "test.h"
 #include "test_sort.h"
@@ -14,16 +26,4 @@ void test_sort(Sort s) {
   assert_memcmp(sorted, unsorted);
   free(unsorted);
 }
-@
-<<test_sort.h>>=
-#ifndef TEST_SORT_H
-#define TEST_SORT_H
-
-#include <stddef.h>
-
-typedef void (*Sort)(int a[], size_t);
-
-void test_sort(Sort);
-
-#endif /* TEST_SORT_H */
 @

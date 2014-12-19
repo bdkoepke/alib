@@ -1,4 +1,4 @@
-<<matrix_graph.h>>=
+<<matrix-graph.h>>=
 #ifndef MATRIX_GRAPH_H
 #define MATRIX_GRAPH_H
 

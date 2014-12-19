@@ -1,4 +1,15 @@
-<<chapter_2.c>>=
+<<chapter-2.h>>=
+#ifndef CHAPTER_2_H
+#define CHAPTER_2_H
+
+void test_selectionsort(void);
+void test_insertionsort(void);
+void test_find_match(void);
+void test_power(void);
+
+#endif /* CHAPTER_2_H */
+@
+<<chapter-2.c>>=
 #include "chapter_2.h"
 #include "lang/math_extended.h"
 #include "lang/sort.h"
@@ -31,15 +42,4 @@ void test_power(void) {
   puts("test_power");
   assert_equals(power(2, 16), 65536);
 }
-@
-<<chapter_2.h>>=
-#ifndef CHAPTER_2_H
-#define CHAPTER_2_H
-
-void test_selectionsort(void);
-void test_insertionsort(void);
-void test_find_match(void);
-void test_power(void);
-
-#endif /* CHAPTER_2_H */
 @

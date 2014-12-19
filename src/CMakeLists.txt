@@ -50,7 +50,7 @@ set(alib_C
     util/sparse_vector.c
     util/stack.c
     util/tree.c
-    util/vector.c)
+    util/vector.c)                 
 set(alib_H
     chapter_2.h
     chapter_3.h
@@ -105,34 +105,116 @@ set(alib_H
     util/stack.h
     util/tree.h
     util/vector.h)
+set(alib_TEX
+    chapter_2.tex
+    chapter_3.tex
+    chapter_4.tex
+    chapter_5.tex
+    diag/contract.tex
+    lang/algorithm.tex
+    lang/array.tex
+    lang/class.tex
+    lang/compare.tex
+    lang/equals.tex
+    lang/hash.tex
+    lang/math_extended.tex
+    lang/object.tex
+    lang/sort.tex
+    lang/string.tex
+    lang/type.tex
+    lang/unsafe.tex
+    main.tex
+    test/test.tex
+    test/test_container.tex
+    test/test_container_values.tex
+    test/test_sort.tex
+    util/array_container.tex
+    util/binary_node.tex
+    util/binary_tree.tex
+    util/color_array.tex
+    util/container.tex
+    util/dictionary.tex
+    util/edge_node.tex
+    util/graph.tex
+    util/graph_visitor.tex
+    util/hashtable.tex
+    util/heap.tex
+    util/hnode.tex
+    util/iterable.tex
+    util/iterator.tex
+    util/key_value_pair.tex
+    util/linked_graph.tex
+    util/linked_queue.tex
+    util/linked_stack.tex
+    util/matrix_graph.tex
+    util/node.tex
+    util/partial_sum.tex
+    util/priority_queue.tex
+    util/queue.tex
+    util/range_container.tex
+    util/red_black_tree.tex
+    util/set.tex
+    util/sorted_dictionary.tex
+    util/sorted_set.tex
+    util/sparse_vector.tex
+    util/stack.tex
+    util/tree.tex
+    util/vector.tex)
 
-function(noweb files)
-	list(LENGTH files files_length)
-	math(EXPR length "${files_length} - 1")
-	foreach(i RANGE ${length})
-	    list(GET files ${i} path)
-	    get_filename_component(name "${path}" NAME)
-	    get_filename_component(name_we "${path}" NAME_WE)
-	    get_filename_component(directory "${path}" DIRECTORY)
-	    set(NW_name "${name_we}.nw")
-	    if(directory)
-		set(NW_path "${directory}/${NW_name}")
-	    else(directory)
-		set(NW_path "${NW_name}") 
-	    endif(directory)
-	    add_custom_command(
-		    OUTPUT ${path}
-		    PRE_BUILD
-		    COMMAND notangle -R${name} ${NW_path} > ${path}
-	    )
-	endforeach(i)
-endfunction(noweb)
+# TODO: if cmake supports passing functions as parameters then weave and tangle
+# can be merged... At the moment cmake seems to primitive, but perhaps there is
+# a way...
+function(tangle files)
+    list(LENGTH files files_length)
+    math(EXPR length "${files_length} - 1")
+    foreach(i RANGE ${length})
+        list(GET files ${i} path)
+        get_filename_component(name "${path}" NAME)
+        get_filename_component(name_we "${path}" NAME_WE)
+        get_filename_component(directory "${path}" DIRECTORY)
+        string(REPLACE "_" "-" dash_name ${name})
+        set(NW_name "${name_we}.nw")
+        if(directory)
+            set(NW_path "${directory}/${NW_name}")
+        else(directory)
+            set(NW_path "${NW_name}") 
+        endif(directory)
+        add_custom_command(
+            OUTPUT ${path}
+            PRE_BUILD
+            COMMAND notangle -R${dash_name} ${NW_path} > ${path}
+        )
+    endforeach(i)
+endfunction(tangle)
+function(weave files)
+    list(LENGTH files files_length)
+    math(EXPR length "${files_length} - 1")
+    foreach(i RANGE ${length})
+        list(GET files ${i} path)
+        get_filename_component(name "${path}" NAME)
+        get_filename_component(name_we "${path}" NAME_WE)
+        get_filename_component(directory "${path}" DIRECTORY)
+        set(NW_name "${name_we}.nw")
+        if(directory)
+            set(NW_path "${directory}/${NW_name}")
+        else(directory)
+            set(NW_path "${NW_name}") 
+        endif(directory)
+        add_custom_command(
+            OUTPUT ${path}
+            PRE_BUILD
+            COMMAND noweave -n ${NW_path} > ${path}
+        )
+    endforeach(i)
+endfunction(weave)
 
-noweb("${alib_H}")
-noweb("${alib_C}")
-add_custom_target(generate_alib DEPENDS ${alib_H} ${alib_C})
+tangle("${alib_H}")
+tangle("${alib_C}")
+weave("${alib_TEX}")
+add_custom_target(tangle DEPENDS ${alib_H} ${alib_C})
+add_custom_target(weave DEPENDS ${alib_TEX})
 
 add_executable(alib ${alib_C})
-add_dependencies(alib generate_alib)
+add_dependencies(alib tangle)
 
 target_link_libraries(alib m)

@@ -1,4 +1,22 @@
-<<sparse_vector.c>>=
+<<sparse-vector.h>>=
+#ifndef SPARSE_VECTOR_H
+#define SPARSE_VECTOR_H
+
+#include "vector.h"
+
+/**
+ * Creates a new sparse vector.
+ *
+ * @param n the maximum object size that can be inserted into the vector.
+ * @param m the maximum number of objects that can be inserted
+ * 	into the vector.
+ * @return a new empty sparse vector.
+ */
+Vector *sparse_vector_new(unsigned int n, unsigned int m);
+
+#endif /* SPARSE_VECTOR_H */
+@
+<<sparse-vector.c>>=
 #include "../diag/contract.h"
 #include "../lang/type.h"
 #include "sparse_vector.h"
@@ -95,22 +113,4 @@ Vector *sparse_vector_new(unsigned int n, unsigned int m) {
   s->B = malloc(sizeof(unsigned int) * s->m);
   return (Vector *)s;
 }
-@
-<<sparse_vector.h>>=
-#ifndef SPARSE_VECTOR_H
-#define SPARSE_VECTOR_H
-
-#include "vector.h"
-
-/**
- * Creates a new sparse vector.
- *
- * @param n the maximum object size that can be inserted into the vector.
- * @param m the maximum number of objects that can be inserted
- * 	into the vector.
- * @return a new empty sparse vector.
- */
-Vector *sparse_vector_new(unsigned int n, unsigned int m);
-
-#endif /* SPARSE_VECTOR_H */
 @

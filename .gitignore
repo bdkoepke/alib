@@ -60,3 +60,6 @@ install_manifest.txt
 
 # Clion files
 .idea
+
+*.c
+*.h

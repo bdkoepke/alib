@@ -1,4 +1,21 @@
-<<linked_queue.c>>=
+<<linked-queue.h>>=
+#ifndef LINKED_QUEUE_H
+#define LINKED_QUEUE_H
+
+#include "queue.h"
+
+#include <stddef.h>
+
+/**
+ * Creates a new linked queue.
+ *
+ * @return a new linked queue.
+ */
+Queue *linked_queue_new();
+
+#endif /* LINKED_QUEUE_H */
+@
+<<linked-queue.c>>=
 #include "../diag/contract.h"
 #include "linked_queue.h"
 #include "node.h"
@@ -90,21 +107,4 @@ Queue *linked_queue_new() {
 #pragma clang diagnostic pop
   return (Queue *)q;
 }
-@
-<<linked_queue.h>>=
-#ifndef LINKED_QUEUE_H
-#define LINKED_QUEUE_H
-
-#include "queue.h"
-
-#include <stddef.h>
-
-/**
- * Creates a new linked queue.
- *
- * @return a new linked queue.
- */
-Queue *linked_queue_new();
-
-#endif /* LINKED_QUEUE_H */
 @

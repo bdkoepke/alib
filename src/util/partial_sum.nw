@@ -1,4 +1,32 @@
-<<partial_sum.c>>=
+<<partial-sum.h>>=
+#ifndef PARTIAL_SUM_H
+#define PARTIAL_SUM_H
+
+#include "../lang/compare.h"
+#include "../lang/object.h"
+
+typedef struct _partial_sum_vtable partial_sum_vtable;
+typedef struct PartialSum {
+  partial_sum_vtable *vtable;
+} PartialSum;
+struct _partial_sum_vtable {
+  object_vtable vtable;
+  void (*add)(PartialSum *, void *, void *);
+  void (*insert)(PartialSum *, void *, void *);
+  void (*delete)(PartialSum *, void *);
+  void *(*values)(const PartialSum *, const void *);
+};
+
+PartialSum *partial_sum_new(Compare);
+
+void partial_sum_add(PartialSum *, void *, void *);
+void *partial_sum_values(const PartialSum *, const void *);
+void partial_sum_insert(PartialSum *, void *, void *);
+void partial_sum_delete(PartialSum *, void *);
+
+#endif /* PARTIAL_SUM_H */
+@
+<<partial-sum.c>>=
 #include "../diag/contract.h"
 #include "partial_sum.h"
 
@@ -55,32 +83,4 @@ void partial_sum_delete(PartialSum *p, void *k) {
   p->vtable->delete (contract_requires_non_null(p),
                      contract_requires_non_null(k));
 }
-@
-<<partial_sum.h>>=
-#ifndef PARTIAL_SUM_H
-#define PARTIAL_SUM_H
-
-#include "../lang/compare.h"
-#include "../lang/object.h"
-
-typedef struct _partial_sum_vtable partial_sum_vtable;
-typedef struct PartialSum {
-  partial_sum_vtable *vtable;
-} PartialSum;
-struct _partial_sum_vtable {
-  object_vtable vtable;
-  void (*add)(PartialSum *, void *, void *);
-  void (*insert)(PartialSum *, void *, void *);
-  void (*delete)(PartialSum *, void *);
-  void *(*values)(const PartialSum *, const void *);
-};
-
-PartialSum *partial_sum_new(Compare);
-
-void partial_sum_add(PartialSum *, void *, void *);
-void *partial_sum_values(const PartialSum *, const void *);
-void partial_sum_insert(PartialSum *, void *, void *);
-void partial_sum_delete(PartialSum *, void *);
-
-#endif /* PARTIAL_SUM_H */
 @

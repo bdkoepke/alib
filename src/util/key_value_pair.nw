@@ -1,16 +1,4 @@
-<<key_value_pair.c>>=
-#include "key_value_pair.h"
-
-#include <stdlib.h>
-
-KeyValuePair *key_value_pair_new(void const *k, void *v) {
-  KeyValuePair *p = malloc(sizeof(KeyValuePair));
-  p->k = k;
-  p->v = v;
-  return p;
-}
-@
-<<key_value_pair.h>>=
+<<key-value-pair.h>>=
 #ifndef KEY_VALUE_PAIR_H
 #define KEY_VALUE_PAIR_H
 
@@ -22,4 +10,16 @@ typedef struct {
 KeyValuePair *key_value_pair_new(void const *k, void *v);
 
 #endif /* KEY_VALUE_PAIR_H */
+@
+<<key-value-pair.c>>=
+#include "key_value_pair.h"
+
+#include <stdlib.h>
+
+KeyValuePair *key_value_pair_new(void const *k, void *v) {
+  KeyValuePair *p = malloc(sizeof(KeyValuePair));
+  p->k = k;
+  p->v = v;
+  return p;
+}
 @

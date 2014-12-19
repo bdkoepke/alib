@@ -1,4 +1,13 @@
-<<chapter_5.c>>=
+<<chapter-5.h>>=
+#ifndef CHAPTER_5_H
+#define CHAPTER_5_H
+
+void test_linked_graph(void);
+void test_matrix_graph(void);
+
+#endif /* CHAPTER_5_H */
+@
+<<chapter-5.c>>=
 #include "diag/contract.h"
 #include "chapter_5.h"
 #include "lang/hash.h"
@@ -171,13 +180,4 @@ find_path(1, 4, p);
 }
 
 void test_matrix_graph(void) {}
-@
-<<chapter_5.h>>=
-#ifndef CHAPTER_5_H
-#define CHAPTER_5_H
-
-void test_linked_graph(void);
-void test_matrix_graph(void);
-
-#endif /* CHAPTER_5_H */
 @

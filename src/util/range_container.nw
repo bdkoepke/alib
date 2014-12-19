@@ -1,4 +1,30 @@
-<<range_container.c>>=
+<<range-container.h>>=
+#ifndef RANGE_CONTAINER_H
+#define RANGE_CONTAINER_H
+
+#include "../lang/compare.h"
+#include "../lang/object.h"
+
+#include <stddef.h>
+
+typedef struct _range_container_vtable range_container_vtable;
+typedef struct RangeContainer {
+  range_container_vtable *vtable;
+} RangeContainer;
+struct _range_container_vtable {
+  object_vtable object;
+  void (*insert)(RangeContainer *, void *);
+  void *(*query)(const RangeContainer *, size_t i, size_t j);
+};
+
+RangeContainer *array_range_container_new(Compare);
+
+void range_container_insert(RangeContainer *, void *);
+void *range_container_query(const RangeContainer *, size_t i, size_t j);
+
+#endif /* RANGE_CONTAINER_H */
+@
+<<range-container.c>>=
 #include "../diag/contract.h"
 #include "../lang/math_extended.h"
 #include "range_container.h"
@@ -75,30 +101,4 @@ void *range_container_query(const RangeContainer *r, size_t i, size_t j) {
   contract_requires(i <= j);
   return r->vtable->query(contract_requires_non_null(r), i, j);
 }
-@
-<<range_container.h>>=
-#ifndef RANGE_CONTAINER_H
-#define RANGE_CONTAINER_H
-
-#include "../lang/compare.h"
-#include "../lang/object.h"
-
-#include <stddef.h>
-
-typedef struct _range_container_vtable range_container_vtable;
-typedef struct RangeContainer {
-  range_container_vtable *vtable;
-} RangeContainer;
-struct _range_container_vtable {
-  object_vtable object;
-  void (*insert)(RangeContainer *, void *);
-  void *(*query)(const RangeContainer *, size_t i, size_t j);
-};
-
-RangeContainer *array_range_container_new(Compare);
-
-void range_container_insert(RangeContainer *, void *);
-void *range_container_query(const RangeContainer *, size_t i, size_t j);
-
-#endif /* RANGE_CONTAINER_H */
 @

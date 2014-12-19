@@ -1,4 +1,29 @@
-<<linked_graph.c>>=
+<<linked-graph.h>>=
+#ifndef LINKED_GRAPH_H
+#define LINKED_GRAPH_H
+
+#include "../lang/hash.h"
+#include "graph.h"
+
+#include <stddef.h>
+
+/**
+ * Creates a new linked graph.
+ *
+ * @return a new linked graph.
+ */
+UndirectedGraph *undirected_linked_graph_new(Hash, Equals);
+
+/**
+ * Creates a new linked graph.
+ *
+ * @return a new linked graph.
+ */
+DirectedGraph *directed_linked_graph_new(Hash, Equals);
+
+#endif /* LINKED_GRAPH_H */
+@
+<<linked-graph.c>>=
 #include "../diag/contract.h"
 #include "edge_node.h"
 #include "hashtable.h"
@@ -105,29 +130,4 @@ DirectedGraph *directed_linked_graph_new(Hash h, Equals e) {
   };
   return linked_graph_new(h, e, &vtable);
 }
-@
-<<linked_graph.h>>=
-#ifndef LINKED_GRAPH_H
-#define LINKED_GRAPH_H
-
-#include "../lang/hash.h"
-#include "graph.h"
-
-#include <stddef.h>
-
-/**
- * Creates a new linked graph.
- *
- * @return a new linked graph.
- */
-UndirectedGraph *undirected_linked_graph_new(Hash, Equals);
-
-/**
- * Creates a new linked graph.
- *
- * @return a new linked graph.
- */
-DirectedGraph *directed_linked_graph_new(Hash, Equals);
-
-#endif /* LINKED_GRAPH_H */
 @

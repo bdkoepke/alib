@@ -1,4 +1,25 @@
-<<test_container_values.c>>=
+<<test-container-values.h>>=
+#ifndef TEST_CONTAINER_VALUES_H
+#define TEST_CONTAINER_VALUES_H
+
+#include <stddef.h>
+
+extern const int test_values[];
+extern const size_t test_values_length;
+extern const int test_values_pre_order[];
+extern const int test_values_in_order[];
+extern const int test_values_post_order[];
+extern const int test_values_level_order[];
+
+extern const int test_values_extended[];
+extern const size_t test_values_extended_length;
+
+extern const int test_values_extended_positive[];
+extern const size_t test_values_extended_positive_length;
+
+#endif /* TEST_CONTAINER_VALUES_H */
+@
+<<test-container-values.c>>=
 #include "test_container_values.h"
 
 const int test_values[] = { 15, 5, 3, 12, 13, 10, 6, 7, 16, 20, 18, 23 };
@@ -90,25 +111,4 @@ const int test_values_extended_positive[] = {
 };
 const size_t test_values_extended_positive_length =
     sizeof(test_values_extended_positive) / sizeof(int);
-@
-<<test_container_values.h>>=
-#ifndef TEST_CONTAINER_VALUES_H
-#define TEST_CONTAINER_VALUES_H
-
-#include <stddef.h>
-
-extern const int test_values[];
-extern const size_t test_values_length;
-extern const int test_values_pre_order[];
-extern const int test_values_in_order[];
-extern const int test_values_post_order[];
-extern const int test_values_level_order[];
-
-extern const int test_values_extended[];
-extern const size_t test_values_extended_length;
-
-extern const int test_values_extended_positive[];
-extern const size_t test_values_extended_positive_length;
-
-#endif /* TEST_CONTAINER_VALUES_H */
 @
