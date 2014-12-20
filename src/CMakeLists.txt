@@ -203,7 +203,7 @@ function(weave files)
         add_custom_command(
             OUTPUT ${path}
             PRE_BUILD
-            COMMAND noweave -n ${NW_path} > ${path}
+            COMMAND noweave -x -latex -delay -autodefs c -n ${NW_path} > ${path}
         )
     endforeach(i)
 endfunction(weave)

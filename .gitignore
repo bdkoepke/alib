@@ -63,3 +63,5 @@ install_manifest.txt
 
 *.c
 *.h
+*.aux
+*.log
