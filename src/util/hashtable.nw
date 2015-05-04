@@ -127,7 +127,7 @@ static void _hashtable_insert(Hashtable *h, const void *k, void *v) {
 
 static void hashtable_resize(Hashtable *h, size_t capacity) {
   contract_requires_non_null(h);
-  contract_requires(h->size < capacity < SIZE_MAX);
+  contract_requires((h->size < capacity) && (h->size < SIZE_MAX));
   HNode **array = h->array;
   size_t _capacity = h->capacity;
   h->capacity = capacity;
