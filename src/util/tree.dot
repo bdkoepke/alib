@@ -1,11 +1,11 @@
 digraph tree {
-  node[shape = doublecircle] initialized, free;
+  node[shape = doublecircle] init, free;
   node[shape = circle];
-  initialized->tree_pre_order;
-  initialized->tree_in_order;
-  initialized->tree_post_order;
-  initialized->tree_level_order;
-  initialized->mutable;
+  init->tree_pre_order;
+  init->tree_in_order;
+  init->tree_post_order;
+  init->tree_level_order;
+  init->mutate;
 
   tree_pre_order->iterator_free->mutate;
   tree_in_order->iterator_free->mutate;
@@ -13,5 +13,5 @@ digraph tree {
   tree_level_order->iterator_free->mutate;
 
   mutate->free;
-  mutate->initialized;
+  mutate->init;
 }

@@ -46,7 +46,7 @@ src/Makefile
 nbproject/private
 
 # ignore dot svg files
-*.svg
+#*.svg
 
 .deps
 .dirstamp
@@ -61,7 +61,7 @@ install_manifest.txt
 # Clion files
 .idea
 
-*.c
-*.h
+#*.c
+#*.h
 *.aux
 *.log

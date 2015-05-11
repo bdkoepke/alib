@@ -2,7 +2,7 @@ digraph iterator {
   node[shape = doublecircle] new, free;
   node[shape = circle];
   new->move_next;
-  new->fre;
+  new->free;
 
   move_next->move_next[label = "true"];
   move_next->move_next_false[label = "false"];
