@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
+include(noweb.cmake)
+include(UseLatex)
 ########### next target ###############
 set(alib_C
     chapter_2.c
@@ -161,53 +163,6 @@ set(alib_TEX
     util/tree.tex
     util/vector.tex)
 
-# TODO: if cmake supports passing functions as parameters then weave and tangle
-# can be merged... At the moment cmake seems to primitive, but perhaps there is
-# a way...
-function(tangle files)
-    list(LENGTH files files_length)
-    math(EXPR length "${files_length} - 1")
-    foreach(i RANGE ${length})
-        list(GET files ${i} path)
-        get_filename_component(name "${path}" NAME)
-        get_filename_component(name_we "${path}" NAME_WE)
-        get_filename_component(directory "${path}" DIRECTORY)
-        string(REPLACE "_" "-" dash_name ${name})
-        set(NW_name "${name_we}.nw")
-        if(directory)
-            set(NW_path "${directory}/${NW_name}")
-        else(directory)
-            set(NW_path "${NW_name}") 
-        endif(directory)
-        add_custom_command(
-            OUTPUT ${path}
-            PRE_BUILD
-            COMMAND notangle -R${dash_name} ${NW_path} > ${path}
-        )
-    endforeach(i)
-endfunction(tangle)
-function(weave files)
-    list(LENGTH files files_length)
-    math(EXPR length "${files_length} - 1")
-    foreach(i RANGE ${length})
-        list(GET files ${i} path)
-        get_filename_component(name "${path}" NAME)
-        get_filename_component(name_we "${path}" NAME_WE)
-        get_filename_component(directory "${path}" DIRECTORY)
-        set(NW_name "${name_we}.nw")
-        if(directory)
-            set(NW_path "${directory}/${NW_name}")
-        else(directory)
-            set(NW_path "${NW_name}") 
-        endif(directory)
-        add_custom_command(
-            OUTPUT ${path}
-            PRE_BUILD
-            COMMAND noweave -x -latex -delay -autodefs c -n ${NW_path} > ${path}
-        )
-    endforeach(i)
-endfunction(weave)
-
 tangle("${alib_H}")
 tangle("${alib_C}")
 weave("${alib_TEX}")
@@ -216,5 +171,9 @@ add_custom_target(weave DEPENDS ${alib_TEX})
 
 add_executable(alib ${alib_C})
 add_dependencies(alib tangle)
-
 target_link_libraries(alib m)
+
+add_latex_document(alib.tex
+                   FORCE_PDF
+                   TARGET_NAME book)
+add_dependencies(book_pdf weave)
