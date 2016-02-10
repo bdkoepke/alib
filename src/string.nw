@@ -1,0 +1,70 @@
+We start off my forward-declaring our string implementation in the header. 
+<<string-typedef-h>>=
+typedef struct _String String;
+@
+
+Our default implementation of strings is backed by a char array that includes the length of the string. This differs from the standard C implementation in which strings are null-terminated, but we do this to support efficient wire-level encoding of the strings.
+<<string-typedef-c>>=
+struct _String {
+  size_t length;
+  const char * const char_array;
+};
+@
+
+We create strings given a char array and a length and we also create strings from c-style strings.
+<<string-from-str-h>>=
+const String * string_from_str(const char * const, size_t);
+const String * string_from_cstr(const char * const);
+@
+
+Now we malloc the String and use the char array we are passed. The contract here is that once the char array is passed to this function, the original char array is no longer modified. Please do not depend on the null terminator for the cstr String creation. Some strings will have the null terminator and some will not, use the length instead. We also have an ``unsafe'' cast, but this is just a way to initialize the char\_array.
+<<string-from-str-c>>=
+const String * string_from_str(const char * const char_array, size_t length) {
+  String *self = malloc(sizeof(String));
+  self->length = length;
+  *(char **)&self->char_array = (char *)char_array;
+  return self;
+}
+const String * string_from_cstr(const char * const char_array) {
+  return string_from_str(char_array, strlen(char_array));
+}
+@
+
+We also need a way to get a reference to the internal char array. We just return the reference to the internal char array.
+<<string-char-array-h>>=
+const char * const string_char_array(const String *);
+@
+<<string-char-array-c>>=
+const char * const string_char_array(const String * self) {
+  return self->char_array;
+}
+@
+
+Same thing for getting the length.
+<<string-length-h>>=
+const size_t string_length(const String *);
+@
+<<string-length-c>>=
+const size_t string_length(const String *self) {
+  return self->length;
+}
+@
+
+<<string.h>>=
+#pragma once
+#include <stddef.h>
+<<string-typedef-h>>
+<<string-from-str-h>>
+<<string-char-array-h>>
+<<string-length-h>>
+@
+<<string.c>>=
+#include "string.h"
+#include <stdlib.h>
+#include <string.h>
+
+<<string-typedef-c>>
+<<string-from-str-c>>
+<<string-char-array-c>>
+<<string-length-c>>
+@
