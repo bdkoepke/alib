@@ -1,9 +1,5 @@
 <<type.h>>=
-#ifndef TYPE_H
-#define TYPE_H
-
+#pragma once
 #define INT_TO_POINTER(i) ((void *)(long)(i))
 #define POINTER_TO_INT(p) ((int)(long)(p))
-
-#endif /* TYPE_H */
 @

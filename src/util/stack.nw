@@ -48,7 +48,7 @@ void _stack_free(Object *o);
 #endif /* STACK_H */
 @
 <<stack.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "stack.h"
 
 #include <stdlib.h>

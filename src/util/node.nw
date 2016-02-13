@@ -29,7 +29,7 @@ void node_free_r(Node *);
 #endif /* NODE_H */
 @
 <<node.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "node.h"
 
 #include <stdlib.h>
@@ -40,7 +40,7 @@ typedef struct {
 } NodeIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  { .class = { "node_iterator" },
+  { {},
     .free = _object_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -58,7 +58,7 @@ static bool node_iterator_move_next(Iterator *i) {
 }
 
 static bool node_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = { "node_iterator" },
+  static iterator_vtable vtable = { { {},
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = node_iterator_current,
@@ -74,7 +74,7 @@ static bool node_iterator_move_next_init(Iterator *i) {
 }
 
 Iterator *node_iterator(Node *n) {
-  static iterator_vtable vtable = { { .class = { "node_iterator" },
+  static iterator_vtable vtable = { { {},
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = _iterator_current_invalid_state,

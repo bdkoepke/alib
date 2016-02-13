@@ -17,9 +17,9 @@ Dictionary *hashtable_new(Hash, Equals);
 #endif /* HASHTABLE_H */
 @
 <<hashtable.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/math_extended.h"
-#include "../lang/unsafe.h"
+#include <unsafe.h>
 #include "hashtable.h"
 #include "hnode.h"
 
@@ -43,7 +43,7 @@ typedef struct {
 } HashtableIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  { .class = { "hashtable_iterator" },
+  { {},
     .free = _object_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -68,7 +68,7 @@ static bool hashtable_iterator_move_next(Iterator *_i) {
 }
 
 static bool hashtable_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = { "hashtable_iterator" },
+  static iterator_vtable vtable = { { {},
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = hashtable_iterator_current,
@@ -83,7 +83,7 @@ static bool hashtable_iterator_move_next_init(Iterator *i) {
 }
 
 static Iterator *hashtable_iterator(const Iterable *i) {
-  static iterator_vtable vtable = { { .class = { "hashtable_iterator" },
+  static iterator_vtable vtable = { { {},
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .current = _iterator_current_invalid_state,
@@ -178,7 +178,7 @@ static bool hashtable_empty(const Set *s) {
 
 Dictionary *hashtable_new(Hash hash, Equals equals) {
   static dictionary_vtable vtable = {
-    { { { .class = { "hashtable" },
+    { { { {},
           .free = hashtable_free,
           .to_string = _object_to_string },
         .iterator = hashtable_iterator },

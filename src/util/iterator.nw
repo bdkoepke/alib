@@ -2,7 +2,7 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
-#include "../lang/object.h"
+#include <object.h>
 
 #include <stdbool.h>
 
@@ -42,7 +42,7 @@ bool _iterator_move_next_invalid_state(Iterator *i);
 #endif /* ITERATOR_H */
 @
 <<iterator.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "iterator.h"
 
 #include <stdio.h>

@@ -60,7 +60,7 @@ LinkedStack *tree_to_linked_stack(const Tree *t);
 #endif /* TREE_H */
 @
 <<tree.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "key_value_pair.h"
 #include "linked_stack.h"
 #include "tree.h"

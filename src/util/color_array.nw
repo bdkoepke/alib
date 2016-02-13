@@ -23,8 +23,8 @@ size_t color_array_length(const ColorArray *);
 #endif /* COLOR_ARRAY_H */
 @
 <<color-array.c>>=
-#include "../diag/contract.h"
-#include "../lang/object.h"
+#include <contract.h>
+#include <object.h>
 #include "color_array.h"
 
 #include <stdlib.h>
@@ -49,7 +49,7 @@ const char *color_to_string(const Color c) {
 }
 
 ColorArray *color_array_new(Color a[], size_t len) {
-  static object_vtable vtable = { .class = { "color_array" },
+  static object_vtable vtable = { {},
                                   .free = _object_free,
                                   .to_string = _object_to_string };
 

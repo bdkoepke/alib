@@ -62,9 +62,9 @@ void *_dictionary_set_delete(Set *s, const void *x);
 #endif /* DICTIONARY_H */
 @
 <<dictionary.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "dictionary.h"
-#include "../lang/unsafe.h"
+#include <unsafe.h>
 
 #include <stdlib.h>
 

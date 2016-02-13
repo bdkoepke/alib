@@ -17,7 +17,7 @@ Vector *sparse_vector_new(unsigned int n, unsigned int m);
 #endif /* SPARSE_VECTOR_H */
 @
 <<sparse-vector.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/type.h"
 #include "sparse_vector.h"
 
@@ -92,7 +92,7 @@ static void *sparse_vector_get(const Vector *v, size_t i) {
 
 Vector *sparse_vector_new(unsigned int n, unsigned int m) {
   static vector_vtable vtable = {
-    { { { .class = { "sparse_vector" },
+    { { { {},
           .free = sparse_vector_free,
           .to_string = _object_to_string },
         .iterator = _vector_iterator },

@@ -16,7 +16,7 @@ Tree *red_black_tree_new(Compare c);
 #endif /* RED_BLACK_TREE_H */
 @
 <<red-black-tree.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "binary_node.h"
 #include "red_black_tree.h"
 

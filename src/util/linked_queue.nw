@@ -16,7 +16,7 @@ Queue *linked_queue_new();
 #endif /* LINKED_QUEUE_H */
 @
 <<linked-queue.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "linked_queue.h"
 #include "node.h"
 
@@ -89,7 +89,7 @@ static void *linked_queue_delete(Container *c, const void *x) {
 
 Queue *linked_queue_new() {
   static queue_vtable vtable = {
-    { { { .class = { "linked_queue" },
+    { { { {},
           .free = _queue_free,
           .to_string = _object_to_string },
         .iterator = linked_queue_iterator },

@@ -2,7 +2,7 @@
 #ifndef GRAPH_VISITOR_H
 #define GRAPH_VISITOR_H
 
-#include "../lang/object.h"
+#include <object.h>
 
 typedef struct _graph_visitor_vtable graph_visitor_vtable;
 typedef struct {
@@ -22,7 +22,7 @@ void graph_visitor_vertex_late(GraphVisitor *g, const void *v);
 #endif /* GRAPH_VISITOR_H */
 @
 <<graph-visitor.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "graph_visitor.h"
 
 void graph_visitor_vertex_early(GraphVisitor *g, const void *v) {

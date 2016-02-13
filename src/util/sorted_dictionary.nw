@@ -53,7 +53,7 @@ void *sorted_dictionary_successor(const SortedDictionary *d, const void *k);
 #endif /* SORTED_DICTIONARY_H */
 @
 <<sorted-dictionary.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "sorted_dictionary.h"
 
 void *sorted_dictionary_max(const SortedDictionary *s) {

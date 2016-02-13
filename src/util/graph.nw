@@ -2,7 +2,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "../lang/object.h"
+#include <object.h>
 #include "set.h"
 
 #include <stdbool.h>
@@ -70,7 +70,7 @@ void graph_delete_edge(Graph *g, const void *x, const void *y);
 #endif /* GRAPH_H */
 @
 <<graph.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "graph.h"
 
 bool graph_adjacent(const Graph *g, const void *x, const void *y) {

@@ -54,7 +54,7 @@ int quickselect(int a[], size_t length, size_t k);
 #endif /* SORT_H */
 @
 <<sort.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/type.h"
 #include "../util/linked_queue.h"
 #include "sort.h"

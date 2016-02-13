@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
+include_directories(/Users/bdkoepke/src/libhoare/src/build)
+include_directories(/Users/bdkoepke/src/libobject/src/build)
+link_directories(/Users/bdkoepke/src/libhoare/src/build)
+link_directories(/Users/bdkoepke/src/libobject/src/build)
 include(noweb.cmake)
 include(UseLatex)
 ########### next target ###############
@@ -7,15 +11,12 @@ set(alib_C
     chapter_3.c
     chapter_4.c
     chapter_5.c
-    diag/contract.c
     lang/algorithm.c
     lang/array.c
-    lang/class.c
     lang/compare.c
     lang/equals.c
     lang/hash.c
     lang/math_extended.c
-    lang/object.c
     lang/sort.c
     lang/string.c
     main.c
@@ -58,19 +59,15 @@ set(alib_H
     chapter_3.h
     chapter_4.h
     chapter_5.h
-    diag/contract.h
     lang/algorithm.h
     lang/array.h
-    lang/class.h
     lang/compare.h
     lang/equals.h
     lang/hash.h
     lang/math_extended.h
-    lang/object.h
     lang/sort.h
     lang/string.h
     lang/type.h
-    lang/unsafe.h
     test/test.h
     test/test_container.h
     test/test_container_values.h
@@ -112,19 +109,15 @@ set(alib_TEX
     chapter_3.tex
     chapter_4.tex
     chapter_5.tex
-    diag/contract.tex
     lang/algorithm.tex
     lang/array.tex
-    lang/class.tex
     lang/compare.tex
     lang/equals.tex
     lang/hash.tex
     lang/math_extended.tex
-    lang/object.tex
     lang/sort.tex
     lang/string.tex
     lang/type.tex
-    lang/unsafe.tex
     main.tex
     test/test.tex
     test/test_container.tex
@@ -171,7 +164,7 @@ add_custom_target(weave DEPENDS ${alib_TEX})
 
 add_executable(alib ${alib_C})
 add_dependencies(alib tangle)
-target_link_libraries(alib m)
+target_link_libraries(alib m hoare object)
 
 add_latex_document(alib.tex
                    FORCE_PDF

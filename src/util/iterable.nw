@@ -26,7 +26,7 @@ void iterable_foreach(const Iterable *i, apply a, void *user_data);
 #endif /* ITERABLE_H */
 @
 <<iterable.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "iterable.h"
 
 Iterator *iterable_iterator(const Iterable *i) {

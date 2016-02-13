@@ -3,7 +3,7 @@
 #define RANGE_CONTAINER_H
 
 #include "../lang/compare.h"
-#include "../lang/object.h"
+#include <object.h>
 
 #include <stddef.h>
 
@@ -25,7 +25,7 @@ void *range_container_query(const RangeContainer *, size_t i, size_t j);
 #endif /* RANGE_CONTAINER_H */
 @
 <<range-container.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/math_extended.h"
 #include "range_container.h"
 
@@ -74,7 +74,7 @@ static void array_range_container_free(Object *o) { free(o); }
 
 RangeContainer *array_range_container_new(Compare c) {
   static range_container_vtable vtable = {
-    { .class = { "range_container" },
+    { {},
       .free = array_range_container_free,
       .to_string = _object_to_string },
     .insert = array_range_container_insert, .query = array_range_container_query

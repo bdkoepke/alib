@@ -55,7 +55,7 @@ void *container_delete(Container *c, const void *x);
 #endif /* CONTAINER_H */
 @
 <<container.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "container.h"
 
 #include <stdlib.h>

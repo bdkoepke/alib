@@ -26,7 +26,7 @@ void _queue_free(Object *);
 #endif /* QUEUE_H */
 @
 <<queue.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "node.h"
 #include "queue.h"
 

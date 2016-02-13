@@ -19,7 +19,7 @@ int binary_search_int(int, const int *, size_t);
 #endif /* ALGORITHM_H */
 @
 <<algorithm.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "algorithm.h"
 
 static int _binary_search(const void *key, const void *values, size_t low,

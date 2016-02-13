@@ -24,7 +24,7 @@ DirectedGraph *directed_linked_graph_new(Hash, Equals);
 #endif /* LINKED_GRAPH_H */
 @
 <<linked-graph.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "edge_node.h"
 #include "hashtable.h"
 #include "linked_graph.h"
@@ -107,7 +107,7 @@ static Graph *linked_graph_new(Hash h, Equals e, graph_vtable *vtable) {
 
 UndirectedGraph *undirected_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
-    { .class = { "linked_graph" },
+    { {},
       .free = linked_graph_free,
       .to_string = _object_to_string },
     .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,
@@ -120,7 +120,7 @@ UndirectedGraph *undirected_linked_graph_new(Hash h, Equals e) {
 
 DirectedGraph *directed_linked_graph_new(Hash h, Equals e) {
   static graph_vtable vtable = {
-    { .class = { "linked_graph" },
+    { {},
       .free = linked_graph_free,
       .to_string = _object_to_string },
     .adjacent = linked_graph_adjacent, .neighbors = linked_graph_neighbors,

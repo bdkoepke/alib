@@ -26,7 +26,7 @@ void hnode_free_r(HNode *n);
 #endif /* HNODE_H */
 @
 <<hnode.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "hnode.h"
 
 #include <assert.h>

@@ -2,7 +2,7 @@
 #ifndef HEAP_H
 #define HEAP_H
 
-#include "../lang/object.h"
+#include <object.h>
 #include "../lang/compare.h"
 
 #include <stdbool.h>
@@ -85,7 +85,7 @@ bool heap_empty(const Heap *h);
 #endif /* HEAP_H */
 @
 <<heap.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/math_extended.h"
 #include "heap.h"
 
@@ -201,7 +201,7 @@ static void heap_free(Object *o) {
 }
 
 static Heap *_heap_new(Compare c, void **p, size_t size, size_t capacity) {
-  static heap_vtable vtable = { { .class = { "heap" },
+  static heap_vtable vtable = { { {},
                                   .free = heap_free,
                                   .to_string = _object_to_string },
                                 .insert = _heap_insert,

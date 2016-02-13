@@ -38,7 +38,7 @@ void test_vector(Vector *, const int *, size_t);
 #endif /* TEST_CONTAINER_H */
 @
 <<test-container.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/algorithm.h"
 #include "../lang/math_extended.h"
 #include "../lang/sort.h"

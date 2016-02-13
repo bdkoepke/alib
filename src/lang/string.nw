@@ -17,7 +17,7 @@ int find_match(const char *pattern, const char *text, int m, int n);
 #endif /* STRING_H */
 @
 <<string.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "string.h"
 
 int find_match(const char *pattern, const char *text, int m, int n) {

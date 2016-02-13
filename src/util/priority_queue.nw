@@ -2,7 +2,7 @@
 #ifndef PRIORITY_QUEUE_H
 #define PRIORITY_QUEUE_H
 
-#include "../lang/object.h"
+#include <object.h>
 #include "sorted_dictionary.h"
 
 #include <stdbool.h>
@@ -82,7 +82,7 @@ bool priority_queue_empty(const PriorityQueue *p);
 #endif /* PRIORITY_QUEUE_H */
 @
 <<priority-queue.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "priority_queue.h"
 
 #include <stdlib.h>
@@ -125,7 +125,7 @@ void _priority_queue_free(Object *o) {
 
 PriorityQueue *priority_queue_new(SortedDictionary *dictionary) {
   static priority_queue_vtable vtable = {
-    { .class = { "priority_queue" },
+    { {},
       .free = _priority_queue_free,
       .to_string = _object_to_string },
     .insert = _priority_queue_insert,

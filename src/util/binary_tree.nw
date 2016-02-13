@@ -50,7 +50,7 @@ bool binary_tree_compare(const BinaryTree *a, const BinaryTree *b);
 #endif /* BINARY_TREE_H */
 @
 <<binary-tree.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "binary_node.h"
 #include "binary_tree.h"
 

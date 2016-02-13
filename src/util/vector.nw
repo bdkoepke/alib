@@ -57,7 +57,7 @@ Iterator *_vector_iterator(const Iterable *);
 #endif /* VECTOR_H */
 @
 <<vector.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/math_extended.h"
 #include "vector.h"
 
@@ -78,7 +78,7 @@ typedef struct {
 } VectorIterator;
 
 static iterator_vtable vtable_invalid_state = {
-  { .class = { "vector_iterator" },
+  { {},
     .free = _object_free,
     .to_string = _object_to_string },
   .current = _iterator_current_invalid_state,
@@ -101,7 +101,7 @@ static bool vector_iterator_move_next(Iterator *i) {
 }
 
 static bool vector_iterator_move_next_init(Iterator *i) {
-  static iterator_vtable vtable = { { .class = { "vector_iterator" },
+  static iterator_vtable vtable = { { {},
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .move_next = vector_iterator_move_next,
@@ -120,7 +120,7 @@ static bool vector_iterator_move_next_init(Iterator *i) {
 }
 
 Iterator *_vector_iterator(const Iterable *i) {
-  static iterator_vtable vtable = { { .class = { "vector_iterator" },
+  static iterator_vtable vtable = { { {},
                                       .free = _object_free,
                                       .to_string = _object_to_string },
                                     .move_next = vector_iterator_move_next_init,
@@ -208,7 +208,7 @@ static void vector_free(Object *o) {
 
 Vector *vector_new() {
   static vector_vtable vtable = {
-    { { { .class = { "vector" },
+    { { { {},
           .free = vector_free,
           .to_string = _object_to_string },
         .iterator = _vector_iterator },

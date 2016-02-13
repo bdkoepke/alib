@@ -78,7 +78,7 @@ void question_4_46(void);
 @
 <<chapter-4.c>>=
 #include "chapter_4.h"
-#include "diag/contract.h"
+#include <contract.h>
 #include "lang/algorithm.h"
 #include "lang/array.h"
 #include "lang/math_extended.h"

@@ -3,7 +3,7 @@
 #define PARTIAL_SUM_H
 
 #include "../lang/compare.h"
-#include "../lang/object.h"
+#include <object.h>
 
 typedef struct _partial_sum_vtable partial_sum_vtable;
 typedef struct PartialSum {
@@ -27,7 +27,7 @@ void partial_sum_delete(PartialSum *, void *);
 #endif /* PARTIAL_SUM_H */
 @
 <<partial-sum.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "partial_sum.h"
 
 #include <stdlib.h>
@@ -48,7 +48,7 @@ void _partial_sum_delete(PartialSum *p, void *k) {}
 void partial_sum_free(Object *o) {}
 
 PartialSum *partial_sum_new(Compare c) {
-  static partial_sum_vtable vtable = { { .class = { "partial_sum" },
+  static partial_sum_vtable vtable = { { {},
                                          .free = partial_sum_free,
                                          .to_string = _object_to_string },
                                        .add = _partial_sum_add,

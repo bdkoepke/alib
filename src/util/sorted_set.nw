@@ -2,7 +2,7 @@
 #ifndef SORTED_SET_H
 #define SORTED_SET_H
 
-#include "../lang/object.h"
+#include <object.h>
 #include "../lang/compare.h"
 
 #include <stdbool.h>
@@ -76,7 +76,7 @@ size_t sorted_set_size(const SortedSet *s);
 #endif /* SORTED_SET_H */
 @
 <<sorted-set.c>>=
-#include "../diag/contract.h"
+#include <contract.h>
 #include "../lang/type.h"
 #include "binary_node.h"
 #include "sorted_set.h"
@@ -186,7 +186,7 @@ static void sorted_set_free(Object *o) {
 }
 
 SortedSet *sorted_set_new(Compare c) {
-  static sorted_set_vtable vtable = { { .class = { "sorted_set" },
+  static sorted_set_vtable vtable = { { {},
                                         .free = sorted_set_free,
                                         .to_string = _object_to_string },
                                       .member = _sorted_set_member,

@@ -8,7 +8,7 @@ void test_matrix_graph(void);
 #endif /* CHAPTER_5_H */
 @
 <<chapter-5.c>>=
-#include "diag/contract.h"
+#include <contract.h>
 #include "chapter_5.h"
 #include "lang/hash.h"
 #include "lang/math_extended.h"
@@ -18,7 +18,7 @@ void test_matrix_graph(void);
 #include "util/linked_queue.h"
 #include "util/linked_graph.h"
 #include "test/test.h"
-#include "lang/unsafe.h"
+#include <unsafe.h>
 
 #include <stdio.h>
 #include <stdlib.h>

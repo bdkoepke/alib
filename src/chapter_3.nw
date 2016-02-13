@@ -119,7 +119,7 @@ void question_3_28(void);
 #endif /* CHAPTER_3_H */
 @
 <<chapter-3.c>>=
-#include "diag/contract.h"
+#include <contract.h>
 #include "lang/algorithm.h"
 #include "lang/array.h"
 #include "lang/math_extended.h"
@@ -133,7 +133,7 @@ void question_3_28(void);
 #include "util/linked_queue.h"
 #include "util/node.h"
 #include "util/sparse_vector.h"
-#include "lang/unsafe.h"
+#include <unsafe.h>
 
 #include <math.h>
 #include <stdlib.h>
