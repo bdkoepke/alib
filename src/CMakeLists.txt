@@ -4,7 +4,7 @@ include_directories(/Users/bdkoepke/src/libobject/src/build)
 link_directories(/Users/bdkoepke/src/libhoare/src/build)
 link_directories(/Users/bdkoepke/src/libobject/src/build)
 include(noweb.cmake)
-include(UseLatex)
+include(UseLatex.cmake)
 ########### next target ###############
 set(alib_C
     chapter_2.c
